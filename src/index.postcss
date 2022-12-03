@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  @apply min-h-screen bg-white text-slate-600 dark:bg-slate-800 dark:text-slate-300;
+}
+
+@layer components {
+  .button {
+    @apply m-1 rounded-lg py-3 px-5 font-semibold transition hover:bg-gray-300 dark:hover:bg-slate-700;
+  }
+
+  .button-icon {
+    @apply m-1 select-none rounded-lg p-2 font-semibold transition hover:fill-current active:scale-90;
+  }
+
+  .button-icon.active svg:not(.dark *),
+  .button-icon:hover svg:not(.dark *),
+  .button-icon:focus svg:not(.dark *) {
+    @apply fill-white;
+  }
+
+  .button-icon:not(.active):not(:hover):not(:focus) {
+    @apply bg-white dark:bg-slate-800;
+  }
+
+  .button-icon-wide:not(:hover):not(:focus) {
+    @apply bg-white dark:bg-slate-800;
+  }
+
+  .tooltip {
+    @apply relative outline-none ring-current focus:ring-2 active:ring-0;
+  }
+
+  .tooltip::before {
+    @apply pointer-events-none absolute top-full left-1/2 mt-3 block -translate-x-1/2 scale-90 rounded-lg border bg-white py-2 px-4 opacity-0 shadow-lg transition dark:border-gray-700 dark:bg-slate-900;
+  }
+
+  .tooltip:hover::before,
+  .tooltip:focus::before {
+    @apply scale-100 opacity-100;
+  }
+
+  @media (hover: hover) {
+    .mobile-nav {
+      @apply hover:visible hover:scale-100 hover:bg-purple-500;
+    }
+  }
+
+  :where(.mobile-nav) {
+    @apply origin-top scale-90 opacity-0;
+  }
+}

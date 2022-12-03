@@ -1,0 +1,139 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("KS_DB_URL")
+}
+
+model Account {
+  creation            DateTime @default(now())
+  id                  String   @id @default(auto()) @map("_id") @db.ObjectId
+  isAdmin             Boolean
+  email               String   @unique
+  magicLinkId         String   @unique @default(cuid())
+  magicLinkExpiration DateTime @default(now())
+  name                String
+  session             String   @unique @default(cuid())
+  updated             DateTime @default(now()) @updatedAt
+  // Relations:
+  memberOf            Group[]  @relation("GroupMembersRelation", fields: [memberOfIds], references: [id])
+  memberOfIds         String[] @db.ObjectId
+}
+
+model Attachment {
+  creation     DateTime       @default(now())
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  type         AttachmentType
+  updated      DateTime       @default(now()) @updatedAt
+  value        String
+  // Relations:
+  Resource     Resource?      @relation(fields: [resourceId], references: [id])
+  resourceId   String?        @db.ObjectId
+  TaskStatus   TaskStatus?    @relation(fields: [taskStatusId], references: [id])
+  taskStatusId String?        @db.ObjectId
+  Task         Task?          @relation(fields: [taskId], references: [id])
+  taskId       String?        @db.ObjectId
+}
+
+enum AttachmentType {
+  File
+  Link
+  Text
+}
+
+model Category {
+  creation DateTime @default(now())
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  updated  DateTime @default(now()) @updatedAt
+  worth    Float    @default(1)
+}
+
+model Group {
+  creation  DateTime  @default(now())
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  updated   DateTime  @default(now()) @updatedAt
+  // Relations:
+  members   Account[] @relation("GroupMembersRelation", fields: [memberIds], references: [id])
+  memberIds String[]  @db.ObjectId
+  periods   Period[]  @relation("GroupPeriodRelation", fields: [periodIds], references: [id])
+  periodIds String[]  @db.ObjectId
+}
+
+model Partnership {
+  creation      DateTime     @default(now())
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  name          String?
+  updated       DateTime     @default(now()) @updatedAt
+  // Relations:
+  tasks         Task[]       @relation("PartnerTaskRelation", fields: [taskIds], references: [id])
+  taskIds       String[]     @db.ObjectId
+  taskStatuses  TaskStatus[] @relation("PartnerTaskStatusRelation")
+  taskStatusIds String[]     @db.ObjectId
+}
+
+model Period {
+  creation DateTime    @default(now())
+  id       String      @id @default(auto()) @map("_id") @db.ObjectId
+  name     String?
+  times    TimeBlock[]
+  updated  DateTime    @default(now()) @updatedAt
+  Group    Group[]     @relation("GroupPeriodRelation", fields: [groupIds], references: [id])
+  groupIds String[]    @db.ObjectId
+}
+
+type RepetitionSchedule {
+  /// Weekdays should range from 0 - 6 where 0 is Sunday and 6 is Saturday.
+  weekdays Int[]
+
+  /// This field is inclusive: 1 means something is every week, while 2 means it is biweekly.
+  weeksBetweenOccurrences Int
+}
+
+model Resource {
+  attachments   Attachment[]
+  creation      DateTime     @default(now())
+  description   String
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  updated       DateTime     @default(now()) @updatedAt
+  viewableAfter DateTime     @default(now())
+}
+
+model Task {
+  attachments    Attachment[]
+  creation       DateTime      @default(now())
+  description    String
+  due            DateTime
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  points         Float         @default(0)
+  updated        DateTime      @default(now()) @updatedAt
+  viewableAfter  DateTime      @default(now())
+  // Relations:
+  Partnership    Partnership[] @relation("PartnerTaskRelation", fields: [partnershipIds], references: [id])
+  partnershipIds String[]      @db.ObjectId
+}
+
+model TaskStatus {
+  attachments Attachment[]
+  due         DateTime
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  missing     Boolean
+  score       Float        @default(0)
+  updated     DateTime     @default(now()) @updatedAt
+  // Relations:
+  for         Partnership? @relation("PartnerTaskStatusRelation", fields: [forId], references: [id])
+  forId       String?      @db.ObjectId
+}
+
+type TimeBlock {
+  endDate   DateTime
+  endTime   Int
+  schedule  RepetitionSchedule?
+  startDate DateTime
+  startTime Int
+}
