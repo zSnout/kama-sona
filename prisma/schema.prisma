@@ -8,47 +8,72 @@ datasource db {
 }
 
 model Account {
-  creation            DateTime @default(now())
-  id                  String   @id @default(auto()) @map("_id") @db.ObjectId
+  creation            DateTime     @default(now())
+  id                  String       @id @default(auto()) @map("_id") @db.ObjectId
   isAdmin             Boolean
-  email               String   @unique
-  magicLinkId         String   @unique @default(cuid())
-  magicLinkExpiration DateTime @default(now())
+  email               String       @unique
+  magicLinkId         String       @unique @default(cuid())
+  magicLinkExpiration DateTime     @default(now())
   name                String
-  session             String   @unique @default(cuid())
-  updated             DateTime @default(now()) @updatedAt
+  session             String       @unique @default(cuid())
+  updated             DateTime     @default(now()) @updatedAt
   // Relations:
-  memberOf            Group[]  @relation("GroupMembersRelation", fields: [memberOfIds], references: [id])
-  memberOfIds         String[] @db.ObjectId
+  assignedTo          TaskStatus[] @relation("TaskAssigneeRelation")
+  assignedToIds       String[]     @db.ObjectId
+  memberOf            Group[]      @relation("GroupMembersRelation", fields: [memberOfIds], references: [id])
+  memberOfIds         String[]     @db.ObjectId
+  sentMessages        Message[]    @relation("MessageSender")
 }
 
-model Attachment {
-  creation     DateTime       @default(now())
-  id           String         @id @default(auto()) @map("_id") @db.ObjectId
-  type         AttachmentType
-  updated      DateTime       @default(now()) @updatedAt
-  value        String
-  // Relations:
-  Resource     Resource?      @relation(fields: [resourceId], references: [id])
-  resourceId   String?        @db.ObjectId
-  TaskStatus   TaskStatus?    @relation(fields: [taskStatusId], references: [id])
-  taskStatusId String?        @db.ObjectId
-  Task         Task?          @relation(fields: [taskId], references: [id])
-  taskId       String?        @db.ObjectId
+type Attachment {
+  creation DateTime       @default(now())
+  type     AttachmentType
+  value    String
 }
 
 enum AttachmentType {
   File
+  Html
   Link
   Text
 }
 
 model Category {
-  creation DateTime @default(now())
-  id       String   @id @default(auto()) @map("_id") @db.ObjectId
-  name     String
-  updated  DateTime @default(now()) @updatedAt
-  worth    Float    @default(1)
+  creation    DateTime     @default(now())
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  updated     DateTime     @default(now()) @updatedAt
+  worth       Float        @default(1)
+  resources   Resource[]   @relation("ResourceCategory")
+  discussions Discussion[] @relation("DiscussionCategory")
+  tasks       Task[]       @relation("TaskCategory")
+}
+
+model Discussion {
+  creation   DateTime  @default(now())
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  isTopLevel Boolean
+  name       String?
+  updated    DateTime  @default(now()) @updatedAt
+  // Relations:
+  category   Category? @relation("DiscussionCategory", fields: [categoryId], references: [id])
+  categoryId String    @db.ObjectId
+  content    Message[] @relation("Discusses")
+  commentsOn Message?  @relation("Comments")
+}
+
+model Message {
+  creation    DateTime     @default(now())
+  content     Attachment[]
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  updated     DateTime     @default(now()) @updatedAt
+  // Relations:
+  comments    Discussion?  @relation("Comments", fields: [commentsId], references: [id])
+  commentsId  String       @unique @db.ObjectId
+  discusses   Discussion   @relation("Discusses", fields: [discussesId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  discussesId String       @db.ObjectId
+  sender      Account      @relation("MessageSender", fields: [senderId], references: [id])
+  senderId    String       @db.ObjectId
 }
 
 model Group {
@@ -63,26 +88,15 @@ model Group {
   periodIds String[]  @db.ObjectId
 }
 
-model Partnership {
-  creation      DateTime     @default(now())
-  id            String       @id @default(auto()) @map("_id") @db.ObjectId
-  name          String?
-  updated       DateTime     @default(now()) @updatedAt
-  // Relations:
-  tasks         Task[]       @relation("PartnerTaskRelation", fields: [taskIds], references: [id])
-  taskIds       String[]     @db.ObjectId
-  taskStatuses  TaskStatus[] @relation("PartnerTaskStatusRelation")
-  taskStatusIds String[]     @db.ObjectId
-}
-
 model Period {
-  creation DateTime    @default(now())
-  id       String      @id @default(auto()) @map("_id") @db.ObjectId
-  name     String?
-  times    TimeBlock[]
-  updated  DateTime    @default(now()) @updatedAt
-  Group    Group[]     @relation("GroupPeriodRelation", fields: [groupIds], references: [id])
-  groupIds String[]    @db.ObjectId
+  creation     DateTime    @default(now())
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  name         String?
+  times        TimeBlock[]
+  updated      DateTime    @default(now()) @updatedAt
+  // Relations:
+  scheduledFor Group[]     @relation("GroupPeriodRelation", fields: [groupIds], references: [id])
+  groupIds     String[]    @db.ObjectId
 }
 
 type RepetitionSchedule {
@@ -101,33 +115,41 @@ model Resource {
   name          String
   updated       DateTime     @default(now()) @updatedAt
   viewableAfter DateTime     @default(now())
+  // Relations:
+  category      Category?    @relation("ResourceCategory", fields: [categoryId], references: [id])
+  categoryId    String       @db.ObjectId
 }
 
 model Task {
-  attachments    Attachment[]
-  creation       DateTime      @default(now())
-  description    String
-  due            DateTime
-  id             String        @id @default(auto()) @map("_id") @db.ObjectId
-  name           String
-  points         Float         @default(0)
-  updated        DateTime      @default(now()) @updatedAt
-  viewableAfter  DateTime      @default(now())
+  attachments   Attachment[]
+  creation      DateTime     @default(now())
+  description   String
+  due           DateTime
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  points        Float        @default(0)
+  updated       DateTime     @default(now()) @updatedAt
+  viewableAfter DateTime     @default(now())
   // Relations:
-  Partnership    Partnership[] @relation("PartnerTaskRelation", fields: [partnershipIds], references: [id])
-  partnershipIds String[]      @db.ObjectId
+  category      Category?    @relation("TaskCategory", fields: [categoryId], references: [id])
+  categoryId    String       @db.ObjectId
+  statuses      TaskStatus[] @relation("TaskStatusRelation")
+  statusIds     String[]     @db.ObjectId
 }
 
 model TaskStatus {
   attachments Attachment[]
+  creation    DateTime     @default(now())
   due         DateTime
   id          String       @id @default(auto()) @map("_id") @db.ObjectId
   missing     Boolean
   score       Float        @default(0)
   updated     DateTime     @default(now()) @updatedAt
   // Relations:
-  for         Partnership? @relation("PartnerTaskStatusRelation", fields: [forId], references: [id])
-  forId       String?      @db.ObjectId
+  assignee    Account      @relation("TaskAssigneeRelation", fields: [assigneeId], references: [id])
+  assigneeId  String       @db.ObjectId
+  statusFor   Task         @relation("TaskStatusRelation", fields: [statusForId], references: [id])
+  statusForId String       @db.ObjectId
 }
 
 type TimeBlock {
