@@ -8,21 +8,28 @@ datasource db {
 }
 
 model Account {
-  creation            DateTime     @default(now())
-  id                  String       @id @default(auto()) @map("_id") @db.ObjectId
-  isAdmin             Boolean
-  email               String       @unique
-  magicLinkId         String       @unique @default(cuid())
-  magicLinkExpiration DateTime     @default(now())
-  name                String
-  session             String       @unique @default(cuid())
-  updated             DateTime     @default(now()) @updatedAt
+  creation      DateTime     @default(now())
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  isAdmin       Boolean
+  email         String       @unique
+  name          String
+  session       String       @unique @default(cuid())
+  updated       DateTime     @default(now()) @updatedAt
   // Relations:
-  assignedTo          TaskStatus[] @relation("TaskAssigneeRelation")
-  assignedToIds       String[]     @db.ObjectId
-  memberOf            Group[]      @relation("GroupMembersRelation", fields: [memberOfIds], references: [id])
-  memberOfIds         String[]     @db.ObjectId
-  sentMessages        Message[]    @relation("MessageSender")
+  assignedTo    TaskStatus[] @relation("TaskAssigneeRelation")
+  assignedToIds String[]     @db.ObjectId
+  magicLink     MagicLink?   @relation("MagicLink", fields: [magicLinkId], references: [id])
+  magicLinkId   String?      @unique
+  memberOf      Group[]      @relation("GroupMembersRelation", fields: [memberOfIds], references: [id])
+  memberOfIds   String[]     @db.ObjectId
+  sentMessages  Message[]    @relation("MessageSender")
+}
+
+model MagicLink {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  code       String   @unique @default(cuid())
+  expiration DateTime
+  for        Account? @relation("MagicLink")
 }
 
 type Attachment {
