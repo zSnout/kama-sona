@@ -11,10 +11,13 @@
 
 <a
   on:contextmenu|preventDefault
-  class="{className} button-icon tooltip {isHomeIcon ? '' : 'hidden sm:block'}"
+  class="{className} button-icon tooltip select-none {isHomeIcon
+    ? ''
+    : 'hidden sm:block'}"
   class:active={href == "/"
     ? $page.url.pathname == "/"
     : $page.url.pathname.startsWith(href)}
+  draggable="false"
   {href}
   {title}
 >

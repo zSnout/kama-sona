@@ -1,39 +1,42 @@
 import { PUBLIC_KS_APP_BASE, PUBLIC_KS_APP_NAME } from "$env/static/public"
-import type { Account } from "@prisma/client"
-import cuid from "cuid"
-import { error, ok, type Result } from "../result"
-import { errorNoAccountExists, type AccountFilter } from "./account"
+import type { Account, Prisma } from "@prisma/client"
+import { both, error, ok, type Result } from "../result"
+import { errorNoAccountExists } from "./account"
 import { query } from "./database"
 import { send as sendEmail } from "./email"
 
-/** Information about a magic link. The ID may not be present. */
+/** Information about a magic link. The code may not be present. */
 export interface MagicLinkInfo {
+  /** The code of this magic link. */
+  readonly code: string | null
+
   /** The expiration date of this magic link. */
   readonly expiration: Date
-
-  /** The ID of this magic link. */
-  readonly id: string | null
 }
 
-/** Information about a magic link with a definite ID. */
-export interface MagicLinkInfoWithID {
-  /** The ID of this magic link. */
-  id: string
+/** Information about a magic link with a definite code. */
+export interface MagicLinkInfoWithCode extends MagicLinkInfo {
+  /** The code of this magic link. */
+  readonly code: string
 }
 
 /** Creates a magic link for the given account and returns it. */
 export async function create(
-  account: AccountFilter
-): Promise<Result<MagicLinkInfoWithID>> {
+  account: Prisma.AccountWhereUniqueInput
+): Promise<Result<MagicLinkInfoWithCode>> {
   const expiration = new Date(Date.now() + 1000 * 60 * 15)
-  const id = cuid()
+  const code = crypto.randomUUID()
 
   const result = await query(
     (database) =>
       database.account.update({
         data: {
-          magicLinkExpiration: expiration,
-          magicLinkId: id,
+          magicLink: {
+            upsert: {
+              create: { code, expiration },
+              update: { code, expiration },
+            },
+          },
         },
         where: account,
       }),
@@ -44,17 +47,28 @@ export async function create(
     return result
   }
 
-  return ok({ expiration, id })
+  return ok({ expiration, code })
 }
 
 /** Destroys a magic link for the given account. */
-export async function destroy(account: AccountFilter): Promise<Result<void>> {
+export async function destroyByAccount(
+  account: Prisma.AccountWhereUniqueInput
+): Promise<Result<void>> {
+  const next = {
+    code: crypto.randomUUID(),
+    expiration: new Date(),
+  }
+
   const result = await query(
     (database) =>
-      database.account.updateMany({
+      database.account.update({
         data: {
-          magicLinkExpiration: new Date(),
-          magicLinkId: cuid(),
+          magicLink: {
+            upsert: {
+              create: next,
+              update: next,
+            },
+          },
         },
         where: account,
       }),
@@ -65,22 +79,36 @@ export async function destroy(account: AccountFilter): Promise<Result<void>> {
     return result
   }
 
-  return result.value.count > 0 ? ok() : errorNoAccountExists
+  return ok()
 }
 
-/** Gets the magic link ID and expiration date of a given account. */
+/** Destroys the given magic link. */
+export async function destroyByLink(
+  link: Prisma.MagicLinkWhereUniqueInput
+): Promise<Result<void>> {
+  const result = await query(
+    (database) => database.magicLink.delete({ where: link }),
+    error("The provided magic link doesn't exist. It might've expired by now.")
+  )
+
+  if (!result.ok) {
+    return result
+  }
+
+  return ok()
+}
+
+/** Gets the magic link code and expiration date of a given account. */
 export async function get(
-  account: AccountFilter
+  account: Prisma.AccountWhereUniqueInput
 ): Promise<Result<MagicLinkInfo>> {
   const result = await query(
-    (database) =>
-      database.account.findFirst({
-        select: {
-          magicLinkExpiration: true,
-          magicLinkId: true,
-        },
-        where: account,
-      }),
+    async (database) =>
+      (await database.account
+        .findFirst({
+          where: account,
+        })
+        .magicLink()) ?? ("none" as const),
     errorNoAccountExists
   )
 
@@ -88,22 +116,24 @@ export async function get(
     return result
   }
 
-  return ok({
-    expiration: result.value.magicLinkExpiration,
-    id: result.value.magicLinkId,
-  })
+  return ok(
+    result.value == "none"
+      ? { code: null, expiration: new Date() }
+      : result.value
+  )
 }
 
-/** Sends the current magic link ID to an account. */
-export async function send(account: AccountFilter): Promise<Result<void>> {
+/** Sends the current magic link code to an account. */
+export async function send(
+  account: Prisma.AccountWhereUniqueInput
+): Promise<Result<void>> {
   const result = await query(
     (database) =>
       database.account.findFirst({
         select: {
           email: true,
-          magicLinkExpiration: true,
-          magicLinkId: true,
           name: true,
+          magicLink: true,
         },
         where: account,
       }),
@@ -114,10 +144,14 @@ export async function send(account: AccountFilter): Promise<Result<void>> {
     return result
   }
 
-  const expiration = result.value.magicLinkExpiration
+  if (!result.value.magicLink) {
+    return error("Your magic link expired. Try creating another.")
+  }
+
+  const expiration = result.value.magicLink?.expiration
 
   if (expiration < new Date()) {
-    return error("The magic link expired. Try creating another.")
+    return error("Your magic link expired. Try creating another.")
   }
 
   const result2 = await sendEmail({
@@ -125,7 +159,7 @@ export async function send(account: AccountFilter): Promise<Result<void>> {
     text: `Hey ${result.value.name},
 
 It looks like you're trying to log in to your account. You can do this by going
-to ${PUBLIC_KS_APP_BASE}/log-in/${result.value.magicLinkId}. Hurry
+to ${PUBLIC_KS_APP_BASE}/log-in/${result.value.magicLink.code}. Hurry
 up, as your link will expire in 15 minutes.`,
     to: {
       address: result.value.email,
@@ -140,29 +174,41 @@ up, as your link will expire in 15 minutes.`,
   return ok()
 }
 
+/** A {@link Result} to result when an account's magic link changed unexpectedly. */
+export const errorMagicLinkChanged = error(
+  "Your magic link has changed. You might've requested another log in link and clicked this one by accident."
+)
+
 /** Verifies a magic link, destroys it, and returns the account it corresponds to. */
-export async function verify(magicLinkId: string): Promise<Result<Account>> {
-  const account = await query(
+export async function verify(options: {
+  code: string
+}): Promise<Result<Account>> {
+  const link = await query(
     (database) =>
-      database.account.findFirst({
-        where: { magicLinkId },
+      database.magicLink.findFirst({
+        include: { for: true },
+        where: options,
       }),
-    errorNoAccountExists
+    errorMagicLinkChanged
   )
 
-  if (!account.ok) {
-    return account
+  if (!link.ok) {
+    return link
   }
 
-  if (account.value.magicLinkExpiration < new Date()) {
-    return error("The magic link expired. You can always request another.")
+  if (!link.value.for) {
+    return errorMagicLinkChanged
   }
 
-  const destroyed = await destroy({ magicLinkId })
+  if (link.value.expiration < new Date()) {
+    return error("Your magic link expired. You can always request another.")
+  }
+
+  const destroyed = await destroyByLink(options)
 
   if (!destroyed.ok) {
     return destroyed
   }
 
-  return account
+  return ok(link.value.for)
 }

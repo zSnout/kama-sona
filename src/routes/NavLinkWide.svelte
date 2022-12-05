@@ -14,6 +14,7 @@
   class:active={href == "/"
     ? $page.url.pathname == "/"
     : $page.url.pathname.startsWith(href)}
+  draggable="false"
   {href}
   {title}
   on:click

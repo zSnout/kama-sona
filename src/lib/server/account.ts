@@ -1,11 +1,10 @@
-import type { Account } from "@prisma/client"
+import type { Account, Prisma } from "@prisma/client"
 import { error, type Result } from "../result"
-import type { OneOf } from "../types"
 import { query } from "./database"
 
 /** Creates an account. */
 export async function create(
-  info: Pick<Account, "email" | "isAdmin" | "name">
+  info: Prisma.AccountCreateInput
 ): Promise<Result<Account>> {
   const accountsWithSameEmail = await query((database) =>
     database.account.count({
@@ -39,16 +38,13 @@ export const errorNoAccountExists = error(
   "No account exists that matches the given account information."
 )
 
-/** A filter that can be used to find a single account. */
-export type AccountFilter = OneOf<
-  Pick<Account, "email" | "id" | "magicLinkId" | "session">
->
-
 /** Gets information about an account. */
-export async function get(filter: AccountFilter): Promise<Result<Account>> {
+export async function get(
+  filter: Prisma.AccountWhereUniqueInput
+): Promise<Result<Account>> {
   const result = await query(
     (database) =>
-      database.account.findFirst({
+      database.account.findUnique({
         where: filter,
       }),
     errorNoAccountExists
@@ -61,7 +57,9 @@ export async function get(filter: AccountFilter): Promise<Result<Account>> {
   return result
 }
 
-/** Gets all accounts. */
-export async function getAll(): Promise<Result<readonly Account[]>> {
-  return await query((database) => database.account.findMany({}))
+/** Gets all accounts with an optional filter. */
+export async function getAll(
+  filter?: Prisma.AccountWhereInput
+): Promise<Result<readonly Account[]>> {
+  return await query((database) => database.account.findMany({ where: filter }))
 }

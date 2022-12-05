@@ -8,10 +8,6 @@ body {
 }
 
 @layer components {
-  .button {
-    @apply m-1 rounded-lg py-3 px-5 font-semibold transition hover:bg-gray-300 dark:hover:bg-slate-700;
-  }
-
   .button-icon {
     @apply m-1 select-none rounded-lg p-2 font-semibold transition hover:fill-current active:scale-90;
   }
@@ -51,5 +47,35 @@ body {
 
   :where(.mobile-nav) {
     @apply origin-top scale-90 opacity-0;
+  }
+
+  .field {
+    @apply rounded-lg border border-gray-300 bg-white py-2 px-3 shadow-sm outline-0 transition;
+    @apply focus:border focus:border-blue-500 focus:ring focus:ring-blue-200;
+    @apply dark:border-slate-600 dark:bg-slate-850;
+    @apply dark:focus:border-blue-500 dark:focus:ring-blue-900;
+    @apply placeholder:text-slate-400 dark:placeholder:text-slate-500;
+  }
+
+  a.field,
+  button.field:enabled {
+    @apply hover:border-gray-400 hover:bg-gray-200 hover:focus:border-blue-500;
+    @apply dark:hover:border-slate-500 dark:hover:bg-slate-700 dark:hover:focus:border-blue-500;
+  }
+
+  .field:disabled {
+    @apply opacity-30;
+  }
+
+  .label p {
+    @apply mb-1 select-none;
+  }
+
+  .label + .label {
+    @apply mt-4;
+  }
+
+  .label:has(:required) p::after {
+    @apply ml-1 text-red-500 content-['*'];
   }
 }

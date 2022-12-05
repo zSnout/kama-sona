@@ -3,6 +3,7 @@
   import { isDark } from "$lib/theme"
   import {
     faBookOpen,
+    faBug,
     faChartPie,
     faClock,
     faComments,
@@ -39,84 +40,63 @@
     <NavLink
       isHomeIcon
       href="/"
-      class="mr-auto bg-gray-200 text-gray-500 before:content-['Home'] dark:bg-gray-600 dark:before:text-slate-400"
+      class="icon-bg-gray mr-auto before:content-['Home'] dark:bg-gray-600 dark:before:text-slate-400"
       title="Home"
     >
-      <NavIcon
-        icon={faHome}
-        class="fill-gray-200 dark:fill-gray-700 dark:stroke-gray-300"
-      />
+      <NavIcon icon={faHome} class="icon-gray" />
     </NavLink>
 
     <NavLink
       href="/assignments"
-      class="bg-red-200 text-red-500 before:content-['Assignments'] dark:bg-red-800"
-      title="Tasks"
+      class="icon-bg-red before:content-['Assignments']"
+      title="Assignments"
     >
-      <NavIcon
-        icon={faTasks}
-        class="fill-red-200 dark:fill-red-700 dark:stroke-red-300"
-      />
+      <NavIcon icon={faTasks} class="icon-red" />
     </NavLink>
 
     <NavLink
       href="/groups"
-      class="bg-blue-200 text-blue-500 before:content-['Groups'] dark:bg-blue-800"
+      class="icon-bg-blue before:content-['Groups']"
       title="Groups"
     >
-      <NavIcon
-        icon={faUserGroup}
-        class="fill-blue-200 dark:fill-blue-700 dark:stroke-blue-300"
-      />
+      <NavIcon icon={faUserGroup} class="icon-blue" />
     </NavLink>
 
     <NavLink
       href="/progress"
-      class="bg-yellow-200 text-yellow-500 before:content-['Progress'] dark:bg-yellow-800"
+      class="icon-bg-yellow before:content-['Progress']"
       title="Progress"
     >
-      <NavIcon
-        icon={faChartPie}
-        class="fill-yellow-200 dark:fill-yellow-700 dark:stroke-yellow-300"
-      />
+      <NavIcon icon={faChartPie} class="icon-yellow" />
     </NavLink>
 
     <NavLink
       href="/resources"
-      class="bg-green-200 text-green-500 before:content-['Resources'] dark:bg-green-800"
+      class="icon-bg-green before:content-['Resources']"
       title="Resources"
     >
-      <NavIcon
-        icon={faBookOpen}
-        class="fill-green-200 dark:fill-green-700 dark:stroke-green-300"
-      />
+      <NavIcon icon={faBookOpen} class="icon-green" />
     </NavLink>
 
     <NavLink
       href="/discussions"
-      class="bg-purple-200 text-purple-500 before:content-['Discussions'] dark:bg-purple-800"
+      class="icon-bg-purple before:content-['Discussions']"
       title="Discussions"
     >
-      <NavIcon
-        icon={faComments}
-        class="fill-purple-200 dark:fill-purple-700 dark:stroke-purple-300"
-      />
+      <NavIcon icon={faComments} class="icon-purple" />
     </NavLink>
 
     <NavLink
       href="/schedule"
-      class="bg-orange-200 text-orange-500 before:content-['Schedule'] dark:bg-orange-800"
+      class="icon-bg-orange before:content-['Schedule']"
       title="Schedule"
     >
-      <NavIcon
-        icon={faClock}
-        class="fill-orange-200 dark:fill-orange-700 dark:stroke-orange-300"
-      />
+      <NavIcon icon={faClock} class="icon-orange" />
     </NavLink>
 
     <button
       on:contextmenu|preventDefault
-      class="button-icon block bg-gray-200 text-gray-500 dark:bg-gray-600 dark:before:text-slate-400 sm:hidden"
+      class="button-icon icon-bg-gray block dark:bg-gray-600 dark:before:text-slate-400 sm:hidden"
       class:active={isNavIconFocused || isNavIconHovered}
       title="Open Mobile Navigation"
       on:click={() => (
@@ -127,23 +107,26 @@
       on:mouseleave={() => (isNavIconHovered = false)}
       on:focus={() => 0}
     >
-      <NavIcon
-        icon={faNavicon}
-        class="fill-gray-200 dark:fill-gray-700 dark:stroke-gray-300"
-      />
+      <NavIcon icon={faNavicon} class="icon-gray" />
     </button>
 
     <button
       on:contextmenu|preventDefault
-      class="button-icon tooltip ml-auto bg-gray-200 text-gray-500 before:content-['Theme'] dark:bg-gray-600 dark:before:text-slate-400"
+      class="button-icon tooltip icon-bg-gray ml-auto before:content-['Theme'] dark:bg-gray-600 dark:before:text-slate-400"
       on:click={Theme.toggle}
       title="Toggle Theme"
     >
-      <NavIcon
-        icon={$isDark ? faMoon : faSun}
-        class="fill-gray-200 dark:fill-gray-700 dark:stroke-gray-300"
-      />
+      <NavIcon icon={$isDark ? faMoon : faSun} class="icon-gray" />
     </button>
+
+    <a
+      on:contextmenu|preventDefault
+      class="button-icon tooltip icon-bg-gray ml-0 before:content-['Report_a_Bug'] dark:bg-gray-600 dark:before:text-slate-400 md:before:whitespace-pre"
+      title="Report a Bug"
+      href="https://github.com/zSnout/kama-sona/issues/new/choose"
+    >
+      <NavIcon icon={faBug} class="icon-gray" />
+    </a>
   </div>
 
   <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -154,78 +137,62 @@
   >
     <NavLinkWide
       href="/assignments"
-      class="bg-red-200 text-red-500 before:content-['Assignments'] dark:bg-red-800"
-      title="Tasks"
+      class="icon-bg-red before:content-['Assignments']"
+      title="Assignments"
       on:click={closeNav}
     >
-      <NavIcon
-        icon={faTasks}
-        class="fill-red-200 dark:fill-red-700 dark:stroke-red-300"
-      />
+      <NavIcon icon={faTasks} class="icon-red" />
     </NavLinkWide>
 
     <NavLinkWide
       href="/groups"
-      class="bg-blue-200 text-blue-500 before:content-['Groups'] dark:bg-blue-800"
+      class="icon-bg-blue before:content-['Groups']"
       title="Groups"
       on:click={closeNav}
     >
-      <NavIcon
-        icon={faUserGroup}
-        class="fill-blue-200 dark:fill-blue-700 dark:stroke-blue-300"
-      />
+      <NavIcon icon={faUserGroup} class="icon-blue" />
     </NavLinkWide>
 
     <NavLinkWide
       href="/progress"
-      class="bg-yellow-200 text-yellow-500 before:content-['Progress'] dark:bg-yellow-800"
+      class="icon-bg-yellow before:content-['Progress']"
       title="Progress"
       on:click={closeNav}
     >
-      <NavIcon
-        icon={faChartPie}
-        class="fill-yellow-200 dark:fill-yellow-700 dark:stroke-yellow-300"
-      />
+      <NavIcon icon={faChartPie} class="icon-yellow" />
     </NavLinkWide>
 
     <NavLinkWide
       href="/resources"
-      class="bg-green-200 text-green-500 before:content-['Resources'] dark:bg-green-800"
+      class="icon-bg-green before:content-['Resources']"
       title="Resources"
       on:click={closeNav}
     >
-      <NavIcon
-        icon={faBookOpen}
-        class="fill-green-200 dark:fill-green-700 dark:stroke-green-300"
-      />
+      <NavIcon icon={faBookOpen} class="icon-green" />
     </NavLinkWide>
 
     <NavLinkWide
       href="/discussions"
-      class="bg-purple-200 text-purple-500 before:content-['Discussions'] dark:bg-purple-800"
+      class="icon-bg-purple before:content-['Discussions']"
       title="Discussions"
       on:click={closeNav}
     >
-      <NavIcon
-        icon={faComments}
-        class="fill-purple-200 dark:fill-purple-700 dark:stroke-purple-300"
-      />
+      <NavIcon icon={faComments} class="icon-purple" />
     </NavLinkWide>
 
     <NavLinkWide
       href="/schedule"
-      class="bg-orange-200 text-orange-500 before:content-['Schedule'] dark:bg-orange-800"
+      class="icon-bg-orange before:content-['Schedule']"
       title="Schedule"
       on:click={closeNav}
     >
-      <NavIcon
-        icon={faClock}
-        class="fill-orange-200 dark:fill-orange-700 dark:stroke-orange-300"
-      />
+      <NavIcon icon={faClock} class="icon-orange" />
     </NavLinkWide>
   </div>
 </nav>
 
-<div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 md:px-8">
+<main
+  class="mx-auto flex min-h-full w-[80rem] max-w-[100vw] flex-1 flex-col px-4 py-6 sm:px-6 md:px-8"
+>
   <slot />
-</div>
+</main>

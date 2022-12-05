@@ -8,12 +8,18 @@ export const load: LayoutServerLoad = async ({
   cookies,
   route,
 }): Promise<{ account?: Account }> => {
-  return {}
+  const session = cookies.get("session")
+  const account = session ? await get({ session }) : undefined
 
-  const session = cookies.get("ks_session")
-  let account
+  if (PUBLIC_KS_ADMIN_MODE == "true") {
+    if (route.id == "/admin/create") {
+      return { account: account?.value }
+    } else {
+      throw redirect(302, "/admin/create")
+    }
+  }
 
-  if (!session || !(account = await get({ session })).ok) {
+  if (!account || !account.ok) {
     if (
       PUBLIC_KS_ADMIN_MODE == "true"
         ? route.id == "/admin/create"

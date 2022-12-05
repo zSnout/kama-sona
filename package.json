@@ -38,7 +38,6 @@
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@prisma/client": "^4.7.1",
-    "cuid": "^2.1.8",
     "nodemailer": "^6.8.0",
     "svelte-local-storage-store": "^0.3.1"
   }

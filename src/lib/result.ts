@@ -1,3 +1,5 @@
+import { error as svelteError } from "@sveltejs/kit"
+
 /** The result of a fallible operation. */
 export type Result<T> = Ok<T> | Error
 
@@ -134,4 +136,25 @@ export async function attemptAsync<T extends {}>(
 
     return error(String(err))
   }
+}
+
+/** Unwraps a {@link Result} or throws a 500 error. */
+export function unwrapOr500<T>(result: Result<T>) {
+  if (result.ok) {
+    return result.value
+  } else {
+    throw svelteError(500, result.error)
+  }
+}
+
+/**
+ * Requires both results to be successful. If they are, the value of the second
+ * result is returned.
+ */
+export function both<A, B>(first: Result<A>, second: Result<B>): Result<B> {
+  if (!first.ok) {
+    return first
+  }
+
+  return second
 }
