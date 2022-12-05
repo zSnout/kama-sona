@@ -1,5 +1,5 @@
 import type { Group, Prisma } from "@prisma/client"
-import { type Result } from "../result"
+import type { Result } from "../result"
 import { errorNoAccountExists } from "./account"
 import { query } from "./database"
 
