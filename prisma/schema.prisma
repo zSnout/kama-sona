@@ -13,13 +13,15 @@ model Account {
   isAdmin       Boolean
   email         String       @unique
   name          String
-  session       String       @unique @default(cuid())
+  session       String       @unique @default(uuid())
   updated       DateTime     @default(now()) @updatedAt
   // Relations:
   assignedTo    TaskStatus[] @relation("TaskAssigneeRelation")
   assignedToIds String[]     @db.ObjectId
   magicLink     MagicLink?   @relation("MagicLink", fields: [magicLinkId], references: [id])
   magicLinkId   String?      @unique
+  managerOf     Group[]      @relation("GroupManagersRelation", fields: [memberOfIds], references: [id])
+  managerOfIds  String[]     @db.ObjectId
   memberOf      Group[]      @relation("GroupMembersRelation", fields: [memberOfIds], references: [id])
   memberOfIds   String[]     @db.ObjectId
   sentMessages  Message[]    @relation("MessageSender")
@@ -84,15 +86,17 @@ model Message {
 }
 
 model Group {
-  creation  DateTime  @default(now())
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  updated   DateTime  @default(now()) @updatedAt
+  creation   DateTime  @default(now())
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  updated    DateTime  @default(now()) @updatedAt
   // Relations:
-  members   Account[] @relation("GroupMembersRelation", fields: [memberIds], references: [id])
-  memberIds String[]  @db.ObjectId
-  periods   Period[]  @relation("GroupPeriodRelation", fields: [periodIds], references: [id])
-  periodIds String[]  @db.ObjectId
+  managers   Account[] @relation("GroupManagersRelation", fields: [managerIds], references: [id])
+  managerIds String[]  @db.ObjectId
+  members    Account[] @relation("GroupMembersRelation", fields: [memberIds], references: [id])
+  memberIds  String[]  @db.ObjectId
+  periods    Period[]  @relation("GroupPeriodRelation", fields: [periodIds], references: [id])
+  periodIds  String[]  @db.ObjectId
 }
 
 model Period {
