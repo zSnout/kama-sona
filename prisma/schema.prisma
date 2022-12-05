@@ -27,7 +27,7 @@ model Account {
 
 model MagicLink {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  code       String   @unique @default(cuid())
+  code       String   @unique
   expiration DateTime
   for        Account? @relation("MagicLink")
 }
