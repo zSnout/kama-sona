@@ -13,6 +13,7 @@
   import PageInfo from "./PageInfo.svelte"
   import NavIcon from "./NavIcon.svelte"
   import CardGrid from "$lib/CardGrid.svelte"
+  import Card from "$lib/Card.svelte"
 
   export let data: PageData
 </script>
@@ -23,7 +24,7 @@
   Welcome back, {data.account?.name}!
 </p>
 
-<CardGrid class="grid-cols-[repeat(auto-fill,minmax(min(20em,100%),1fr))]">
+<CardGrid class="grid-cols-[repeat(auto-fill,minmax(min(20em,100%),1fr))]" clip>
   <PageInfo
     href="/assignments"
     class="text-red-600 dark:text-red-400"

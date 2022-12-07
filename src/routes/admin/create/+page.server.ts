@@ -14,7 +14,7 @@ export const load: PageServerLoad = async () => {
 }
 
 export const actions: Actions = {
-  async create({ request }) {
+  async default({ request }) {
     if (PUBLIC_KS_ADMIN_MODE != "true") {
       throw error(503, "You do not have permission to access this page.")
     }

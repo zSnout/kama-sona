@@ -15,12 +15,7 @@
 
 <CenterOnPage>
   {#if !form}
-    <form
-      class="prefer-w-96 flex flex-col"
-      action="?/create"
-      method="post"
-      use:enhance
-    >
+    <form class="prefer-w-96 flex flex-col" method="post" use:enhance>
       <label class="label w-full">
         <p>Email address:</p>
 

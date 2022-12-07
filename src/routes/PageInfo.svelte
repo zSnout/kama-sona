@@ -17,7 +17,7 @@
     </p>
   </a>
 
-  <div class="stats text-slate-500 dark:text-slate-400">
+  <div class="stats">
     <slot name="stats">
       <p><strong>23</strong> to do</p>
       <p><strong>5</strong> in progress</p>
@@ -26,9 +26,3 @@
     </slot>
   </div>
 </Card>
-
-<style global lang="postcss">
-  .stats :global(strong) {
-    @apply text-slate-900 dark:text-slate-300;
-  }
-</style>

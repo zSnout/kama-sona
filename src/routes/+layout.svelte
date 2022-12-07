@@ -33,7 +33,9 @@
   }
 </script>
 
-<nav class="sticky top-0 flex h-16 w-screen shadow-md">
+<nav
+  class="sticky top-0 flex h-16 w-screen bg-white shadow-md dark:bg-slate-800"
+>
   <div
     class="mx-auto flex w-full max-w-7xl select-none items-center px-4 sm:px-6 md:px-8"
   >
@@ -129,7 +131,6 @@
     </a>
   </div>
 
-  <!-- svelte-ignore a11y-click-events-have-key-events -->
   <div
     class="{isNavIconFocused || isNavIconHovered
       ? 'visible scale-100 opacity-100'

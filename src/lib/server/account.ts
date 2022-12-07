@@ -1,5 +1,6 @@
 import type { Account, Prisma } from "@prisma/client"
-import { error, type Result } from "../result"
+import type { Cookies } from "@sveltejs/kit"
+import { error, or, type Result } from "../result"
 import { query } from "./database"
 
 /** Creates an account. */
@@ -35,7 +36,7 @@ export async function create(
 
 /** A {@link Result} to return when no accounts match a given filter. */
 export const errorNoAccountExists = error(
-  "No account exists that matches the given account information."
+  "No account exists that matches the given information."
 )
 
 /** Gets information about an account. */
@@ -61,5 +62,23 @@ export async function get(
 export async function getAll(
   filter?: Prisma.AccountWhereInput
 ): Promise<Result<readonly Account[]>> {
-  return await query((database) => database.account.findMany({ where: filter }))
+  return await query((database) =>
+    database.account.findMany({
+      where: filter,
+    })
+  )
+}
+
+/** Gets an account based on the session key stored in a user's cookies. */
+export async function getFromCookies(cookies: Cookies) {
+  const session = cookies.get("session")
+
+  if (!session) {
+    return error("Whoops! Looks like you aren't logged in.")
+  }
+
+  return or(
+    await get({ session }),
+    error("It appears that your session has ... expired.")
+  )
 }

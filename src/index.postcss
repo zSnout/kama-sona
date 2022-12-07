@@ -4,7 +4,7 @@
 
 html,
 body {
-  @apply min-h-screen bg-white text-slate-600 dark:bg-slate-800 dark:text-slate-300;
+  @apply min-h-screen bg-gray-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300;
 }
 
 @layer components {
@@ -63,6 +63,10 @@ body {
     @apply dark:hover:border-slate-500 dark:hover:bg-slate-700 dark:hover:focus:border-blue-500;
   }
 
+  a.field {
+    @apply flex items-center justify-center text-center;
+  }
+
   .field:disabled {
     @apply opacity-30;
   }
@@ -78,4 +82,18 @@ body {
   .label:has(:required) p::after {
     @apply ml-1 text-red-500 content-['*'];
   }
+
+  .stats {
+    @apply text-slate-500 dark:text-slate-400;
+  }
+
+  .stats strong {
+    @apply text-slate-900 dark:text-slate-300;
+  }
+}
+
+:root.no-transitions *,
+:root.no-transitions ::before,
+:root.no-transitions ::after {
+  transition: none !important;
 }

@@ -11,7 +11,7 @@ const config = {
   plugins: [
     forms,
     typography,
-    plugin(function ({ matchComponents, theme }) {
+    plugin(function ({ addVariant, matchComponents, theme }) {
       matchComponents(
         {
           icon: (value) => ({
@@ -38,6 +38,8 @@ const config = {
         { "prefer-w": (value) => ({ width: value, maxWidth: "100%" }) },
         { values: theme("width") }
       )
+
+      addVariant("bafter", ["&:before", "&:after"])
     }),
   ],
   theme: {

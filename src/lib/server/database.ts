@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client"
-import { error, ok, type Error, type Result } from "../result"
+import { error, ok, type Result } from "../result"
 
 const prisma = new PrismaClient()
 await prisma.$connect()
@@ -12,8 +12,8 @@ export type PartialPrismaClient = Omit<
 
 /**
  * Calls a database query safely. If the query returns `null` or `undefined`, a
- * {@link defaultValue} will be returned instead of the nullish value.
- * Additionally, thrown exceptions are converted into {@link Error}s.
+ * {@link defaultValue default value} will be returned instead of the nullish value.
+ * Additionally, thrown exceptions are converted into errored {@link Result Results}.
  */
 export async function query<T extends {}>(
   fn: (

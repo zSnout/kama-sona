@@ -1,21 +1,18 @@
 import { browser } from "$app/environment"
 import { writable } from "svelte-local-storage-store"
 import { derived, get, readable } from "svelte/store"
+import { disableTransitions } from "./disable-transitions"
 
 /** A raw theme name in local storage. */
 export type RawTheme = "dark" | "light" | "native"
 
 /** The theme stored in local storage. */
-export const rawTheme = writable<RawTheme>(
-  "@kama-sona/ui-theme:theme",
-  "native",
-  {
-    serializer: {
-      parse: (text) => (text == "light" || text == "dark" ? text : "native"),
-      stringify: (object) => "" + object,
-    },
-  }
-)
+export const rawTheme = writable<RawTheme>("theme", "native", {
+  serializer: {
+    parse: (text) => (text == "light" || text == "dark" ? text : "native"),
+    stringify: (object) => "" + object,
+  },
+})
 
 /** Whether the user's device has dark mode enabled. */
 export const isDarkNative = readable(false, (set) => {
@@ -70,6 +67,8 @@ if (browser && typeof document == "object") {
   const root = document.documentElement.classList
 
   isDark.subscribe(($isDark) => {
-    root.toggle("dark", $isDark)
+    disableTransitions(() => {
+      root.toggle("dark", $isDark)
+    })
   })
 }

@@ -57,16 +57,28 @@ export function flatMap<T, U>(
   }
 }
 
-/** Asynchronously maps a {@link Result} using {@link flatMap} semantics. */
-export async function asyncFlatMap<T, U>(
-  result: Result<T>,
-  mapper: (value: T) => Result<U> | PromiseLike<Result<U>>
-): Promise<Result<U>> {
-  if (result.ok) {
-    return mapper(result.value)
-  } else {
-    return result
+/** Returns the first {@link Result} if it was successful. Otherwise, returns the second. */
+export function or<A extends Result<unknown>, B extends Result<unknown>>(
+  first: A,
+  second: B
+): A | B {
+  if (first.ok) {
+    return first
   }
+
+  return second
+}
+
+/** Returns the first {@link Result} if it failed. Otherwise, returns the second. */
+export function and<A extends Result<unknown>, B extends Result<unknown>>(
+  first: A,
+  second: B
+): Error | B {
+  if (!first.ok) {
+    return first as Error
+  }
+
+  return second
 }
 
 /** Unwraps the value within a {@link Result} or returns a default value. */
@@ -108,36 +120,6 @@ export function attempt<T extends {}>(
   }
 }
 
-/**
- * Asynchronously calls a function. If an error is thrown, `attempt` will return
- * a failed {@link Result}. If the function returns `null` or `undefined`,
- * `attempt` will return {@link defaultValue}.
- */
-export async function attemptAsync<T extends {}>(
-  fn: () => T | null | undefined | PromiseLike<T | null | undefined>,
-  defaultValue: Result<T> = error("A function returned with no value.")
-): Promise<Result<T>> {
-  try {
-    const output = await fn()
-
-    if (output == null) {
-      return defaultValue
-    }
-
-    return ok(output)
-  } catch (err) {
-    if (err == null) {
-      return defaultValue
-    }
-
-    if (err instanceof Error) {
-      return error(err.message)
-    }
-
-    return error(String(err))
-  }
-}
-
 /** Unwraps a {@link Result} or throws a 500 error. */
 export function unwrapOr500<T>(result: Result<T>) {
   if (result.ok) {
@@ -147,14 +129,38 @@ export function unwrapOr500<T>(result: Result<T>) {
   }
 }
 
-/**
- * Requires both results to be successful. If they are, the value of the second
- * result is returned.
- */
-export function both<A, B>(first: Result<A>, second: Result<B>): Result<B> {
-  if (!first.ok) {
-    return first
+/** Checks whether a given object is a {@link Result}. */
+export function isResult(maybeResult: unknown): maybeResult is Result<unknown> {
+  // We start with zero assumptions about the shape of `maybeResult`.
+  if (
+    maybeResult != null &&
+    typeof maybeResult == "object" &&
+    "ok" in maybeResult
+  ) {
+    // Now we know it's an object with an `ok` property.
+    const ok = maybeResult.ok
+    if (typeof ok == "boolean") {
+      // Now we know `ok` is a boolean.
+      if (
+        ok &&
+        "value" in maybeResult &&
+        (!("error" in maybeResult) || typeof maybeResult.error === "undefined")
+      ) {
+        // And it has a `value` key with no `error`.
+        return true
+      }
+
+      if (
+        !ok &&
+        "error" in maybeResult &&
+        typeof maybeResult.error == "string" &&
+        (!("value" in maybeResult) || typeof maybeResult.value === "undefined")
+      ) {
+        // And it has a `error` key with no `value`.
+        return true
+      }
+    }
   }
 
-  return second
+  return false
 }

@@ -1,6 +1,6 @@
 import { PUBLIC_KS_APP_BASE, PUBLIC_KS_APP_NAME } from "$env/static/public"
 import type { Account, Prisma } from "@prisma/client"
-import { both, error, ok, type Result } from "../result"
+import { error, ok, type Result } from "../result"
 import { errorNoAccountExists } from "./account"
 import { query } from "./database"
 import { send as sendEmail } from "./email"

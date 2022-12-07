@@ -14,17 +14,17 @@
 
       <span class="sr-only">|</span>
 
-      <p class="min-h-[5rem] max-w-sm py-4">{$page.error?.message}</p>
+      <p class="max-w-sm py-4">{$page.error?.message}</p>
     </div>
 
     <div class="prefer-w-96 mt-6 flex flex-wrap gap-6">
       <a
-        class="field min-w-[10rem] flex-1 whitespace-pre text-center"
+        class="field min-w-[10rem] flex-1 whitespace-pre"
         href={$page.url.pathname}>Try Again</a
       >
 
       <a
-        class="field min-w-[10rem] flex-1 whitespace-pre text-center"
+        class="field min-w-[10rem] flex-1 whitespace-pre"
         href="https://github.com/zSnout/kama-sona/issues/new?assignees=&labels=bug&template=bug-report.yaml&error-code={$page.status}+|+{encodeURIComponent(
           $page.error?.message || ''
         )}">File a Bug Report</a

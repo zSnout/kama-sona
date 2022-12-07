@@ -1,5 +1,6 @@
-<script lang="ts">
+<script>
   import Title from "$lib/Title.svelte"
 </script>
 
 <Title title="Progress" />
+<p>TBD</p>
