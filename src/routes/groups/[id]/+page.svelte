@@ -13,7 +13,5 @@
     <p slot="value">
       {data.group.managerIds.includes(data.account.id) ? "Manager" : "Member"}
     </p>
-
-    <p slot="desc">Up 20% from last month</p>
   </MegaStat>
 </CardGrid>

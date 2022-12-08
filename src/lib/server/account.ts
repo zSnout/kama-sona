@@ -13,7 +13,7 @@ export async function count(
 
 /** Creates an account. */
 export async function create(
-  info: Prisma.AccountCreateInput
+  info: Omit<Prisma.AccountCreateInput, "session">
 ): Promise<Result<Account>> {
   await UnverifiedAccount.deleteOld({ email: info.email })
 
@@ -33,6 +33,7 @@ export async function create(
         email: info.email,
         isAdmin: info.isAdmin,
         name: info.name,
+        session: { create: {} },
       },
     })
   )
@@ -74,7 +75,9 @@ export async function getAll(
 }
 
 /** Gets an account based on the session key stored in a user's cookies. */
-export async function getFromCookies(cookies: Cookies) {
+export async function getFromCookies(
+  cookies: Cookies
+): Promise<Result<Account>> {
   const session = cookies.get("session")
 
   if (!session) {
@@ -82,7 +85,13 @@ export async function getFromCookies(cookies: Cookies) {
   }
 
   return or(
-    await get({ session }),
-    error("It appears that your session has ... expired.")
+    await query((database) =>
+      database.session
+        .findUnique({
+          where: { code: session },
+        })
+        .for()
+    ),
+    error("It appears that your session has expired.")
   )
 }

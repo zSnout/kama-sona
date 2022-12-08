@@ -38,6 +38,13 @@
   <Tab active={$page.url.pathname == `${base}/members`} href="{base}/members">
     Members (TBD)
   </Tab>
+
+  <Tab
+    active={$page.url.pathname == `${base}/members/add`}
+    href="{base}/members/add"
+  >
+    Add Members (TBD)
+  </Tab>
 </Tabs>
 
 <slot />

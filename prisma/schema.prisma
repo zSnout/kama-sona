@@ -21,7 +21,6 @@ model Account {
   isAdmin       Boolean
   email         String       @unique
   name          String
-  session       String       @unique @default(uuid())
   updated       DateTime     @default(now()) @updatedAt
   // Relations:
   assignedTo    TaskStatus[] @relation("TaskAssigneeRelation")
@@ -32,6 +31,16 @@ model Account {
   memberOf      Group[]      @relation("GroupMembersRelation", fields: [memberOfIds], references: [id])
   memberOfIds   String[]     @db.ObjectId
   sentMessages  Message[]    @relation("MessageSender")
+  session       Session?     @relation("AccountSession")
+}
+
+model Session {
+  code     String   @unique @default(uuid())
+  creation DateTime @default(now())
+  for      Account? @relation("AccountSession", fields: [forId], references: [id])
+  forId    String   @unique @db.ObjectId
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  updated  DateTime @default(now()) @updatedAt
 }
 
 model MagicLink {

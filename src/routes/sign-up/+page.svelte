@@ -1,6 +1,5 @@
 <script lang="ts">
   import { enhance } from "$app/forms"
-  import { PUBLIC_KS_APP_NAME } from "$env/static/public"
   import CenterOnPage from "$lib/CenterOnPage.svelte"
   import type { ActionData } from "./$types"
 
