@@ -53,7 +53,13 @@
         <label class="label w-full">
           <p>Full name</p>
 
-          <input type="text" name="name" class="field w-full" required />
+          <input
+            type="text"
+            name="name"
+            class="field w-full"
+            pattern="\S+ \S+"
+            required
+          />
         </label>
 
         <label class="label w-full">
