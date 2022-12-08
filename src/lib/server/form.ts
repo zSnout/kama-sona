@@ -2,8 +2,8 @@ import { aOrAn } from "$lib/aOrAn"
 import { error } from "@sveltejs/kit"
 
 /**
- * Extracts specific string keys from a form submission. Throws a 400 error if a
- * key is missing, empty, or not a string.
+ * Extracts specific keys from a form submission. Throws a 400 error if a key is
+ * missing, empty, or a file instead of plain text.
  */
 export async function extractData<T extends readonly string[]>(
   request: Request,

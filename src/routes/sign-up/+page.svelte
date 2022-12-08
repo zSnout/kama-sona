@@ -10,20 +10,24 @@
 </script>
 
 <svelte:head>
-  <title>Log In</title>
+  <title>Sign Up</title>
 </svelte:head>
 
 <CenterOnPage>
   {#if form}
     <div class="prefer-w-96 flex flex-col">
+      <p>Hey {form.name}!</p>
+
       <p>
-        We sent a log in link to your email, {form.email}. Click it to log in to {PUBLIC_KS_APP_NAME}.
+        Before we can make you an account, we need to make sure you're not a
+        robot. To verify you're a human, just click the link we sent to your
+        email, {form.email}. That's it!
       </p>
 
       <p
         class="mt-4 border-l-2 py-1 pl-4 dark:border-l-slate-500 dark:text-slate-400"
       >
-        If you don't receive a link, you might not be registered on {PUBLIC_KS_APP_NAME}.
+        Didn't receive a link? Just sign up again!
       </p>
     </div>
   {:else}
@@ -47,13 +51,19 @@
         </label>
 
         <label class="label w-full">
-          <p>Click to send a magic link to your email:</p>
+          <p>Full name</p>
 
-          <button class="field w-full" type="submit" {disabled}>Log In</button>
+          <input type="text" name="name" class="field w-full" required />
+        </label>
+
+        <label class="label w-full">
+          <p>Click to create your account:</p>
+
+          <button class="field w-full" type="submit" {disabled}>Sign Up</button>
         </label>
 
         <p class="mt-4 text-center">
-          Or <a class="link" href="/sign-up">sign up</a> for a new account.
+          Or <a class="link" href="/log-in">log in</a> to an existing account.
         </p>
       </form>
     </div>

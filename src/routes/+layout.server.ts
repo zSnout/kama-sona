@@ -21,7 +21,12 @@ export const load: LayoutServerLoad = async ({
   }
 
   if (!account || !account.ok) {
-    if (route.id == "/log-in" || route.id == "/log-in/[code]") {
+    if (
+      route.id == "/log-in" ||
+      route.id == "/log-in/[code]" ||
+      route.id == "/sign-up" ||
+      route.id == "/sign-up/[id]"
+    ) {
       return {}
     }
 

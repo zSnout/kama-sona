@@ -90,36 +90,6 @@ export function unwrap<T>(result: Result<T>, defaultValue: T): T {
   }
 }
 
-/**
- * Calls a function. If an error is thrown, `attempt` will return a failed
- * {@link Result}. If the function returns `null` or `undefined`, `attempt` will
- * return {@link defaultValue}.
- */
-export function attempt<T extends {}>(
-  fn: () => T | null | undefined,
-  defaultValue: Result<T> = error("A function returned with no value.")
-): Result<T> {
-  try {
-    const output = fn()
-
-    if (output == null) {
-      return defaultValue
-    }
-
-    return ok(output)
-  } catch (err) {
-    if (err == null) {
-      return defaultValue
-    }
-
-    if (err instanceof Error) {
-      return error(err.message)
-    }
-
-    return error(String(err))
-  }
-}
-
 /** Unwraps a {@link Result} or throws a 500 error. */
 export function unwrapOr500<T>(result: Result<T>) {
   if (result.ok) {
@@ -129,38 +99,102 @@ export function unwrapOr500<T>(result: Result<T>) {
   }
 }
 
-/** Checks whether a given object is a {@link Result}. */
-export function isResult(maybeResult: unknown): maybeResult is Result<unknown> {
-  // We start with zero assumptions about the shape of `maybeResult`.
-  if (
-    maybeResult != null &&
-    typeof maybeResult == "object" &&
-    "ok" in maybeResult
-  ) {
-    // Now we know it's an object with an `ok` property.
-    const ok = maybeResult.ok
-    if (typeof ok == "boolean") {
-      // Now we know `ok` is a boolean.
-      if (
-        ok &&
-        "value" in maybeResult &&
-        (!("error" in maybeResult) || typeof maybeResult.error === "undefined")
-      ) {
-        // And it has a `value` key with no `error`.
-        return true
-      }
+/** Used to make sure that errors inside of coroutines are detected properly. */
+class CoroutineError {
+  constructor(readonly error: Error) {}
+}
 
-      if (
-        !ok &&
-        "error" in maybeResult &&
-        typeof maybeResult.error == "string" &&
-        (!("value" in maybeResult) || typeof maybeResult.value === "undefined")
-      ) {
-        // And it has a `error` key with no `value`.
-        return true
+/**
+ * Unwraps a {@link Result}'s value, or throws a {@link CoroutineError} if the
+ * result is a failure.
+ */
+const coroutineUnwrap = <T>(value: Result<T>): T => {
+  if (value.ok) {
+    return value.value
+  }
+
+  throw new CoroutineError(value)
+}
+
+/**
+ * Wraps a function and makes working with {@link Result}s within it easier. To
+ * use it, pass a function that takes an `unwrap` function and, optionally,
+ * other arguments. Then, unwrap the value of {@link Result}s using the `unwrap`
+ * function. If an {@link Error} is passed to `unwrap`, the coroutine will
+ * result that error. If an {@link Ok} is passed, its value will be returned.
+ *
+ * If your coroutine is asynchronous, use {@link asyncCoroutine} instead of `coroutine`.
+ *
+ * Do not return a {@link Result} from your coroutine. If you need to return an
+ * {@link Error}, call `unwrap` with the error as your value.
+ *
+ * @example
+ * ```ts
+ * const getUserDescription = coroutine((unwrap, name: Result<string>, age: number) =>
+ *   `${unwrap(name)} is ${age} years old.`
+ * )
+ *
+ * const value1 = getUserDescription(ok("Steve"), 27)
+ * // value1 is Ok "Steve is 27 years old."
+ *
+ * const value2 = getUserDescription(error("Unknown user name."), 27)
+ * // value2 is Error "Unknown user name."
+ * ```
+ */
+export function coroutine<A extends readonly unknown[], R extends unknown>(
+  fn: (unwrap: <T>(value: Result<T>) => T, ...args: A) => R
+): (...args: A) => Result<R> {
+  return function coroutine(...args: A): Result<R> {
+    try {
+      return ok(fn(coroutineUnwrap, ...args))
+    } catch (error) {
+      if (error instanceof CoroutineError) {
+        return error.error
+      } else {
+        throw error
       }
     }
   }
+}
 
-  return false
+/**
+ * Wraps a function and makes working with {@link Result}s within it easier. To
+ * use it, pass a function that takes an `unwrap` function and, optionally,
+ * other arguments. Then, unwrap the value of {@link Result}s using the `unwrap`
+ * function. If an {@link Error} is passed to `unwrap`, the coroutine will
+ * result that error. If an {@link Ok} is passed, its value will be returned.
+ *
+ * If your coroutine is synchronous, use {@link coroutine} instead of `asyncCoroutine`.
+ *
+ * Do not return a {@link Result} from your async coroutine. If you need to return an
+ * {@link Error}, call `unwrap` with the error as your value.
+ *
+ * @example
+ * ```ts
+ * const getUserDescription = asyncCoroutine(
+ *   async (unwrap, name: Promise<Result<string>>, age: number) =>
+ *     `${unwrap(await name)} is ${age} years old.`
+ * )
+ *
+ * const value1 = await getUserDescription(Promise.resolve(ok("Steve")), 27)
+ * // value1 is Ok "Steve is 27 years old."
+ *
+ * const value2 = await getUserDescription(Promise.resolve(error("Unknown user name.")), 27)
+ * // value2 is Error "Unknown user name."
+ * ```
+ */
+export function asyncCoroutine<A extends readonly unknown[], R extends unknown>(
+  fn: (unwrap: <T>(value: Result<T>) => T, ...args: A) => PromiseLike<R> | R
+): (...args: A) => Promise<Result<R>> {
+  return async function coroutine(...args: A): Promise<Result<R>> {
+    try {
+      return ok(await fn(coroutineUnwrap, ...args))
+    } catch (error) {
+      if (error instanceof CoroutineError) {
+        return error.error
+      } else {
+        throw error
+      }
+    }
+  }
 }

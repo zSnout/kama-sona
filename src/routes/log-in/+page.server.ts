@@ -1,14 +1,9 @@
 import { unwrapOr500 } from "$lib/result"
+import * as Account from "$lib/server/account"
 import { extractData } from "$lib/server/form"
 import * as MagicLink from "$lib/server/magic-link"
-import { error, redirect } from "@sveltejs/kit"
-import type { Actions, PageServerLoad } from "./$types"
-
-export const load: PageServerLoad = async ({ parent }) => {
-  if ((await parent()).account) {
-    throw redirect(302, "/")
-  }
-}
+import { error } from "@sveltejs/kit"
+import type { Actions } from "./$types"
 
 export const actions: Actions = {
   async default({ request }) {
@@ -18,9 +13,17 @@ export const actions: Actions = {
       throw error(400, "Your email address is invalid.")
     }
 
+    if (unwrapOr500(await Account.count({ email })) == 0) {
+      await new Promise((resolve) =>
+        setTimeout(resolve, Math.random() * 1000 + 500)
+      )
+
+      return { email }
+    }
+
     unwrapOr500(await MagicLink.create({ email }))
     unwrapOr500(await MagicLink.send({ email }))
 
-    return { success: true as const, email }
+    return { email }
   },
 }

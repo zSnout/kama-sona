@@ -2,18 +2,22 @@ import type { Account, Prisma } from "@prisma/client"
 import type { Cookies } from "@sveltejs/kit"
 import { error, or, type Result } from "../result"
 import { query } from "./database"
+import * as UnverifiedAccount from "./unverified-account"
+
+/** Counts the number of accounts matching a given filter. */
+export async function count(
+  filter?: Prisma.AccountWhereInput
+): Promise<Result<number>> {
+  return await query((database) => database.account.count({ where: filter }))
+}
 
 /** Creates an account. */
 export async function create(
   info: Prisma.AccountCreateInput
 ): Promise<Result<Account>> {
-  const accountsWithSameEmail = await query((database) =>
-    database.account.count({
-      where: {
-        email: info.email,
-      },
-    })
-  )
+  await UnverifiedAccount.deleteOld({ email: info.email })
+
+  const accountsWithSameEmail = await count({ email: info.email })
 
   if (!accountsWithSameEmail.ok) {
     return accountsWithSameEmail

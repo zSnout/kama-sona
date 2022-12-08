@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { IconDefinition } from "@fortawesome/free-solid-svg-icons"
-  import Icon from "../lib/Icon.svelte"
+  import Icon from "$lib/Icon.svelte"
 
   export let icon: IconDefinition
 

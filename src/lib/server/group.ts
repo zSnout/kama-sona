@@ -1,4 +1,4 @@
-import type { Group, Prisma } from "@prisma/client"
+import type { Account, Group, Prisma } from "@prisma/client"
 import { error, type Result } from "../result"
 import { errorNoAccountExists } from "./account"
 import { query } from "./database"
@@ -57,9 +57,30 @@ export async function getAll(
 /** Gets all groups that have a specific member. */
 export async function getAllWithMember(
   member?: Prisma.AccountWhereUniqueInput
-) {
+): Promise<Result<readonly Group[]>> {
   return await query(
     (database) => database.account.findFirst({ where: member }).memberOf(),
     errorNoAccountExists
+  )
+}
+
+/** Gets information about a group, including its manager and member lists. */
+export async function getWithMembers(
+  group: Prisma.GroupWhereUniqueInput
+): Promise<
+  Result<
+    Group & {
+      readonly managers: readonly Account[]
+      readonly members: readonly Account[]
+    }
+  >
+> {
+  return await query(
+    (database) =>
+      database.group.findUnique({
+        where: group,
+        include: { managers: true, members: true },
+      }),
+    errorNoGroupExists
   )
 }
