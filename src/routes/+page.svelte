@@ -25,6 +25,14 @@
 </p>
 
 <CardGrid class="grid-cols-[repeat(auto-fill,minmax(min(20em,100%),1fr))]" clip>
+  <Card>
+    <p class="font-bold">Quick Actions</p>
+
+    <CardGrid class="grid-cols-[repeat(auto-fill,minmax(min(10em,100%),1fr))]">
+      <a class="field mt-4 block" href="/log-out">Log Out</a>
+    </CardGrid>
+  </Card>
+
   <PageInfo
     href="/assignments"
     class="text-red-600 dark:text-red-400"
