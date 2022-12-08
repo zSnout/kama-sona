@@ -7,6 +7,14 @@ datasource db {
   url      = env("KS_DB_URL")
 }
 
+model UnverifiedAccount {
+  creation DateTime @default(now())
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  email    String   @unique
+  name     String
+  updated  DateTime @default(now()) @updatedAt
+}
+
 model Account {
   creation      DateTime     @default(now())
   id            String       @id @default(auto()) @map("_id") @db.ObjectId
@@ -18,8 +26,7 @@ model Account {
   // Relations:
   assignedTo    TaskStatus[] @relation("TaskAssigneeRelation")
   assignedToIds String[]     @db.ObjectId
-  magicLink     MagicLink?   @relation("MagicLink", fields: [magicLinkId], references: [id])
-  magicLinkId   String?      @unique
+  magicLink     MagicLink?   @relation("MagicLink")
   managerOf     Group[]      @relation("GroupManagersRelation", fields: [memberOfIds], references: [id])
   managerOfIds  String[]     @db.ObjectId
   memberOf      Group[]      @relation("GroupMembersRelation", fields: [memberOfIds], references: [id])
@@ -31,7 +38,8 @@ model MagicLink {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   code       String   @unique
   expiration DateTime
-  for        Account? @relation("MagicLink")
+  for        Account  @relation("MagicLink", fields: [forId], references: [id])
+  forId      String   @unique @db.ObjectId
 }
 
 type Attachment {
