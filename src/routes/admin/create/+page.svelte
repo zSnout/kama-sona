@@ -7,6 +7,8 @@
 
   export let data: PageData
   export let form: ActionData
+
+  let disabled = false
 </script>
 
 <svelte:head>
@@ -15,7 +17,12 @@
 
 <CenterOnPage>
   {#if !form}
-    <form class="prefer-w-96 flex flex-col" method="post" use:enhance>
+    <form
+      class="prefer-w-96 flex flex-col"
+      method="post"
+      on:submit={() => (disabled = true)}
+      use:enhance
+    >
       <label class="label w-full">
         <p>Email address</p>
 
@@ -40,9 +47,13 @@
         />
       </label>
 
-      <button class="field mt-6 w-full" type="submit">
-        Create an Admin Account
-      </button>
+      <label class="label w-full">
+        <p>Click to create your account:</p>
+
+        <button class="field w-full" type="submit" {disabled}>
+          Create an Admin Account
+        </button>
+      </label>
 
       {#if data.admins.length > 0}
         <p class="mt-4 max-w-sm">
