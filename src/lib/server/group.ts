@@ -84,3 +84,14 @@ export async function getWithMembers(
     errorNoGroupExists
   )
 }
+
+/** Updates information about a group. */
+export async function update(
+  filter: Prisma.GroupWhereUniqueInput,
+  data: Prisma.GroupUpdateInput
+): Promise<Result<Group>> {
+  return await query(
+    (database) => database.group.update({ where: filter, data }),
+    errorNoGroupExists
+  )
+}

@@ -6,7 +6,9 @@
   export let data: PageData
 </script>
 
-<CardGrid class="grid-cols-[repeat(auto-fill,minmax(min(15em,100%),1fr))]">
+<CardGrid
+  class="grid-cols-[repeat(auto-fill,minmax(min(13em,100%),1fr))] gap-2"
+>
   {#each data.group.members as member (member.id)}
     <AccountCard account={member} />
   {/each}

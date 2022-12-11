@@ -10,5 +10,8 @@ export const load: PageServerLoad = async ({ parent }) => {
     throw error(503, "You must be a group manager to add members.")
   }
 
-  return { accounts: unwrapOr500(await Account.getAll()) }
+  return {
+    accounts: unwrapOr500(await Account.getAll()),
+    isManager: true as const,
+  }
 }
