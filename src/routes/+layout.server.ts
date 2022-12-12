@@ -30,7 +30,10 @@ export const load: LayoutServerLoad = async ({
       return {}
     }
 
-    cookies.delete("session")
+    cookies.delete("session", {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 30,
+    })
 
     if (PUBLIC_KS_ADMIN_MODE == "true") {
       throw redirect(302, "/admin/create")

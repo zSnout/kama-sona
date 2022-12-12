@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { afterNavigate, beforeNavigate } from "$app/navigation"
   import * as Theme from "$lib/theme"
   import { isDark } from "$lib/theme"
   import {
@@ -14,6 +15,9 @@
     faTasks,
     faUserGroup,
   } from "@fortawesome/free-solid-svg-icons"
+  import { expoOut } from "svelte/easing"
+  import { tweened } from "svelte/motion"
+  import { fade } from "svelte/transition"
   import "../index.postcss"
   import NavIcon from "./NavIcon.svelte"
   import NavLink from "./NavLink.svelte"
@@ -31,18 +35,44 @@
       active.blur()
     }
   }
+
+  const navProgress = tweened(0, {
+    duration: 3500,
+    easing: expoOut,
+  })
+
+  let navState: "loading" | "loaded" | undefined = undefined
+
+  $: if (navState == "loading") {
+    navProgress.set(0.7)
+  } else {
+    navProgress
+      .set(1, { duration: 500 })
+      .then(() => navProgress.set(0, { duration: 0 }))
+  }
+
+  beforeNavigate(() => (navState = "loading"))
+  afterNavigate(() => (navState = "loaded"))
 </script>
 
 <nav
   class="sticky top-0 flex h-16 w-screen bg-white shadow-md dark:bg-slate-800"
 >
+  {#if navState == "loading" || $navProgress != 0}
+    <div
+      class="fixed top-0 h-1 bg-sky-400 transition-[width] dark:bg-blue-700"
+      style:width="{100 * $navProgress}%"
+      out:fade={{ delay: 500 }}
+    />
+  {/if}
+
   <div
     class="mx-auto flex w-full max-w-7xl select-none items-center px-4 sm:px-6 md:px-8"
   >
     <NavLink
       isHomeIcon
       href="/"
-      class="icon-bg-gray mr-auto before:content-['Home'] dark:bg-gray-600 dark:before:text-slate-400"
+      class="bg-gray-250 icon-bg-gray mr-auto before:content-['Home'] dark:bg-gray-600 dark:before:text-slate-400"
       title="Home"
     >
       <NavIcon icon={faHome} class="icon-gray" />

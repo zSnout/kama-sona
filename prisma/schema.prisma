@@ -15,25 +15,31 @@ model UnverifiedAccount {
   updated  DateTime @default(now()) @updatedAt
 }
 
+enum AssignmentView {
+  Student
+  Teacher
+}
+
 model Account {
-  creation       DateTime     @default(now())
-  id             String       @id @default(auto()) @map("_id") @db.ObjectId
-  isAdmin        Boolean
-  email          String       @unique
-  name           String
-  updated        DateTime     @default(now()) @updatedAt
+  creation              DateTime           @default(now())
+  defaultAssignmentView AssignmentView     @default(Student)
+  id                    String             @id @default(auto()) @map("_id") @db.ObjectId
+  isAdmin               Boolean
+  email                 String             @unique
+  name                  String
+  updated               DateTime           @default(now()) @updatedAt
   // Relations:
-  assignedTo     TaskStatus[] @relation("TaskAssigneeRelation")
-  assignedToIds  String[]     @db.ObjectId
-  magicLink      MagicLink?   @relation("MagicLink")
-  managedTasks   Task[]       @relation("TaskManager", fields: [managedTaskIds], references: [id])
-  managedTaskIds String[]     @db.ObjectId
-  managerOf      Group[]      @relation("GroupManagersRelation", fields: [memberOfIds], references: [id])
-  managerOfIds   String[]     @db.ObjectId
-  memberOf       Group[]      @relation("GroupMembersRelation", fields: [memberOfIds], references: [id])
-  memberOfIds    String[]     @db.ObjectId
-  sentMessages   Message[]    @relation("MessageSender")
-  session        Session?     @relation("AccountSession")
+  assignedTo            AssignmentStatus[] @relation("AssignmentAssigneeRelation")
+  assignedToIds         String[]           @db.ObjectId
+  magicLink             MagicLink?         @relation("MagicLink")
+  managedAssignments    Assignment[]       @relation("AssignmentManager", fields: [managedAssignmentIds], references: [id])
+  managedAssignmentIds  String[]           @db.ObjectId
+  managerOf             Group[]            @relation("GroupManagersRelation", fields: [memberOfIds], references: [id])
+  managerOfIds          String[]           @db.ObjectId
+  memberOf              Group[]            @relation("GroupMembersRelation", fields: [memberOfIds], references: [id])
+  memberOfIds           String[]           @db.ObjectId
+  sentMessages          Message[]          @relation("MessageSender")
+  session               Session?           @relation("AccountSession")
 }
 
 model Session {
@@ -74,7 +80,7 @@ model Category {
   worth       Float        @default(1)
   resources   Resource[]   @relation("ResourceCategory")
   discussions Discussion[] @relation("DiscussionCategory")
-  tasks       Task[]       @relation("TaskCategory")
+  assignments Assignment[] @relation("AssignmentCategory")
 }
 
 model Discussion {
@@ -150,38 +156,38 @@ model Resource {
   categoryId    String       @db.ObjectId
 }
 
-model Task {
+model Assignment {
   attachments   Attachment[]
-  creation      DateTime     @default(now())
+  creation      DateTime           @default(now())
   description   String
   due           DateTime
-  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  id            String             @id @default(auto()) @map("_id") @db.ObjectId
   name          String
-  points        Float        @default(0)
-  updated       DateTime     @default(now()) @updatedAt
-  viewableAfter DateTime     @default(now())
+  points        Float              @default(0)
+  updated       DateTime           @default(now()) @updatedAt
+  viewableAfter DateTime           @default(now())
   // Relations:
-  category      Category?    @relation("TaskCategory", fields: [categoryId], references: [id])
-  categoryId    String       @db.ObjectId
-  manager       Account[]    @relation("TaskManager", fields: [managerIds], references: [id])
-  managerIds    String[]     @db.ObjectId
-  statuses      TaskStatus[] @relation("TaskStatusRelation")
-  statusIds     String[]     @db.ObjectId
+  category      Category?          @relation("AssignmentCategory", fields: [categoryId], references: [id])
+  categoryId    String             @db.ObjectId
+  manager       Account[]          @relation("AssignmentManager", fields: [managerIds], references: [id])
+  managerIds    String[]           @db.ObjectId
+  statuses      AssignmentStatus[] @relation("AssignmentStatusRelation")
+  statusIds     String[]           @db.ObjectId
 }
 
-model TaskStatus {
-  attachments Attachment[]
-  creation    DateTime     @default(now())
-  due         DateTime
-  id          String       @id @default(auto()) @map("_id") @db.ObjectId
-  missing     Boolean
-  score       Float        @default(0)
-  updated     DateTime     @default(now()) @updatedAt
+model AssignmentStatus {
+  attachments  Attachment[]
+  creation     DateTime     @default(now())
+  due          DateTime
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  missing      Boolean
+  score        Float        @default(0)
+  updated      DateTime     @default(now()) @updatedAt
   // Relations:
-  assignee    Account      @relation("TaskAssigneeRelation", fields: [assigneeId], references: [id])
-  assigneeId  String       @db.ObjectId
-  statusFor   Task         @relation("TaskStatusRelation", fields: [statusForId], references: [id])
-  statusForId String       @db.ObjectId
+  assignee     Account      @relation("AssignmentAssigneeRelation", fields: [assigneeId], references: [id])
+  assigneeId   String       @db.ObjectId
+  assignment   Assignment   @relation("AssignmentStatusRelation", fields: [assignmentId], references: [id])
+  assignmentId String       @db.ObjectId
 }
 
 type TimeBlock {
