@@ -105,7 +105,7 @@ export async function get(
   const result = await query(
     async (database) =>
       (await database.account
-        .findFirst({
+        .findUnique({
           where: account,
         })
         .magicLink()) ?? ("none" as const),
@@ -129,7 +129,7 @@ export async function send(
 ): Promise<Result<void>> {
   const result = await query(
     (database) =>
-      database.account.findFirst({
+      database.account.findUnique({
         select: {
           email: true,
           name: true,
@@ -185,9 +185,9 @@ export async function verify(options: {
 }): Promise<Result<Account>> {
   const link = await query(
     (database) =>
-      database.magicLink.findFirst({
+      database.magicLink.findUnique({
         include: { for: true },
-        where: options,
+        where: { code: options.code },
       }),
     errorMagicLinkChanged
   )

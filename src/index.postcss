@@ -63,6 +63,10 @@ body {
     @apply dark:hover:border-slate-500 dark:hover:bg-slate-700 dark:hover:focus:border-blue-500;
   }
 
+  select.field {
+    @apply w-full;
+  }
+
   a.field {
     @apply flex items-center justify-center text-center;
   }
@@ -79,8 +83,8 @@ body {
     @apply mt-4;
   }
 
-  .label:has(:required) p::after {
-    @apply ml-1 text-red-500 content-['*'];
+  .label:has(:required) p:first-of-type::after {
+    @apply ml-1 text-red-500 content-["*"];
   }
 
   .stats {
@@ -93,6 +97,22 @@ body {
 
   .link {
     @apply py-2 text-blue-600 underline underline-offset-2 dark:text-blue-500;
+  }
+
+  .help svg {
+    @apply mb-1 h-4 w-4;
+  }
+
+  .label .help {
+    @apply -mt-6 flex;
+  }
+
+  .label .help svg {
+    @apply ml-auto mr-1;
+  }
+
+  .help::before {
+    @apply prefer-w-80;
   }
 }
 

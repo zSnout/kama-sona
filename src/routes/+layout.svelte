@@ -60,7 +60,7 @@
 >
   {#if navState == "loading" || $navProgress != 0}
     <div
-      class="fixed top-0 h-1 bg-sky-400 transition-[width] dark:bg-blue-700"
+      class="fixed top-0 h-1 bg-blue-500 transition-[width] dark:bg-blue-700"
       style:width="{100 * $navProgress}%"
       out:fade={{ delay: 500 }}
     />
