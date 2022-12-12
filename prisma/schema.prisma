@@ -16,22 +16,24 @@ model UnverifiedAccount {
 }
 
 model Account {
-  creation      DateTime     @default(now())
-  id            String       @id @default(auto()) @map("_id") @db.ObjectId
-  isAdmin       Boolean
-  email         String       @unique
-  name          String
-  updated       DateTime     @default(now()) @updatedAt
+  creation       DateTime     @default(now())
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  isAdmin        Boolean
+  email          String       @unique
+  name           String
+  updated        DateTime     @default(now()) @updatedAt
   // Relations:
-  assignedTo    TaskStatus[] @relation("TaskAssigneeRelation")
-  assignedToIds String[]     @db.ObjectId
-  magicLink     MagicLink?   @relation("MagicLink")
-  managerOf     Group[]      @relation("GroupManagersRelation", fields: [memberOfIds], references: [id])
-  managerOfIds  String[]     @db.ObjectId
-  memberOf      Group[]      @relation("GroupMembersRelation", fields: [memberOfIds], references: [id])
-  memberOfIds   String[]     @db.ObjectId
-  sentMessages  Message[]    @relation("MessageSender")
-  session       Session?     @relation("AccountSession")
+  assignedTo     TaskStatus[] @relation("TaskAssigneeRelation")
+  assignedToIds  String[]     @db.ObjectId
+  magicLink      MagicLink?   @relation("MagicLink")
+  managedTasks   Task[]       @relation("TaskManager", fields: [managedTaskIds], references: [id])
+  managedTaskIds String[]     @db.ObjectId
+  managerOf      Group[]      @relation("GroupManagersRelation", fields: [memberOfIds], references: [id])
+  managerOfIds   String[]     @db.ObjectId
+  memberOf       Group[]      @relation("GroupMembersRelation", fields: [memberOfIds], references: [id])
+  memberOfIds    String[]     @db.ObjectId
+  sentMessages   Message[]    @relation("MessageSender")
+  session        Session?     @relation("AccountSession")
 }
 
 model Session {
@@ -161,6 +163,8 @@ model Task {
   // Relations:
   category      Category?    @relation("TaskCategory", fields: [categoryId], references: [id])
   categoryId    String       @db.ObjectId
+  manager       Account[]    @relation("TaskManager", fields: [managerIds], references: [id])
+  managerIds    String[]     @db.ObjectId
   statuses      TaskStatus[] @relation("TaskStatusRelation")
   statusIds     String[]     @db.ObjectId
 }
