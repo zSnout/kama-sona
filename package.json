@@ -38,6 +38,9 @@
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@prisma/client": "^4.7.1",
+    "@tiptap/core": "^2.0.0-beta.207",
+    "@tiptap/extension-link": "^2.0.0-beta.207",
+    "@tiptap/starter-kit": "^2.0.0-beta.207",
     "nodemailer": "^6.8.0",
     "svelte-local-storage-store": "^0.3.1"
   }
