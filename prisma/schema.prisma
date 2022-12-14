@@ -79,8 +79,8 @@ model Category {
   updated     DateTime     @default(now()) @updatedAt
   worth       Float        @default(1)
   // Relations:
-  for         Group        @relation("CategoryGroup", fields: [forId], references: [id])
-  forId       String       @db.ObjectId
+  groups      Group[]      @relation("GroupCategories", fields: [groupIds], references: [id])
+  groupIds    String[]     @db.ObjectId
   resources   Resource[]   @relation("ResourceCategory")
   discussions Discussion[] @relation("DiscussionCategory")
   assignments Assignment[] @relation("AssignmentCategory")
@@ -114,18 +114,19 @@ model Message {
 }
 
 model Group {
-  creation   DateTime   @default(now())
-  id         String     @id @default(auto()) @map("_id") @db.ObjectId
-  name       String
-  updated    DateTime   @default(now()) @updatedAt
+  creation    DateTime   @default(now())
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  updated     DateTime   @default(now()) @updatedAt
   // Relations:
-  categories Category[] @relation("CategoryGroup")
-  managers   Account[]  @relation("GroupManagers", fields: [managerIds], references: [id])
-  managerIds String[]   @db.ObjectId
-  members    Account[]  @relation("GroupMembers", fields: [memberIds], references: [id])
-  memberIds  String[]   @db.ObjectId
-  periods    Period[]   @relation("GroupPeriod", fields: [periodIds], references: [id])
-  periodIds  String[]   @db.ObjectId
+  categories  Category[] @relation("GroupCategories", fields: [categoryIds], references: [id])
+  categoryIds String[]   @db.ObjectId
+  managers    Account[]  @relation("GroupManagers", fields: [managerIds], references: [id])
+  managerIds  String[]   @db.ObjectId
+  members     Account[]  @relation("GroupMembers", fields: [memberIds], references: [id])
+  memberIds   String[]   @db.ObjectId
+  periods     Period[]   @relation("GroupPeriod", fields: [periodIds], references: [id])
+  periodIds   String[]   @db.ObjectId
 }
 
 model Period {
