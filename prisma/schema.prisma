@@ -29,14 +29,14 @@ model Account {
   name                  String
   updated               DateTime           @default(now()) @updatedAt
   // Relations:
-  assignedTo            AssignmentStatus[] @relation("AssignmentAssigneeRelation")
+  assignedTo            AssignmentStatus[] @relation("AssignmentAssignee")
   assignedToIds         String[]           @db.ObjectId
   magicLink             MagicLink?         @relation("MagicLink")
   managedAssignments    Assignment[]       @relation("AssignmentManager", fields: [managedAssignmentIds], references: [id])
   managedAssignmentIds  String[]           @db.ObjectId
-  managerOf             Group[]            @relation("GroupManagersRelation", fields: [memberOfIds], references: [id])
+  managerOf             Group[]            @relation("GroupManagers", fields: [memberOfIds], references: [id])
   managerOfIds          String[]           @db.ObjectId
-  memberOf              Group[]            @relation("GroupMembersRelation", fields: [memberOfIds], references: [id])
+  memberOf              Group[]            @relation("GroupMembers", fields: [memberOfIds], references: [id])
   memberOfIds           String[]           @db.ObjectId
   sentMessages          Message[]          @relation("MessageSender")
   session               Session?           @relation("AccountSession")
@@ -78,6 +78,9 @@ model Category {
   name        String
   updated     DateTime     @default(now()) @updatedAt
   worth       Float        @default(1)
+  // Relations:
+  for         Group        @relation("CategoryGroup", fields: [forId], references: [id])
+  forId       String       @db.ObjectId
   resources   Resource[]   @relation("ResourceCategory")
   discussions Discussion[] @relation("DiscussionCategory")
   assignments Assignment[] @relation("AssignmentCategory")
@@ -111,17 +114,18 @@ model Message {
 }
 
 model Group {
-  creation   DateTime  @default(now())
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  creation   DateTime   @default(now())
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
   name       String
-  updated    DateTime  @default(now()) @updatedAt
+  updated    DateTime   @default(now()) @updatedAt
   // Relations:
-  managers   Account[] @relation("GroupManagersRelation", fields: [managerIds], references: [id])
-  managerIds String[]  @db.ObjectId
-  members    Account[] @relation("GroupMembersRelation", fields: [memberIds], references: [id])
-  memberIds  String[]  @db.ObjectId
-  periods    Period[]  @relation("GroupPeriodRelation", fields: [periodIds], references: [id])
-  periodIds  String[]  @db.ObjectId
+  categories Category[] @relation("CategoryGroup")
+  managers   Account[]  @relation("GroupManagers", fields: [managerIds], references: [id])
+  managerIds String[]   @db.ObjectId
+  members    Account[]  @relation("GroupMembers", fields: [memberIds], references: [id])
+  memberIds  String[]   @db.ObjectId
+  periods    Period[]   @relation("GroupPeriod", fields: [periodIds], references: [id])
+  periodIds  String[]   @db.ObjectId
 }
 
 model Period {
@@ -131,7 +135,7 @@ model Period {
   times        TimeBlock[]
   updated      DateTime    @default(now()) @updatedAt
   // Relations:
-  scheduledFor Group[]     @relation("GroupPeriodRelation", fields: [groupIds], references: [id])
+  scheduledFor Group[]     @relation("GroupPeriod", fields: [groupIds], references: [id])
   groupIds     String[]    @db.ObjectId
 }
 
@@ -171,7 +175,7 @@ model Assignment {
   categoryId    String             @db.ObjectId
   manager       Account[]          @relation("AssignmentManager", fields: [managerIds], references: [id])
   managerIds    String[]           @db.ObjectId
-  statuses      AssignmentStatus[] @relation("AssignmentStatusRelation")
+  statuses      AssignmentStatus[] @relation("AssignmentStatus")
   statusIds     String[]           @db.ObjectId
 }
 
@@ -184,9 +188,9 @@ model AssignmentStatus {
   score        Float        @default(0)
   updated      DateTime     @default(now()) @updatedAt
   // Relations:
-  assignee     Account      @relation("AssignmentAssigneeRelation", fields: [assigneeId], references: [id])
+  assignee     Account      @relation("AssignmentAssignee", fields: [assigneeId], references: [id])
   assigneeId   String       @db.ObjectId
-  assignment   Assignment   @relation("AssignmentStatusRelation", fields: [assignmentId], references: [id])
+  assignment   Assignment   @relation("AssignmentStatus", fields: [assignmentId], references: [id])
   assignmentId String       @db.ObjectId
 }
 

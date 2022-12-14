@@ -7,11 +7,12 @@
   export let href: string
   export let isHomeIcon = false
   export let title: string
+  export let tooltip: string
 </script>
 
 <a
   on:contextmenu|preventDefault
-  class="{className} button-icon tooltip select-none {isHomeIcon
+  class="{className} button-icon select-none {isHomeIcon
     ? ''
     : 'hidden sm:block'}"
   class:active={href == "/"
@@ -20,6 +21,7 @@
   draggable="false"
   {href}
   {title}
+  data-tooltip={tooltip}
 >
   <slot />
 </a>

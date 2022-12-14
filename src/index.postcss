@@ -4,7 +4,7 @@
 
 html,
 body {
-  @apply min-h-screen bg-gray-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300;
+  @apply min-h-screen overscroll-none bg-gray-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300;
 }
 
 @layer components {
@@ -26,16 +26,20 @@ body {
     @apply bg-white dark:bg-slate-800;
   }
 
-  .tooltip {
+  [data-tooltip] {
     @apply relative outline-none ring-current focus:ring-2 active:ring-0;
   }
 
-  .tooltip::before {
-    @apply pointer-events-none absolute top-full left-1/2 mt-3 block -translate-x-1/2 scale-90 rounded-lg border bg-white py-2 px-4 opacity-0 shadow-lg transition dark:border-gray-700 dark:bg-slate-900;
+  [data-tooltip]::before {
+    @apply pointer-events-none absolute top-full left-1/2 mt-3 block -translate-x-1/2 scale-90 rounded-lg border bg-white py-2 px-4 opacity-0 shadow-lg transition content-[attr(data-tooltip)] dark:border-gray-700 dark:bg-slate-900;
   }
 
-  .tooltip:hover::before,
-  .tooltip:focus::before {
+  [data-tooltip="%href%"]::before {
+    @apply content-[attr(href)];
+  }
+
+  [data-tooltip]:hover::before,
+  [data-tooltip]:focus::before {
     @apply scale-100 opacity-100;
   }
 
@@ -51,23 +55,52 @@ body {
 
   .field {
     @apply rounded-lg border border-gray-300 bg-white py-2 px-3 shadow-sm outline-0 transition;
-    @apply focus:border focus:border-blue-500 focus:ring focus:ring-blue-200;
+    @apply focus-within:border focus-within:border-blue-500 focus-within:ring focus-within:ring-blue-200;
     @apply dark:border-slate-600 dark:bg-slate-850;
-    @apply dark:focus:border-blue-500 dark:focus:ring-blue-900;
+    @apply dark:focus-within:border-blue-500 dark:focus-within:ring-blue-900;
     @apply placeholder:text-slate-400 dark:placeholder:text-slate-500;
   }
 
-  a.field,
-  button.field:enabled {
-    @apply hover:border-gray-400 hover:bg-gray-200 hover:focus:border-blue-500;
-    @apply dark:hover:border-slate-500 dark:hover:bg-slate-700 dark:hover:focus:border-blue-500;
+  .field-group > .field:not(:first-child):not(p:not(.field) + *) {
+    @apply -mt-[1px] rounded-t-none;
   }
 
-  select.field {
+  .field-group > .field:not(:last-child) {
+    @apply rounded-b-none;
+  }
+
+  .field-group > .field:focus,
+  .field-group > .field:hover {
+    @apply relative z-10;
+  }
+
+  .field[type="file"] {
+    @apply cursor-pointer focus:outline-none;
+  }
+
+  .field::-webkit-file-upload-button {
+    @apply mr-6 cursor-pointer appearance-none border-0 bg-transparent py-0 text-inherit;
+  }
+
+  .field::-webkit-inner-spin-button {
+    @apply hidden;
+  }
+
+  :where(a).field,
+  :where(button.field):enabled {
+    @apply hover:border-gray-400 hover:bg-gray-200 hover:focus-within:border-blue-500;
+    @apply dark:hover:border-slate-500 dark:hover:bg-slate-700 dark:hover:focus-within:border-blue-500;
+  }
+
+  :where(select).field {
     @apply w-full;
   }
 
-  a.field {
+  :where(select).field.sr-only {
+    @apply prefer-w-96;
+  }
+
+  :where(a).field {
     @apply flex items-center justify-center text-center;
   }
 
@@ -75,7 +108,11 @@ body {
     @apply opacity-30;
   }
 
-  .label p {
+  .dark .field[type="date"]::-webkit-calendar-picker-indicator {
+    @apply invert;
+  }
+
+  .label > p:not(.field) {
     @apply mb-1 select-none;
   }
 
@@ -83,7 +120,7 @@ body {
     @apply mt-4;
   }
 
-  .label:has(:required) p:first-of-type::after {
+  .label:has(:required) > p:not(.field):first-of-type::after {
     @apply ml-1 text-red-500 content-["*"];
   }
 
@@ -103,16 +140,232 @@ body {
     @apply mb-1 h-4 w-4;
   }
 
-  .label .help {
+  .label > .help {
     @apply -mt-6 flex;
   }
 
-  .label .help svg {
+  .label > .help svg {
     @apply ml-auto mr-1;
   }
 
   .help::before {
-    @apply prefer-w-80;
+    @apply w-[calc(100%_-_4rem)] max-w-full;
+  }
+
+  .rta-button + .rta-button {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  .rta-button:has(+ .rta-button) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  :where(.prose),
+  :where(.prose) :where(.ProseMirror) {
+    line-height: 1.5;
+
+    [contenteditable] {
+      outline: none;
+    }
+
+    p {
+      margin-bottom: 1rem;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin-top: 1.5rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    h1,
+    h2 {
+      padding-bottom: 0.3rem;
+      border-bottom-width: 1px;
+      @apply border-gray-300 dark:border-slate-600;
+    }
+
+    h1 {
+      margin: 0.67rem 0;
+      font-size: 2rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+    }
+
+    h4 {
+      font-size: 1rem;
+    }
+
+    h5 {
+      font-size: 0.875rem;
+    }
+
+    h6 {
+      @apply text-gray-500 dark:text-slate-450;
+      font-size: 0.85rem;
+    }
+
+    ul,
+    ol {
+      margin-bottom: 1rem;
+      padding-left: 2rem;
+    }
+
+    ul {
+      list-style: disc;
+    }
+
+    ol {
+      list-style: numbered;
+
+      ol {
+        list-style: lower-alpha;
+        padding-left: 1.5rem;
+
+        ol {
+          list-style: lower-roman;
+        }
+      }
+    }
+
+    li > p {
+      margin-bottom: 0;
+    }
+
+    li + li {
+      margin-top: 0.25rem;
+    }
+
+    li ul,
+    li ol {
+      margin-top: 0.25rem;
+      margin-bottom: 0;
+    }
+
+    > ul,
+    > ol {
+      li:last-child {
+        > ul:last-child,
+        > ol:last-child {
+          margin-bottom: 0 !important;
+        }
+      }
+    }
+
+    pre {
+      margin: 0;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      overflow: auto;
+      line-height: 1.45;
+      border-radius: 0.375rem;
+      @apply bg-white shadow-md dark:bg-slate-850;
+
+      &:is(.ProseMirror pre) {
+        @apply bg-gray-200 shadow-none dark:bg-slate-700;
+      }
+    }
+
+    code {
+      margin: 0;
+      padding: 0.2rem 0.4rem;
+      font-size: 85%;
+      font-family: ui-monospace, "SFMono-Regular", "SF Mono", "Menlo",
+        "Consolas", "Liberation Mono", monospace;
+      border-radius: 0.375rem;
+      @apply bg-white shadow-md dark:bg-slate-850;
+
+      &:is(.ProseMirror code) {
+        @apply bg-gray-200 shadow-none dark:bg-slate-700;
+      }
+
+      &:is(pre code) {
+        @apply shadow-none;
+      }
+    }
+
+    pre code {
+      padding: 0;
+      overflow: visible;
+      line-height: inherit;
+      white-space: pre;
+      word-wrap: normal;
+      word-break: normal;
+      background-color: transparent;
+    }
+
+    hr {
+      margin: 0;
+      margin-bottom: 1rem;
+      border-width: 0;
+      border-top-width: 4px;
+      @apply border-gray-300 dark:border-slate-600;
+    }
+
+    q {
+      font-style: italic;
+    }
+
+    blockquote {
+      margin: 0;
+      margin-bottom: 1rem;
+      padding: 0 1rem;
+      border-left-width: 0.25rem;
+      @apply text-gray-500 dark:text-slate-450;
+      @apply border-gray-300 dark:border-slate-600;
+
+      > :first-child {
+        margin-top: 0 !important;
+      }
+
+      > :last-child {
+        margin-bottom: 0 !important;
+      }
+    }
+
+    a {
+      @apply text-blue-600 underline-offset-2 dark:text-blue-500;
+
+      &:is(.ProseMirror a) {
+        @apply underline;
+      }
+
+      @media (pointer: fine) {
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    img {
+      margin-bottom: -0.375rem;
+    }
+
+    s {
+      text-decoration: line-through !important;
+    }
+
+    > :first-child {
+      margin-top: 0 !important;
+    }
+
+    > :last-child {
+      margin-bottom: 0 !important;
+    }
   }
 }
 
@@ -120,4 +373,8 @@ body {
 :root.no-transitions ::before,
 :root.no-transitions ::after {
   transition: none !important;
+}
+
+.ProseMirror {
+  @apply flex-1 outline-none;
 }

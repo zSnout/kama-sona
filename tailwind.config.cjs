@@ -1,7 +1,6 @@
 // @ts-check
 
 const forms = require("@tailwindcss/forms")
-const typography = require("@tailwindcss/typography")
 const plugin = require("tailwindcss/plugin")
 
 /** @type {import("tailwindcss").Config} */
@@ -10,7 +9,6 @@ const config = {
   darkMode: "class",
   plugins: [
     forms,
-    typography,
     plugin(function ({ addVariant, matchComponents, theme }) {
       matchComponents(
         {
@@ -46,6 +44,10 @@ const config = {
     extend: {
       colors: {
         slate: {
+          // 400: 148 163 184
+          // 500: 100 116 139
+          450: "rgb(124 139 162)",
+
           // 900: 15 23 42
           // 800: 30 41 59
           850: "rgb(22 32 50)",

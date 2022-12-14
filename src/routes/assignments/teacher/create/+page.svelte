@@ -1,118 +1,304 @@
 <script lang="ts">
+  import { browser } from "$app/environment"
   import { enhance } from "$app/forms"
   import CenterOnPage from "$lib/CenterOnPage.svelte"
   import Icon from "$lib/Icon.svelte"
+  import { fileToIcon, linkToIcon } from "$lib/toIcon"
+  import MultiSelect, { type SelectItem } from "$lib/MultiSelect.svelte"
+  import RichTextArea from "$lib/RichTextArea.svelte"
   import Title from "$lib/Title.svelte"
-  import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons"
-  import { onMount } from "svelte"
+  import { toDateString } from "$lib/toDateString"
+  import {
+    faCalendarCheck,
+    faFile,
+    faLink,
+    faPercent,
+    faQuestionCircle,
+    faUserGroup,
+  } from "@fortawesome/free-solid-svg-icons"
+  import type { Editor } from "@tiptap/core"
   import type { PageData } from "./$types"
-
-  let disabled = false
-  let due = ""
-  let viewableAfter = ""
-  let groupSelector: HTMLSelectElement
 
   export let data: PageData
 
-  onMount(() => {
-    if (!groupSelector.value) {
-      groupSelector.setCustomValidity("Please select a group.")
-    }
-  })
+  let disabled = false
+  let due = ""
+  let title = ""
+  let viewableAfter = ""
+  let selectedGroups: SelectItem[] = []
+  let points = 0
+  let files: FileList
+  let description: Editor | undefined
+  $: descriptionLinks = description?.options.element.getElementsByTagName("a")
+
+  const today = new Date()
+
+  const todayAsString = `${today.getFullYear()}-${(today.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}-${today.getDate().toString().padStart(2, "0")}`
 </script>
 
 <Title mode="head-only" title="Create an Assignment" />
 
 <CenterOnPage>
-  <div class="prefer-w-96">
-    {#if data.groups.length == 0}
-      <p>
-        You must be the manager of a group in order to create an assignment.
-      </p>
-    {:else}
+  {#if data.groups.length == 0}
+    <p class="prefer-w-96">
+      You must be the manager of a group in order to create an assignment.
+    </p>
+  {:else}
+    <div class="prefer-w-96 md:prefer-w-[768px] lg:prefer-w-[1280px]">
       <form
         class="flex w-full flex-col"
         method="post"
-        use:enhance
         on:submit={() => (disabled = true)}
+        use:enhance
       >
-        <label class="label w-full">
-          <p>Assignment title:</p>
+        <div class="flex flex-col md:flex-row md:gap-4">
+          <div class="flex max-w-xs flex-col md:prefer-w-80">
+            <label class="label w-full">
+              <p>Assignment title:</p>
 
-          <input type="text" name="title" class="field w-full" required />
-        </label>
+              <input
+                type="text"
+                name="title"
+                class="field w-full"
+                required
+                bind:value={title}
+              />
+            </label>
 
-        <label class="label w-full">
-          <p>Assign to:</p>
+            <!--
+              svelte-ignore a11y-label-has-associated-control <MultiSelect> has
+              an input field that Svelte can't see.
+            -->
+            <label class="label w-full">
+              <p>Assign to:</p>
 
-          <select
-            class="field"
-            required
-            name="group"
-            bind:this={groupSelector}
-            on:input={() => {
-              if (groupSelector.value) {
-                groupSelector.setCustomValidity("")
-              } else {
-                groupSelector.setCustomValidity("Please select a group.")
-              }
-            }}
+              <MultiSelect
+                name="groups"
+                required
+                options={data.groups.map((group) => ({
+                  label: group.name,
+                  value: group.id,
+                }))}
+                bind:items={selectedGroups}
+              />
+            </label>
+
+            <label class="label w-full">
+              <p>Viewable after:</p>
+
+              <p
+                class="help"
+                data-tooltip="Students will only see this assignment on or after this date."
+              >
+                <Icon icon={faQuestionCircle} />
+
+                <span class="sr-only">
+                  Students will only see this assignment on or after this date.
+                </span>
+              </p>
+
+              <input
+                type="date"
+                name="title"
+                class="field w-full"
+                required
+                min={todayAsString}
+                bind:value={viewableAfter}
+              />
+            </label>
+
+            <label class="label w-full">
+              <p>Due date:</p>
+
+              <p
+                class="help"
+                data-tooltip="Students will be required to submit this assignment before
+                8am on this date."
+              >
+                <Icon icon={faQuestionCircle} />
+
+                <span class="sr-only">
+                  Students will be required to submit this assignment before 8am
+                  on this date.
+                </span>
+              </p>
+
+              <input
+                type="date"
+                name="title"
+                class="field w-full"
+                required
+                bind:value={due}
+                min={isNaN(Date.parse(viewableAfter))
+                  ? todayAsString
+                  : viewableAfter}
+              />
+            </label>
+
+            <label class="label w-full">
+              <p>Points:</p>
+
+              <p
+                class="help"
+                data-tooltip="The number of points this assignment is worth."
+              >
+                <Icon icon={faQuestionCircle} />
+
+                <span class="sr-only">
+                  The number of points this assignment is worth.
+                </span>
+              </p>
+
+              <input
+                type="number"
+                name="points"
+                class="field w-full"
+                required
+                bind:value={points}
+                min="0"
+                step="1"
+              />
+            </label>
+          </div>
+
+          <!--
+            svelte-ignore a11y-label-has-associated-control <RichTextArea> has a
+            textarea that Svelte can't see.
+          -->
+          <label
+            class="label mt-4 max-w-[34rem] flex-col md:mt-0 md:flex md:flex-1"
           >
-            <option value="" disabled selected>Select a group...</option>
+            <p>{browser ? "Preview and description:" : "Description:"}</p>
 
-            {#each data.groups as group}
-              <option value={group.id}>{group.name}</option>
-            {/each}
-          </select>
-        </label>
+            <RichTextArea
+              class="md:flex-1 md:resize-none"
+              bind:editor={description}
+              placeholder="Type a description..."
+            >
+              <svelte:fragment slot="prelude">
+                <h1 class="mt-0 mb-2 border-0 pb-0">
+                  {title || "Assignment title"}
+                </h1>
 
-        <label class="label w-full">
-          <p>Due date:</p>
+                <div class="mb-4 flex flex-wrap gap-x-8 gap-y-1">
+                  <p class="mb-0 whitespace-pre">
+                    <Icon isLabel icon={faCalendarCheck} title="Due date:" />
 
-          <p
-            class="help tooltip before:content-['Students_must_submit_this_assignment_BEFORE_8am_on_this_date.']"
-          >
-            <Icon icon={faQuestionCircle} />
+                    {isNaN(Date.parse(due))
+                      ? "Unknown"
+                      : toDateString(new Date(due), { local: true })}
+                  </p>
 
-            <span class="sr-only">
-              Students must submit this assignment BEFORE 8am on this date.
-            </span>
-          </p>
+                  <p class="mb-0 whitespace-pre">
+                    <Icon
+                      isLabel
+                      icon={faUserGroup}
+                      title="Published in group:"
+                    />
 
-          <input
-            type="date"
-            name="title"
-            class="field w-full"
-            required
-            bind:value={due}
-            min={new Date().toISOString()}
-          />
-        </label>
+                    {selectedGroups[0]?.label || "Unknown"}
+                  </p>
 
-        <label class="label w-full">
-          <p>Viewable after:</p>
+                  {#if points != 0}
+                    <p class="mb-0 whitespace-pre">
+                      <Icon
+                        isLabel
+                        icon={faPercent}
+                        title="Number of points:"
+                      />
 
-          <p
-            class="help tooltip before:content-['Students_will_only_see_this_assignment_on_or_after_this_date.']"
-          >
-            <Icon icon={faQuestionCircle} />
+                      {points} point{points == 1 ? "" : "s"}
+                    </p>
+                  {/if}
+                </div>
+              </svelte:fragment>
+            </RichTextArea>
+          </label>
 
-            <span class="sr-only">
-              Students will only see this assignment on or after this date.
-            </span>
-          </p>
+          <div class="mt-4 max-w-xs flex-col md:mt-0 md:flex md:prefer-w-80">
+            <label class="label w-full">
+              <p>Upload files:</p>
 
-          <input
-            type="date"
-            name="title"
-            class="field w-full"
-            required
-            max={due}
-            bind:value={viewableAfter}
-          />
-        </label>
+              <input
+                type="file"
+                name="files"
+                class="field w-full"
+                multiple
+                bind:files
+              />
+            </label>
 
-        <label class="label w-full">
+            {#if files && files.length != 0}
+              <div class="field-group label mt-4">
+                <p>Uploaded files:</p>
+
+                {#each files as file}
+                  <p class="overflow-hidden text-ellipsis whitespace-nowrap">
+                    <Icon isLabel icon={fileToIcon(file.type)} />
+                    {file.name}
+                  </p>
+                {/each}
+              </div>
+            {/if}
+
+            {#if descriptionLinks && descriptionLinks.length != 0}
+              <div class="field-group label mt-4">
+                <p>Detected links:</p>
+
+                {#each descriptionLinks as link}
+                  <a
+                    class="field block w-full overflow-hidden text-left"
+                    href={link.href}
+                    rel="noopener noreferrer nofollow"
+                    target="_blank"
+                    type="button"
+                  >
+                    <p class="overflow-hidden text-ellipsis whitespace-nowrap">
+                      <Icon isLabel icon={linkToIcon(link.href)} />
+                      {link.textContent}
+                    </p>
+
+                    {#if link.href.includes("docs.google.com")}
+                      <p class="mt-1">
+                        Check that your Google {link.href.includes(
+                          "/presentation"
+                        )
+                          ? "Slides"
+                          : link.href.includes("/spreadsheets")
+                          ? "Sheets"
+                          : link.href.includes("/forms")
+                          ? "Form"
+                          : "Doc"} is shared.
+                      </p>
+                    {/if}
+
+                    {#if link.href.includes("docs.google.com/presentation")}
+                      <iframe
+                        class="pointer-events-none relative top-[1px] -mx-3 -mb-2 mt-2 aspect-video w-[calc(100%_+_1.5rem_+_2px)]"
+                        src="https://docs.google.com/presentation{link.href.match(
+                          /\/d\/([A-Za-z0-9\-\_]+)/
+                        )?.[0]}/preview?rm=minimal&slide=1"
+                        title="Embedded Google Slides presentation"
+                      />
+                    {:else if link.href.includes("docs.google.com/document")}
+                      <iframe
+                        class="pointer-events-none relative top-[1px] -mx-3 -mb-2 mt-2 aspect-square w-[calc(100%_+_1.5rem_+_2px)]"
+                        src="https://docs.google.com/document{link.href.match(
+                          /\/d\/([A-Za-z0-9\-\_]+)/
+                        )?.[0]}/mobilebasic?rm=minimal"
+                        title="Embedded Google Docs document"
+                      />
+                    {/if}
+                  </a>
+                {/each}
+              </div>
+            {/if}
+          </div>
+        </div>
+
+        <label class="label mt-4 w-full md:mx-auto md:prefer-w-96">
           <p>Click to create your assignment:</p>
 
           <button class="field w-full" type="submit" {disabled}>
@@ -120,6 +306,6 @@
           </button>
         </label>
       </form>
-    {/if}
-  </div>
+    </div>
+  {/if}
 </CenterOnPage>

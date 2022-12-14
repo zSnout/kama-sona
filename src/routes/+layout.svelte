@@ -56,7 +56,7 @@
 </script>
 
 <nav
-  class="sticky top-0 flex h-16 w-screen bg-white shadow-md dark:bg-slate-800"
+  class="sticky top-0 z-50 flex h-16 w-screen select-none bg-white shadow-md dark:bg-slate-800"
 >
   {#if navState == "loading" || $navProgress != 0}
     <div
@@ -72,56 +72,63 @@
     <NavLink
       isHomeIcon
       href="/"
-      class="bg-gray-250 icon-bg-gray mr-auto before:content-['Home'] dark:bg-gray-600 dark:before:text-slate-400"
+      class="bg-gray-250 icon-bg-gray mr-auto dark:bg-gray-600 dark:before:text-slate-400"
       title="Home"
+      tooltip="Home"
     >
       <NavIcon icon={faHome} class="icon-gray" />
     </NavLink>
 
     <NavLink
       href="/assignments"
-      class="icon-bg-red before:content-['Assignments']"
+      class="icon-bg-red"
       title="Assignments"
+      tooltip="Assignments"
     >
       <NavIcon icon={faTasks} class="icon-red" />
     </NavLink>
 
     <NavLink
       href="/groups"
-      class="icon-bg-blue before:content-['Groups']"
+      class="icon-bg-blue"
       title="Groups"
+      tooltip="Groups"
     >
       <NavIcon icon={faUserGroup} class="icon-blue" />
     </NavLink>
 
     <NavLink
       href="/progress"
-      class="icon-bg-yellow before:content-['Progress']"
+      class="icon-bg-yellow"
       title="Progress"
+      tooltip="Progress"
     >
       <NavIcon icon={faChartPie} class="icon-yellow" />
     </NavLink>
 
     <NavLink
       href="/resources"
-      class="icon-bg-green before:content-['Resources']"
+      class="icon-bg-green"
       title="Resources"
+      tooltip="Resources"
     >
       <NavIcon icon={faBookOpen} class="icon-green" />
     </NavLink>
 
     <NavLink
       href="/discussions"
-      class="icon-bg-purple before:content-['Discussions']"
+      class="icon-bg-purple"
       title="Discussions"
+      tooltip="Discussions"
     >
       <NavIcon icon={faComments} class="icon-purple" />
     </NavLink>
 
     <NavLink
       href="/schedule"
-      class="icon-bg-orange before:content-['Schedule']"
+      class="icon-bg-orange"
       title="Schedule"
+      tooltip="Schedule"
     >
       <NavIcon icon={faClock} class="icon-orange" />
     </NavLink>
@@ -144,18 +151,20 @@
 
     <button
       on:contextmenu|preventDefault
-      class="button-icon tooltip icon-bg-gray ml-auto before:content-['Theme'] dark:bg-gray-600 dark:before:text-slate-400"
+      class="button-icon icon-bg-gray ml-auto dark:bg-gray-600 dark:before:text-slate-400"
       on:click={Theme.toggle}
       title="Toggle Theme"
+      data-tooltip="Theme"
     >
       <NavIcon icon={$isDark ? faMoon : faSun} class="icon-gray" />
     </button>
 
     <a
       on:contextmenu|preventDefault
-      class="button-icon tooltip icon-bg-gray ml-0 before:content-['Report_a_Bug'] dark:bg-gray-600 dark:before:text-slate-400 md:before:whitespace-pre"
+      class="button-icon icon-bg-gray ml-0 dark:bg-gray-600 dark:before:text-slate-400 md:before:whitespace-pre"
       title="Report a Bug"
       href="https://github.com/zSnout/kama-sona/issues/new/choose"
+      data-tooltip="Report a Bug"
     >
       <NavIcon icon={faBug} class="icon-gray" />
     </a>
@@ -168,7 +177,7 @@
   >
     <NavLinkWide
       href="/assignments"
-      class="icon-bg-red before:content-['Assignments']"
+      class="icon-bg-red"
       title="Assignments"
       on:click={closeNav}
     >
@@ -177,7 +186,7 @@
 
     <NavLinkWide
       href="/groups"
-      class="icon-bg-blue before:content-['Groups']"
+      class="icon-bg-blue"
       title="Groups"
       on:click={closeNav}
     >
@@ -186,7 +195,7 @@
 
     <NavLinkWide
       href="/progress"
-      class="icon-bg-yellow before:content-['Progress']"
+      class="icon-bg-yellow"
       title="Progress"
       on:click={closeNav}
     >
@@ -195,7 +204,7 @@
 
     <NavLinkWide
       href="/resources"
-      class="icon-bg-green before:content-['Resources']"
+      class="icon-bg-green"
       title="Resources"
       on:click={closeNav}
     >
@@ -204,7 +213,7 @@
 
     <NavLinkWide
       href="/discussions"
-      class="icon-bg-purple before:content-['Discussions']"
+      class="icon-bg-purple"
       title="Discussions"
       on:click={closeNav}
     >
@@ -213,7 +222,7 @@
 
     <NavLinkWide
       href="/schedule"
-      class="icon-bg-orange before:content-['Schedule']"
+      class="icon-bg-orange"
       title="Schedule"
       on:click={closeNav}
     >
@@ -222,8 +231,24 @@
   </div>
 </nav>
 
+<!--
+  svelte-ignore a11y-click-events-have-key-events We're listening for lower
+  level events, not clicks directly on <main>.
+-->
 <main
-  class="mx-auto flex min-h-full w-[80rem] max-w-[100vw] flex-1 flex-col px-4 py-6 sm:px-6 md:px-8"
+  class="mx-auto flex min-h-full w-[80rem] max-w-[100vw] flex-1 select-none flex-col px-4 py-6 sm:px-6 md:px-8"
+  on:click={(event) => {
+    const targets = event.composedPath()
+
+    if (
+      targets.find(
+        (target) =>
+          target instanceof HTMLAnchorElement && target.target == "_blank"
+      )
+    ) {
+      event.stopPropagation()
+    }
+  }}
 >
   <slot />
 </main>

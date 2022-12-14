@@ -3,7 +3,10 @@
   export let href: string | undefined = undefined
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!--
+  svelte-ignore a11y-click-events-have-key-events This element is always either
+  a button or link. This error is only triggered because of <svelte:element>.
+-->
 <svelte:element
   this={href == null ? "button" : "a"}
   {href}

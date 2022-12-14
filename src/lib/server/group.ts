@@ -50,6 +50,7 @@ export async function getAll(
   return await query((database) =>
     database.group.findMany({
       where: filter,
+      orderBy: { name: "asc" },
     })
   )
 }
@@ -59,7 +60,10 @@ export async function getAllWithManager(
   member: Prisma.AccountWhereUniqueInput
 ): Promise<Result<readonly Group[]>> {
   return await query(
-    (database) => database.account.findUnique({ where: member }).managerOf(),
+    (database) =>
+      database.account
+        .findUnique({ where: member })
+        .managerOf({ orderBy: { name: "asc" } }),
     errorNoAccountExists
   )
 }
@@ -69,7 +73,10 @@ export async function getAllWithMember(
   member: Prisma.AccountWhereUniqueInput
 ): Promise<Result<readonly Group[]>> {
   return await query(
-    (database) => database.account.findUnique({ where: member }).memberOf(),
+    (database) =>
+      database.account
+        .findUnique({ where: member })
+        .memberOf({ orderBy: { name: "asc" } }),
     errorNoAccountExists
   )
 }
