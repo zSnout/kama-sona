@@ -129,7 +129,7 @@
   {placeholder}
 />
 
-<div class={browser ? "field flex flex-col overflow-auto md:flex-1" : ""}>
+<div class={browser ? "field flex flex-col overflow-auto md:flex-1" : "hidden"}>
   <!-- #region buttons -->
   {#if browser && !readonly}
     <div
