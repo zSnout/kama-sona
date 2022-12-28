@@ -50,7 +50,7 @@ export async function getAll(
   return await query((database) =>
     database.group.findMany({
       where: filter,
-      orderBy: { name: "asc" },
+      orderBy: { title: "asc" },
     })
   )
 }
@@ -63,7 +63,7 @@ export async function getAllWithManager(
     (database) =>
       database.account
         .findUnique({ where: member })
-        .managerOf({ orderBy: { name: "asc" } }),
+        .managerOf({ orderBy: { title: "asc" } }),
     errorNoAccountExists
   )
 }
@@ -76,7 +76,7 @@ export async function getAllWithMember(
     (database) =>
       database.account
         .findUnique({ where: member })
-        .memberOf({ orderBy: { name: "asc" } }),
+        .memberOf({ orderBy: { title: "asc" } }),
     errorNoAccountExists
   )
 }

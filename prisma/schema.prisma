@@ -21,25 +21,24 @@ enum AssignmentView {
 }
 
 model Account {
-  creation              DateTime           @default(now())
-  defaultAssignmentView AssignmentView     @default(Student)
-  id                    String             @id @default(auto()) @map("_id") @db.ObjectId
-  isAdmin               Boolean
-  email                 String             @unique
-  name                  String
-  updated               DateTime           @default(now()) @updatedAt
+  creation             DateTime           @default(now())
+  id                   String             @id @default(auto()) @map("_id") @db.ObjectId
+  isAdmin              Boolean
+  email                String             @unique
+  name                 String
+  updated              DateTime           @default(now()) @updatedAt
   // Relations:
-  assignedTo            AssignmentStatus[] @relation("AssignmentAssignee")
-  assignedToIds         String[]           @db.ObjectId
-  magicLink             MagicLink?         @relation("MagicLink")
-  managedAssignments    Assignment[]       @relation("AssignmentManager", fields: [managedAssignmentIds], references: [id])
-  managedAssignmentIds  String[]           @db.ObjectId
-  managerOf             Group[]            @relation("GroupManagers", fields: [memberOfIds], references: [id])
-  managerOfIds          String[]           @db.ObjectId
-  memberOf              Group[]            @relation("GroupMembers", fields: [memberOfIds], references: [id])
-  memberOfIds           String[]           @db.ObjectId
-  sentMessages          Message[]          @relation("MessageSender")
-  session               Session?           @relation("AccountSession")
+  assignedTo           AssignmentStatus[] @relation("AssignmentAssignee")
+  assignedToIds        String[]           @db.ObjectId
+  magicLink            MagicLink?         @relation("MagicLink")
+  managedAssignments   Assignment[]       @relation("AssignmentManager", fields: [managedAssignmentIds], references: [id])
+  managedAssignmentIds String[]           @db.ObjectId
+  managerOf            Group[]            @relation("GroupManagers", fields: [managerOfIds], references: [id])
+  managerOfIds         String[]           @db.ObjectId
+  memberOf             Group[]            @relation("GroupMembers", fields: [memberOfIds], references: [id])
+  memberOfIds          String[]           @db.ObjectId
+  sentMessages         Message[]          @relation("MessageSender")
+  session              Session?           @relation("AccountSession")
 }
 
 model Session {
@@ -61,8 +60,13 @@ model MagicLink {
 
 type Attachment {
   creation DateTime       @default(now())
+  /// For a file, this is the ID of the file. For a link, this is the href.
+  /// For HTML or text, this is the HTML or text.
+  content  String
+  /// For a file, this is the name of the file. For a link, this is the label.
+  /// For HTML or text, this is usually an empty string.
+  label    String
   type     AttachmentType
-  value    String
 }
 
 enum AttachmentType {
@@ -75,9 +79,9 @@ enum AttachmentType {
 model Category {
   creation    DateTime     @default(now())
   id          String       @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
+  title       String
   updated     DateTime     @default(now()) @updatedAt
-  worth       Float        @default(1)
+  weight      Float        @default(1)
   // Relations:
   groups      Group[]      @relation("GroupCategories", fields: [groupIds], references: [id])
   groupIds    String[]     @db.ObjectId
@@ -90,7 +94,7 @@ model Discussion {
   creation   DateTime  @default(now())
   id         String    @id @default(auto()) @map("_id") @db.ObjectId
   isTopLevel Boolean
-  name       String?
+  title      String?
   updated    DateTime  @default(now()) @updatedAt
   // Relations:
   category   Category? @relation("DiscussionCategory", fields: [categoryId], references: [id])
@@ -114,25 +118,27 @@ model Message {
 }
 
 model Group {
-  creation    DateTime   @default(now())
-  id          String     @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  updated     DateTime   @default(now()) @updatedAt
+  creation      DateTime     @default(now())
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  updated       DateTime     @default(now()) @updatedAt
   // Relations:
-  categories  Category[] @relation("GroupCategories", fields: [categoryIds], references: [id])
-  categoryIds String[]   @db.ObjectId
-  managers    Account[]  @relation("GroupManagers", fields: [managerIds], references: [id])
-  managerIds  String[]   @db.ObjectId
-  members     Account[]  @relation("GroupMembers", fields: [memberIds], references: [id])
-  memberIds   String[]   @db.ObjectId
-  periods     Period[]   @relation("GroupPeriod", fields: [periodIds], references: [id])
-  periodIds   String[]   @db.ObjectId
+  assignments   Assignment[] @relation("AssignmentGroups", fields: [assignmentIds], references: [id])
+  assignmentIds String[]     @db.ObjectId
+  categories    Category[]   @relation("GroupCategories", fields: [categoryIds], references: [id])
+  categoryIds   String[]     @db.ObjectId
+  managers      Account[]    @relation("GroupManagers", fields: [managerIds], references: [id])
+  managerIds    String[]     @db.ObjectId
+  members       Account[]    @relation("GroupMembers", fields: [memberIds], references: [id])
+  memberIds     String[]     @db.ObjectId
+  periods       Period[]     @relation("GroupPeriod", fields: [periodIds], references: [id])
+  periodIds     String[]     @db.ObjectId
 }
 
 model Period {
   creation     DateTime    @default(now())
   id           String      @id @default(auto()) @map("_id") @db.ObjectId
-  name         String?
+  title        String?
   times        TimeBlock[]
   updated      DateTime    @default(now()) @updatedAt
   // Relations:
@@ -153,11 +159,11 @@ model Resource {
   creation      DateTime     @default(now())
   description   String
   id            String       @id @default(auto()) @map("_id") @db.ObjectId
-  name          String
+  title         String
   updated       DateTime     @default(now()) @updatedAt
   viewableAfter DateTime     @default(now())
   // Relations:
-  category      Category?    @relation("ResourceCategory", fields: [categoryId], references: [id])
+  category      Category     @relation("ResourceCategory", fields: [categoryId], references: [id])
   categoryId    String       @db.ObjectId
 }
 
@@ -167,32 +173,37 @@ model Assignment {
   description   String
   due           DateTime
   id            String             @id @default(auto()) @map("_id") @db.ObjectId
-  name          String
+  title         String
   points        Float              @default(0)
   updated       DateTime           @default(now()) @updatedAt
   viewableAfter DateTime           @default(now())
   // Relations:
-  category      Category?          @relation("AssignmentCategory", fields: [categoryId], references: [id])
+  category      Category           @relation("AssignmentCategory", fields: [categoryId], references: [id])
   categoryId    String             @db.ObjectId
-  manager       Account[]          @relation("AssignmentManager", fields: [managerIds], references: [id])
+  groups        Group[]            @relation("AssignmentGroups", fields: [groupIds], references: [id])
+  groupIds      String[]           @db.ObjectId
+  managers      Account[]          @relation("AssignmentManager", fields: [managerIds], references: [id])
   managerIds    String[]           @db.ObjectId
   statuses      AssignmentStatus[] @relation("AssignmentStatus")
   statusIds     String[]           @db.ObjectId
 }
 
 model AssignmentStatus {
-  attachments  Attachment[]
-  creation     DateTime     @default(now())
-  due          DateTime
-  id           String       @id @default(auto()) @map("_id") @db.ObjectId
-  missing      Boolean
-  score        Float        @default(0)
-  updated      DateTime     @default(now()) @updatedAt
+  attachments    Attachment[]
+  body           String       @default("")
+  creation       DateTime     @default(now())
+  due            DateTime
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  missing        Boolean
+  score          Float?
+  submitted      Boolean      @default(false)
+  teacherComment String       @default("")
+  updated        DateTime     @default(now()) @updatedAt
   // Relations:
-  assignee     Account      @relation("AssignmentAssignee", fields: [assigneeId], references: [id])
-  assigneeId   String       @db.ObjectId
-  assignment   Assignment   @relation("AssignmentStatus", fields: [assignmentId], references: [id])
-  assignmentId String       @db.ObjectId
+  assignee       Account      @relation("AssignmentAssignee", fields: [assigneeId], references: [id])
+  assigneeId     String       @db.ObjectId
+  assignment     Assignment   @relation("AssignmentStatus", fields: [assignmentId], references: [id])
+  assignmentId   String       @db.ObjectId
 }
 
 type TimeBlock {

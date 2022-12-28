@@ -1,11 +1,11 @@
 import { unwrapOr500 } from "$lib/result"
 import * as Account from "$lib/server/account"
-import { extractData } from "$lib/server/form"
+import { extractData } from "$lib/server/extract"
 import * as MagicLink from "$lib/server/magic-link"
 import { error } from "@sveltejs/kit"
 import type { Actions } from "./$types"
 
-export const actions: Actions = {
+export const actions = {
   async default({ request }) {
     const { email } = await extractData(request, ["email"] as const)
 
@@ -26,4 +26,4 @@ export const actions: Actions = {
 
     return { email }
   },
-}
+} satisfies Actions

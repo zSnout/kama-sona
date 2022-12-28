@@ -18,6 +18,7 @@
   export let values: string[] = []
   export let items: SelectItem[] = []
   export let searchLabel = "Search..."
+  export let strictHeight = false
 
   $: mappedItems = options.map((item) =>
     typeof item == "string" ? { label: item, value: item } : item
@@ -49,7 +50,7 @@
   {name}
   bind:value={values}
 >
-  {#each asItems as option}
+  {#each mappedItems as option (option.value)}
     <option value={option.value}>
       {option.label}
     </option>
@@ -59,7 +60,7 @@
 <div
   class="field overflow-y-scroll"
   class:hidden={!browser}
-  class:h-48={mappedItems.length > 7}
+  class:h-48={strictHeight || mappedItems.length > 7}
   aria-hidden="true"
 >
   {#if mappedItems.length > 7}
@@ -67,15 +68,33 @@
       class="sticky -top-2 -mx-3 -mt-2 mb-2 flex w-[calc(100%_+_1.5rem)] items-center border-b border-gray-300 bg-white transition focus-within:border-blue-500 dark:border-slate-600 dark:bg-slate-850 dark:focus-within:border-blue-500"
     >
       <input
-        class="flex-1 border-0 border-gray-300 bg-transparent transition focus:border-blue-500 focus:ring-0 dark:border-slate-600 dark:focus:border-blue-500"
+        class="flex-1 border-0 border-gray-300 bg-transparent transition focus-visible:border-blue-500 focus-visible:ring-0 dark:border-slate-600 dark:focus-visible:border-blue-500"
         class:border-r={values.length > 0}
         type="search"
         placeholder={searchLabel}
         bind:value={query}
+        on:keydown={(event) => {
+          if (event.key == "Enter") {
+            event.preventDefault()
+
+            const value = asItems[0]?.value
+            if (value == null) {
+              return
+            }
+
+            if (values.includes(value)) {
+              values.splice(values.indexOf(value), 1)
+            } else {
+              values.push(value)
+            }
+
+            values = values
+          }
+        }}
       />
 
       {#if values.length > 0}
-        <p class="w-10 select-none px-4">
+        <p class="w-10 select-none text-center">
           {values.length}
           <span class="sr-only"
             >item{values.length == 1 ? "" : "s"} selected</span
@@ -85,7 +104,7 @@
     </div>
   {/if}
 
-  {#each asItems as option}
+  {#each asItems as option (option.value)}
     <Checkbox
       action={() => {
         if (values.includes(option.value)) {
@@ -97,6 +116,7 @@
         values = values
       }}
       checked={values.includes(option.value)}
+      tabindex={-1}
     >
       {option.label}
     </Checkbox>

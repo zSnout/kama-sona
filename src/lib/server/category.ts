@@ -12,11 +12,26 @@ export async function getAllForGroupWithManager(
       database.account.findUnique({ where: manager }).managerOf({
         include: {
           categories: {
-            orderBy: { name: "asc" },
+            orderBy: { title: "asc" },
           },
         },
-        orderBy: { name: "asc" },
+        orderBy: { title: "asc" },
       }),
     errorNoAccountExists
+  )
+}
+
+/** Links a category to a list of groups. */
+export async function linkToGroups(
+  category: Prisma.CategoryWhereUniqueInput,
+  groups: Prisma.Enumerable<Prisma.GroupWhereUniqueInput>
+): Promise<Result<Category>> {
+  return await query((database) =>
+    database.category.update({
+      where: category,
+      data: {
+        groups: { connect: groups },
+      },
+    })
   )
 }

@@ -7,6 +7,10 @@ body {
   @apply min-h-screen overscroll-none bg-gray-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300;
 }
 
+:where(td) {
+  padding: 0;
+}
+
 @layer components {
   .button-icon {
     @apply m-1 select-none rounded-lg p-2 font-semibold transition hover:fill-current active:scale-90;
@@ -27,11 +31,11 @@ body {
   }
 
   [data-tooltip] {
-    @apply relative outline-none ring-current focus:ring-2 active:ring-0;
+    @apply relative outline-none ring-current focus-visible:ring-2 active:ring-0;
   }
 
   [data-tooltip]::before {
-    @apply pointer-events-none absolute top-full left-1/2 mt-3 block -translate-x-1/2 scale-90 rounded-lg border bg-white py-2 px-4 opacity-0 shadow-lg transition content-[attr(data-tooltip)] dark:border-gray-700 dark:bg-slate-900;
+    @apply pointer-events-none absolute top-full left-1/2 z-10 mt-3 block -translate-x-1/2 scale-90 rounded-lg border bg-white py-2 px-4 opacity-0 shadow-lg transition content-[attr(data-tooltip)] dark:border-gray-700 dark:bg-slate-900;
   }
 
   [data-tooltip="%href%"]::before {
@@ -39,7 +43,7 @@ body {
   }
 
   [data-tooltip]:hover::before,
-  [data-tooltip]:focus::before {
+  [data-tooltip]:focus-visible::before {
     @apply scale-100 opacity-100;
   }
 
@@ -61,17 +65,48 @@ body {
     @apply placeholder:text-slate-400 dark:placeholder:text-slate-500;
   }
 
-  .field-group > .field:not(:first-child):not(p:not(.field) + *) {
+  .field-group:where(:not(.flex:not(.flex-col)))
+    > :where(
+      .field:not(.degroup):not(:first-child):not(p:not(.field) + *):not(
+          .degroup + *
+        )
+    ) {
     @apply -mt-[1px] rounded-t-none;
   }
 
-  .field-group > .field:not(:last-child) {
+  .field-group:not(.flex:not(.flex-col))
+    > .field:not(.degroup):not(:last-child):not(:has(+ .degroup)) {
     @apply rounded-b-none;
   }
 
-  .field-group > .field:focus,
-  .field-group > .field:hover {
-    @apply relative z-10;
+  .field-group-row
+    > .field:not(.degroup):not(:first-child):not(p:not(.field) + *):not(
+      .degroup + *
+    ) {
+    @apply -ml-[1px] rounded-l-none;
+  }
+
+  .field-group-row
+    > .field:not(.degroup):not(:last-child):not(:has(+ .degroup)) {
+    @apply rounded-r-none;
+  }
+
+  .field-group > :not(p) + .degroup,
+  .field-group > p.field + .degroup {
+    @apply mt-4;
+  }
+
+  .field-group > .degroup:has(+ :not(p)),
+  .field-group > .degroup:has(p.field) {
+    @apply mb-4;
+  }
+
+  .field-group,
+  .field-group-row {
+    > .field:focus,
+    > .field:hover {
+      @apply relative z-10;
+    }
   }
 
   .field[type="file"] {
@@ -90,6 +125,16 @@ body {
   :where(button.field):enabled {
     @apply hover:border-gray-400 hover:bg-gray-200 hover:focus-within:border-blue-500;
     @apply dark:hover:border-slate-500 dark:hover:bg-slate-700 dark:hover:focus-within:border-blue-500;
+  }
+
+  .ring-color {
+    @apply focus-visible:border-blue-500 focus-visible:ring-blue-200;
+    @apply dark:focus-visible:border-blue-500 dark:focus-visible:ring-blue-900;
+  }
+
+  .ring-color-initial {
+    @apply border-blue-500 ring-blue-200;
+    @apply dark:border-blue-500 dark:ring-blue-900;
   }
 
   :where(select).field {
@@ -133,7 +178,7 @@ body {
   }
 
   .link {
-    @apply py-2 text-blue-600 underline underline-offset-2 dark:text-blue-500;
+    @apply py-2 text-blue-600 underline decoration-transparent underline-offset-2 transition hover:decoration-inherit focus:outline-none focus-visible:decoration-inherit dark:text-blue-500;
   }
 
   .help svg {
@@ -195,19 +240,17 @@ body {
 
     h1 {
       margin: 0.67rem 0;
-      font-size: 2rem;
+      @apply text-2xl;
     }
 
     h2 {
-      font-size: 1.5rem;
+      @apply text-xl;
     }
 
-    h3 {
-      font-size: 1.25rem;
-    }
-
-    h4 {
-      font-size: 1rem;
+    h4,
+    h5,
+    h6 {
+      @apply text-gray-500 dark:text-slate-450;
     }
 
     h5 {
@@ -215,7 +258,6 @@ body {
     }
 
     h6 {
-      @apply text-gray-500 dark:text-slate-450;
       font-size: 0.85rem;
     }
 
@@ -367,6 +409,10 @@ body {
       margin-bottom: 0 !important;
     }
   }
+
+  .icon-label {
+    @apply relative -top-[0.125rem] mr-1 inline h-[1em] w-[1em] text-gray-350 dark:text-slate-500;
+  }
 }
 
 :root.no-transitions *,
@@ -377,4 +423,9 @@ body {
 
 .ProseMirror {
   @apply flex-1 outline-none;
+}
+
+.rta .ProseMirror::after {
+  content: var(--placeholder);
+  @apply relative -top-6 text-slate-400 dark:text-slate-500;
 }

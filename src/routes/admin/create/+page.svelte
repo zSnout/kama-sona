@@ -24,7 +24,7 @@
       use:enhance
     >
       <label class="label w-full">
-        <p>Email address</p>
+        <p>Email address:</p>
 
         <input
           class="field w-full"
@@ -36,7 +36,7 @@
       </label>
 
       <label class="label w-full">
-        <p>Full name</p>
+        <p>Full name:</p>
 
         <input
           autocomplete="name"

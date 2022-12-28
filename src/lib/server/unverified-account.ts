@@ -79,7 +79,7 @@ export async function get(
 export async function sendVerification(
   account: UnverifiedAccount
 ): Promise<Result<void>> {
-  const sent = await send({
+  return await send({
     subject: "Verify your account on " + PUBLIC_KS_APP_NAME,
     text: `Hey ${account.name},
 
@@ -92,12 +92,6 @@ If you didn't sign up, ignore this email and we'll take care of the rest.`,
       name: account.name,
     },
   })
-
-  if (!sent.ok) {
-    return sent
-  }
-
-  return ok()
 }
 
 /** Deletes an unverified account. */

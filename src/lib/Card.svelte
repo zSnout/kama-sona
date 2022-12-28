@@ -7,7 +7,8 @@
 
 <svelte:element
   this={href ? "a" : "div"}
-  class="flex flex-col {className} p-3 ring-1 ring-gray-350 dark:ring-slate-600"
+  class="flex {className} p-3 ring-1 ring-gray-350 dark:ring-slate-600"
+  class:flex-col={!className.includes("flex-row")}
   {href}
 >
   <slot />

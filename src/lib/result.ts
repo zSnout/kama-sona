@@ -1,4 +1,4 @@
-import { error as svelteError } from "@sveltejs/kit"
+import { error as svelteError, type HttpError } from "@sveltejs/kit"
 
 /** The result of a fallible operation. */
 export type Result<T> = Ok<T> | Error
@@ -95,8 +95,35 @@ export function unwrapOr500<T>(result: Result<T>) {
   if (result.ok) {
     return result.value
   } else {
-    throw svelteError(500, result.error)
+    throw Object.assign(
+      svelteError(500, {
+        message: result.error,
+        result,
+      })
+    )
   }
+}
+
+/**
+ * Calls a function and rewraps any errors thrown by {@link unwrapOr500} in a
+ * {@link Error}.
+ */
+export function isUnwrap500Error(
+  error: unknown
+): error is HttpError & { body: { result: Error } } {
+  return (
+    typeof error == "object" &&
+    error != null &&
+    "status" in error &&
+    "body" in error &&
+    "result" in error &&
+    typeof error.result == "object" &&
+    error.result != null &&
+    "ok" in error.result &&
+    error.result.ok === false &&
+    "error" in error.result &&
+    typeof error.result == "string"
+  )
 }
 
 /** Used to make sure that errors inside of coroutines are detected properly. */

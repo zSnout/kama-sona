@@ -4,7 +4,7 @@ import * as Session from "$lib/server/session"
 import { redirect } from "@sveltejs/kit"
 import type { PageServerLoad } from "./$types"
 
-export const load: PageServerLoad = async ({ cookies, params }) => {
+export const load = (async ({ cookies, params }) => {
   const account = unwrapOr500(await MagicLink.verify(params))
   const { code } = unwrapOr500(await Session.get({ forId: account.id }))
 
@@ -14,4 +14,4 @@ export const load: PageServerLoad = async ({ cookies, params }) => {
   })
 
   throw redirect(302, "/")
-}
+}) satisfies PageServerLoad

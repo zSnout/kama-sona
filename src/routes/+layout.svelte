@@ -1,19 +1,14 @@
 <script lang="ts">
   import { afterNavigate, beforeNavigate } from "$app/navigation"
+  import { pages } from "$lib/pages"
   import * as Theme from "$lib/theme"
   import { isDark } from "$lib/theme"
   import {
-    faBookOpen,
     faBug,
-    faChartPie,
-    faClock,
-    faComments,
     faHome,
     faMoon,
     faNavicon,
     faSun,
-    faTasks,
-    faUserGroup,
   } from "@fortawesome/free-solid-svg-icons"
   import { expoOut } from "svelte/easing"
   import { tweened } from "svelte/motion"
@@ -56,7 +51,7 @@
 </script>
 
 <nav
-  class="sticky top-0 z-50 flex h-16 w-screen select-none bg-white shadow-md dark:bg-slate-800"
+  class="sticky top-0 z-50 flex h-16 w-screen select-none bg-white shadow-md dark:bg-slate-800 print:hidden"
 >
   {#if navState == "loading" || $navProgress != 0}
     <div
@@ -79,59 +74,16 @@
       <NavIcon icon={faHome} class="icon-gray" />
     </NavLink>
 
-    <NavLink
-      href="/assignments"
-      class="icon-bg-red"
-      title="Assignments"
-      tooltip="Assignments"
-    >
-      <NavIcon icon={faTasks} class="icon-red" />
-    </NavLink>
-
-    <NavLink
-      href="/groups"
-      class="icon-bg-blue"
-      title="Groups"
-      tooltip="Groups"
-    >
-      <NavIcon icon={faUserGroup} class="icon-blue" />
-    </NavLink>
-
-    <NavLink
-      href="/progress"
-      class="icon-bg-yellow"
-      title="Progress"
-      tooltip="Progress"
-    >
-      <NavIcon icon={faChartPie} class="icon-yellow" />
-    </NavLink>
-
-    <NavLink
-      href="/resources"
-      class="icon-bg-green"
-      title="Resources"
-      tooltip="Resources"
-    >
-      <NavIcon icon={faBookOpen} class="icon-green" />
-    </NavLink>
-
-    <NavLink
-      href="/discussions"
-      class="icon-bg-purple"
-      title="Discussions"
-      tooltip="Discussions"
-    >
-      <NavIcon icon={faComments} class="icon-purple" />
-    </NavLink>
-
-    <NavLink
-      href="/schedule"
-      class="icon-bg-orange"
-      title="Schedule"
-      tooltip="Schedule"
-    >
-      <NavIcon icon={faClock} class="icon-orange" />
-    </NavLink>
+    {#each pages as page}
+      <NavLink
+        href={page.href}
+        class="icon-bg-{page.color}"
+        title={page.title}
+        tooltip={page.title}
+      >
+        <NavIcon icon={page.icon} class="icon-{page.color}" />
+      </NavLink>
+    {/each}
 
     <button
       on:contextmenu|preventDefault
@@ -175,66 +127,20 @@
       ? 'visible scale-100 opacity-100'
       : 'invisible'} mobile-nav fixed top-14 w-screen bg-white px-4 pt-2 pb-4 shadow-md transition-all hover:opacity-100 dark:bg-slate-800 sm:hidden"
   >
-    <NavLinkWide
-      href="/assignments"
-      class="icon-bg-red"
-      title="Assignments"
-      on:click={closeNav}
-    >
-      <NavIcon icon={faTasks} class="icon-red" />
-    </NavLinkWide>
-
-    <NavLinkWide
-      href="/groups"
-      class="icon-bg-blue"
-      title="Groups"
-      on:click={closeNav}
-    >
-      <NavIcon icon={faUserGroup} class="icon-blue" />
-    </NavLinkWide>
-
-    <NavLinkWide
-      href="/progress"
-      class="icon-bg-yellow"
-      title="Progress"
-      on:click={closeNav}
-    >
-      <NavIcon icon={faChartPie} class="icon-yellow" />
-    </NavLinkWide>
-
-    <NavLinkWide
-      href="/resources"
-      class="icon-bg-green"
-      title="Resources"
-      on:click={closeNav}
-    >
-      <NavIcon icon={faBookOpen} class="icon-green" />
-    </NavLinkWide>
-
-    <NavLinkWide
-      href="/discussions"
-      class="icon-bg-purple"
-      title="Discussions"
-      on:click={closeNav}
-    >
-      <NavIcon icon={faComments} class="icon-purple" />
-    </NavLinkWide>
-
-    <NavLinkWide
-      href="/schedule"
-      class="icon-bg-orange"
-      title="Schedule"
-      on:click={closeNav}
-    >
-      <NavIcon icon={faClock} class="icon-orange" />
-    </NavLinkWide>
+    {#each pages as page}
+      <NavLinkWide
+        href={page.href}
+        class="icon-bg-{page.color}"
+        title={page.title}
+        on:click={closeNav}
+      >
+        <NavIcon icon={page.icon} class="icon-{page.color}" />
+      </NavLinkWide>
+    {/each}
   </div>
 </nav>
 
-<!--
-  svelte-ignore a11y-click-events-have-key-events We're listening for lower
-  level events, not clicks directly on <main>.
--->
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <main
   class="mx-auto flex min-h-full w-[80rem] max-w-[100vw] flex-1 select-none flex-col px-4 py-6 sm:px-6 md:px-8"
   on:click={(event) => {

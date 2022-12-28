@@ -14,7 +14,7 @@
 
       <span class="sr-only">|</span>
 
-      <p class="max-w-sm py-4">{$page.error?.message}</p>
+      <p class="max-w-sm whitespace-pre-wrap py-4">{$page.error?.message}</p>
     </div>
 
     <div class="prefer-w-96 mt-6 flex flex-wrap gap-6">

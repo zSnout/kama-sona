@@ -12,9 +12,8 @@
 
 {#if definition && typeof definition[4] == "string"}
   <svg
-    class="overflow-visible {className} {isLabel
-      ? 'relative -top-[0.125rem] mr-1 inline h-4 w-4 text-gray-350 dark:text-slate-500'
-      : ''}"
+    class="overflow-visible {className}"
+    class:icon-label={isLabel}
     viewBox="0 0 {definition[0]} {definition[1]}"
     aria-hidden="true"
     role="img"

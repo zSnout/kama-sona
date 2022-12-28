@@ -35,7 +35,7 @@
         on:submit={() => (disabled = true)}
       >
         <label class="label w-full">
-          <p>Email address</p>
+          <p>Email address:</p>
 
           <input
             type="email"

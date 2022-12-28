@@ -1,19 +1,19 @@
 import { PUBLIC_KS_ADMIN_MODE } from "$env/static/public"
 import { unwrapOr500 } from "$lib/result"
 import * as Account from "$lib/server/account"
-import { extractData } from "$lib/server/form"
+import { extractData } from "$lib/server/extract"
 import { error, redirect } from "@sveltejs/kit"
 import type { Actions, PageServerLoad } from "./$types"
 
-export const load: PageServerLoad = async () => {
+export const load = (async () => {
   if (PUBLIC_KS_ADMIN_MODE != "true") {
     throw redirect(302, "/")
   }
 
   return { admins: unwrapOr500(await Account.getAll({ isAdmin: true })) }
-}
+}) satisfies PageServerLoad
 
-export const actions: Actions = {
+export const actions = {
   async default({ request }) {
     if (PUBLIC_KS_ADMIN_MODE != "true") {
       throw error(503, "You do not have permission to access this page.")
@@ -36,4 +36,4 @@ export const actions: Actions = {
       })
     )
   },
-}
+} satisfies Actions

@@ -2,8 +2,20 @@
 // for information about these interfaces
 // and what to do when importing types
 declare namespace App {
-  // interface Error {}
-  // interface Locals {}
   // interface PageData {}
   // interface Platform {}
+
+  interface Error {
+    result?: import("$lib/result").Error
+  }
+
+  interface Locals {
+    readonly account: import("@prisma/client").Account
+  }
+}
+
+declare namespace svelte.JSX {
+  interface HTMLProps<T> {
+    "onfilter-disable"?: (event: Event) => void
+  }
 }

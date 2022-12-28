@@ -1,9 +1,9 @@
 import { unwrapOr500 } from "$lib/result"
-import { extractData } from "$lib/server/form"
+import { extractData } from "$lib/server/extract"
 import * as UnverifiedAccount from "$lib/server/unverified-account"
 import type { Actions } from "./$types"
 
-export const actions: Actions = {
+export const actions = {
   async default({ request }) {
     const { email, name } = await extractData(request, [
       "email",
@@ -15,4 +15,4 @@ export const actions: Actions = {
 
     return { email, name }
   },
-}
+} satisfies Actions

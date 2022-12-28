@@ -154,7 +154,7 @@ export async function send(
     return error("Your magic link expired. Try creating another.")
   }
 
-  const result2 = await sendEmail({
+  return await sendEmail({
     subject: `Log In to ${PUBLIC_KS_APP_NAME}`,
     text: `Hey ${result.value.name},
 
@@ -166,12 +166,6 @@ up, as your link will expire in 15 minutes.`,
       name: result.value.name,
     },
   })
-
-  if (!result2.ok) {
-    return result2
-  }
-
-  return ok()
 }
 
 /** A {@link Result} to result when an account's magic link changed unexpectedly. */

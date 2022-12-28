@@ -22,6 +22,7 @@
 
   export let name = ""
   export let placeholder = ""
+  export let readonly = false
   export let value = ""
 
   let className = ""
@@ -29,11 +30,11 @@
 
   export let editor: Editor | undefined = undefined
   let element: HTMLElement | undefined
-  let textarea = ""
 
   onMount(() => {
     editor = new Editor({
       element,
+      editable: !readonly,
       extensions: [
         StarterKit,
         Link.configure({
@@ -121,17 +122,18 @@
 </script>
 
 <textarea
-  bind:value={textarea}
-  class="{className} field min-h-[15em] {browser ? 'sr-only' : 'w-full'}"
+  bind:value
+  class="{className} field min-h-[15rem] {browser ? 'sr-only' : 'w-full'}"
+  class:degroup={browser}
   {name}
   {placeholder}
 />
 
 <div class={browser ? "field flex flex-col overflow-auto md:flex-1" : ""}>
   <!-- #region buttons -->
-  {#if browser}
+  {#if browser && !readonly}
     <div
-      class="sticky -top-2 z-10 -mx-3 -mt-2 -mb-1 flex border-b border-gray-300 bg-white p-1 transition dark:border-slate-600 dark:bg-slate-850"
+      class="sticky -top-2 z-20 -mx-3 -mt-2 -mb-1 flex border-b border-gray-300 bg-white p-1 transition dark:border-slate-600 dark:bg-slate-850"
     >
       <RichTextAreaButton
         action={({ detail }) =>
@@ -241,7 +243,7 @@ line 2 of my program
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
       bind:this={element}
-      class="rta prose flex min-h-[15em] flex-1 cursor-text select-text flex-col pt-3"
+      class="rta prose flex min-h-[15rem] flex-1 cursor-text select-text flex-col pt-3"
       style:--placeholder={(editor?.getText().trim() == "" &&
         editor.getHTML().startsWith("<p>") &&
         `"${placeholder}"`) ||
@@ -260,10 +262,3 @@ line 2 of my program
     </div>
   {/if}
 </div>
-
-<style global lang="postcss">
-  .rta .ProseMirror::after {
-    content: var(--placeholder);
-    @apply relative -top-6 text-slate-400 dark:text-slate-500;
-  }
-</style>

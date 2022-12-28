@@ -7,15 +7,14 @@
   }
 
   export let checked = false
-
-  let className = ""
-  export { className as class }
+  export let tabindex: -1 | 0 | undefined = undefined
 </script>
 
 <button
   class="flex w-full items-center gap-2 text-left"
   type="button"
   on:click={action}
+  {tabindex}
 >
   {#if checked}
     <Icon icon={faCheck} class="h-4 w-4" />

@@ -31,3 +31,19 @@ export function toDateString(
     year: isThisYear ? undefined : "numeric",
   })
 }
+
+/**
+ * Converts a date to either "month" or "month year" format depending on when it occurs.
+ */
+export function toMonthString(date: Date) {
+  const now = new Date()
+
+  const isThisYear =
+    // The month must be later in the year and in the same year.
+    date.getMonth() >= now.getMonth() && date.getFullYear() == now.getFullYear()
+
+  return date.toLocaleDateString(undefined, {
+    month: "long",
+    year: isThisYear ? undefined : "numeric",
+  })
+}
