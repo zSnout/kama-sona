@@ -211,6 +211,8 @@ export function fromRequest<T extends object>(
 /**
  * Extracts specific keys from a form submission. Throws a 400 error if a key is
  * missing, empty, or a file instead of plain text.
+ *
+ * TODO: Use a `const T` generic when TypeScript 5.0 lands.
  */
 export async function extractData<T extends readonly string[]>(
   request: Request,

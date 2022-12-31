@@ -58,3 +58,13 @@ export async function getAllWithAssignee(
     )
   )
 }
+
+/** Updates an assignment status. */
+export async function update(
+  status: Prisma.AssignmentStatusWhereUniqueInput,
+  data: Omit<Prisma.AssignmentStatusUpdateInput, "assignee" | "assignment">
+) {
+  return await query((database) =>
+    database.assignmentStatus.update({ where: status, data })
+  )
+}

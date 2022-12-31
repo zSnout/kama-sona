@@ -1,4 +1,5 @@
 import { unwrapOr500 } from "$lib/result"
+import { sanitize } from "$lib/sanitize"
 import { create } from "$lib/server/assignment"
 import * as Category from "$lib/server/category"
 import * as Extract from "$lib/server/extract"
@@ -85,7 +86,7 @@ export const actions = {
         category: data.willCreateCategory
           ? { name: data.newCategoryName!, weight: data.newCategoryWeight! }
           : { id: data.category! },
-        description: data.description,
+        description: sanitize(data.description),
         due: data.due,
         files: data.files,
         groups: data.groups.map((id) => ({ id })),

@@ -32,13 +32,7 @@ const config = {
   ],
   plugins: [
     forms,
-    plugin(function ({
-      addComponents,
-      addVariant,
-      matchComponents,
-      matchVariant,
-      theme,
-    }) {
+    plugin(({ addVariant, matchComponents, matchVariant, theme }) => {
       matchComponents(
         {
           icon: (value) => ({
@@ -88,6 +82,7 @@ const config = {
       })
 
       addVariant("bafter", ["&:before", "&:after"])
+      addVariant("scrollbar", ["&::-webkit-scrollbar"])
 
       matchVariant("has", (value) => `&:has(${value.replace(/_/g, " ")})`)
     }),

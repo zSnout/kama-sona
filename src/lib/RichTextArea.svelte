@@ -123,127 +123,132 @@
 
 <textarea
   bind:value
-  class="{className} field min-h-[15rem] {browser ? 'sr-only' : 'w-full'}"
+  class="{className} field min-h-[16rem]"
   class:degroup={browser}
+  class:sr-only={browser}
+  class:w-full={!browser}
   {name}
   {placeholder}
 />
 
-<div class={browser ? "field flex flex-col overflow-auto md:flex-1" : "hidden"}>
-  <!-- #region buttons -->
-  {#if browser && !readonly}
-    <div
-      class="sticky -top-2 z-20 -mx-3 -mt-2 -mb-1 flex border-b border-gray-300 bg-white p-1 transition dark:border-slate-600 dark:bg-slate-850"
-    >
-      <RichTextAreaButton
-        action={({ detail }) =>
-          (detail == 1 && editor?.isActive("heading")) || detail >= 3
-            ? chain()?.setParagraph().run()
-            : chain()
-                ?.setHeading({ level: detail == 2 ? 2 : 1 })
-                .run()}
-        active={editor?.isActive("heading")}
-        icon={faHeading}
-        title="Toggle heading"
-        tooltip="Start a line with hashtags:
+{#if browser}
+  <div
+    class="field flex min-h-[16rem] flex-col overflow-auto md:flex-1"
+    aria-hidden="true"
+  >
+    <!-- #region buttons -->
+    {#if !readonly}
+      <div
+        class="sticky -top-2 z-20 -mx-3 -mt-2 -mb-1 flex overflow-x-auto border-b border-gray-300 bg-white p-1 transition scrollbar:hidden dark:border-slate-600 dark:bg-slate-850"
+      >
+        <RichTextAreaButton
+          action={({ detail }) =>
+            (detail == 1 && editor?.isActive("heading")) || detail >= 3
+              ? chain()?.setParagraph().run()
+              : chain()
+                  ?.setHeading({ level: detail == 2 ? 2 : 1 })
+                  .run()}
+          active={editor?.isActive("heading")}
+          icon={faHeading}
+          title="Toggle heading"
+          tooltip="Start a line with hashtags:
 # level 1 heading
 ## level 2 heading"
-      />
+        />
 
-      <RichTextAreaButton
-        action={() => chain()?.toggleBold().run()}
-        active={editor?.isActive("bold")}
-        icon={faBold}
-        title="Toggle bold"
-        tooltip="Surround text with doubled asterisks:
+        <RichTextAreaButton
+          action={() => chain()?.toggleBold().run()}
+          active={editor?.isActive("bold")}
+          icon={faBold}
+          title="Toggle bold"
+          tooltip="Surround text with doubled asterisks:
 **bolded text**"
-      />
+        />
 
-      <RichTextAreaButton
-        action={() => editor?.chain().focus().toggleItalic().run()}
-        active={editor?.isActive("italic")}
-        icon={faItalic}
-        title="Toggle italics"
-        tooltip="Surround text with underscores:
+        <RichTextAreaButton
+          action={() => editor?.chain().focus().toggleItalic().run()}
+          active={editor?.isActive("italic")}
+          icon={faItalic}
+          title="Toggle italics"
+          tooltip="Surround text with underscores:
 _italicized text_"
-      />
+        />
 
-      <RichTextAreaButton
-        action={() => editor?.chain().focus().toggleStrike().run()}
-        active={editor?.isActive("strike")}
-        icon={faStrikethrough}
-        title="Toggle strikethrough"
-        tooltip="Surround text with doubled tildes:
+        <RichTextAreaButton
+          action={() => editor?.chain().focus().toggleStrike().run()}
+          active={editor?.isActive("strike")}
+          icon={faStrikethrough}
+          title="Toggle strikethrough"
+          tooltip="Surround text with doubled tildes:
 ~~some text~~"
-      />
+        />
 
-      <RichTextAreaButton
-        action={toggleLink}
-        active={editor?.isActive("link")}
-        icon={editor?.isActive("link") ? faLinkSlash : faLink}
-        title="Create a link"
-        tooltip="Type or paste a URL:
+        <RichTextAreaButton
+          action={toggleLink}
+          active={editor?.isActive("link")}
+          icon={editor?.isActive("link") ? faLinkSlash : faLink}
+          title="Create a link"
+          tooltip="Type or paste a URL:
 https://example.com/"
-      />
+        />
 
-      <RichTextAreaButton
-        action={() => editor?.chain().focus().toggleCode().run()}
-        active={editor?.isActive("code")}
-        icon={faCode}
-        title="Toggle monospace"
-        tooltip="Surround text with backticks:
+        <RichTextAreaButton
+          action={() => editor?.chain().focus().toggleCode().run()}
+          active={editor?.isActive("code")}
+          icon={faCode}
+          title="Toggle monospace"
+          tooltip="Surround text with backticks:
 `monospaced text`"
-      />
+        />
 
-      <RichTextAreaButton
-        action={() => editor?.chain().focus().toggleBulletList().run()}
-        active={editor?.isActive("bulletList")}
-        icon={faListUl}
-        title="Toggle a bulleted list"
-        tooltip="Start each line of a list with a dash:
+        <RichTextAreaButton
+          action={() => editor?.chain().focus().toggleBulletList().run()}
+          active={editor?.isActive("bulletList")}
+          icon={faListUl}
+          title="Toggle a bulleted list"
+          tooltip="Start each line of a list with a dash:
 - list item
 - another list item"
-      />
+        />
 
-      <RichTextAreaButton
-        action={() => editor?.chain().focus().toggleOrderedList().run()}
-        active={editor?.isActive("orderedList")}
-        icon={faListOl}
-        title="Toggle a numbered list"
-        tooltip="Start each line of a numbered list with a number:
+        <RichTextAreaButton
+          action={() => editor?.chain().focus().toggleOrderedList().run()}
+          active={editor?.isActive("orderedList")}
+          icon={faListOl}
+          title="Toggle a numbered list"
+          tooltip="Start each line of a numbered list with a number:
 1. list item 1
 2. list item 2"
-      />
+        />
 
-      <RichTextAreaButton
-        action={() => editor?.chain().focus().toggleBlockquote().run()}
-        active={editor?.isActive("blockquote")}
-        icon={faQuoteLeft}
-        title="Toggle a quotation"
-        tooltip="Start lines with a >:
+        <RichTextAreaButton
+          action={() => editor?.chain().focus().toggleBlockquote().run()}
+          active={editor?.isActive("blockquote")}
+          icon={faQuoteLeft}
+          title="Toggle a quotation"
+          tooltip="Start lines with a >:
 > some quotation"
-      />
+        />
 
-      <RichTextAreaButton
-        action={() => editor?.chain().focus().toggleCodeBlock().run()}
-        active={editor?.isActive("codeBlock")}
-        icon={faCode}
-        title="Toggle a code block"
-        tooltip="Surround paragraphs with three backticks:
+        <RichTextAreaButton
+          action={() => editor?.chain().focus().toggleCodeBlock().run()}
+          active={editor?.isActive("codeBlock")}
+          icon={faCode}
+          title="Toggle a code block"
+          tooltip="Surround paragraphs with three backticks:
 ```
 line 1 of my program
 line 2 of my program
 ```"
-      />
-    </div>
-  {/if}
-  <!-- #endregion buttons -->
+        />
+      </div>
+    {/if}
+    <!-- #endregion buttons -->
 
-  {#if browser}
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
       bind:this={element}
-      class="rta prose flex min-h-[15rem] flex-1 cursor-text select-text flex-col pt-3"
+      class="rta prose flex flex-1 cursor-text select-text flex-col pt-3"
       style:--placeholder={(editor?.getText().trim() == "" &&
         editor.getHTML().startsWith("<p>") &&
         `"${placeholder}"`) ||
@@ -260,5 +265,5 @@ line 2 of my program
         <slot name="prelude" />
       </div>
     </div>
-  {/if}
-</div>
+  </div>
+{/if}

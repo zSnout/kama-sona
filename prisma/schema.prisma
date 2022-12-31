@@ -196,7 +196,7 @@ model AssignmentStatus {
   id             String       @id @default(auto()) @map("_id") @db.ObjectId
   missing        Boolean
   score          Float?
-  submitted      Boolean      @default(false)
+  submitted      DateTime?
   teacherComment String       @default("")
   updated        DateTime     @default(now()) @updatedAt
   // Relations:
