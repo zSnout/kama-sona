@@ -174,9 +174,9 @@ model Assignment {
   due           DateTime
   id            String             @id @default(auto()) @map("_id") @db.ObjectId
   title         String
-  points        Float              @default(0)
+  points        Float
   updated       DateTime           @default(now()) @updatedAt
-  viewableAfter DateTime           @default(now())
+  viewableAfter DateTime
   // Relations:
   category      Category           @relation("AssignmentCategory", fields: [categoryId], references: [id])
   categoryId    String             @db.ObjectId
