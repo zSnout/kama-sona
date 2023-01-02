@@ -7,5 +7,6 @@
 
 <Title title="User Profile" />
 
-<p>{data.profile.name}</p>
-<p>{data.profile.email}</p>
+<p class="select-all">{data.profile.name}</p>
+
+<p class="select-all">{data.profile.email}</p>

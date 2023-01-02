@@ -63,13 +63,15 @@ export async function get(
   return result
 }
 
-/** Gets all accounts with an optional filter. */
+/** Gets all accounts with an optional filter and sort function. */
 export async function getAll(
-  filter?: Prisma.AccountWhereInput
+  filter?: Prisma.AccountWhereInput,
+  orderBy?: Prisma.Enumerable<Prisma.AccountOrderByWithRelationInput>
 ): Promise<Result<readonly Account[]>> {
   return await query((database) =>
     database.account.findMany({
       where: filter,
+      orderBy,
     })
   )
 }

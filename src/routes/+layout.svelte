@@ -61,9 +61,7 @@
     />
   {/if}
 
-  <div
-    class="mx-auto flex w-full max-w-7xl select-none items-center px-4 sm:px-6 md:px-8"
-  >
+  <div class="mx-auto flex w-full max-w-7xl items-center px-4 sm:px-6 md:px-8">
     <NavLink
       isHomeIcon
       href="/"

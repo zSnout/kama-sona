@@ -5,18 +5,22 @@ import { query } from "./database"
 
 /** Creates a group with a specified manager. */
 export function create(options: {
-  group: Prisma.GroupCreateInput
-  manager: Prisma.AccountWhereUniqueInput
-}): Promise<Result<Group>> {
-  const { manager: account, group } = options
+  group: Omit<
+    Prisma.GroupCreateInput,
+    "managers" | "managerIds" | "members" | "memberIds"
+  >
+  manager: Prisma.Enumerable<Prisma.AccountWhereUniqueInput>
+  members?: Prisma.Enumerable<Prisma.AccountWhereUniqueInput>
+}) {
+  const { manager, members, group } = options
 
   return query(
     (database) =>
       database.group.create({
         data: {
           ...group,
-          managers: { connect: account },
-          members: { connect: account },
+          managers: { connect: manager },
+          members: { connect: members || manager },
         },
       }),
     errorNoAccountExists
@@ -29,9 +33,7 @@ export const errorNoGroupExists = error(
 )
 
 /** Gets information about a group. */
-export async function get(
-  filter: Prisma.GroupWhereUniqueInput
-): Promise<Result<Group>> {
+export async function get(filter: Prisma.GroupWhereUniqueInput) {
   const result = await query(
     (database) =>
       database.group.findUnique({
@@ -44,9 +46,7 @@ export async function get(
 }
 
 /** Gets all groups that match a optional filter. */
-export async function getAll(
-  filter?: Prisma.GroupWhereInput
-): Promise<Result<readonly Group[]>> {
+export async function getAll(filter?: Prisma.GroupWhereInput) {
   return await query((database) =>
     database.group.findMany({
       where: filter,
@@ -58,7 +58,7 @@ export async function getAll(
 /** Gets all groups that have a specific manager. */
 export async function getAllWithManager(
   member: Prisma.AccountWhereUniqueInput
-): Promise<Result<readonly Group[]>> {
+) {
   return await query(
     (database) =>
       database.account
@@ -69,9 +69,7 @@ export async function getAllWithManager(
 }
 
 /** Gets all groups that have a specific member. */
-export async function getAllWithMember(
-  member: Prisma.AccountWhereUniqueInput
-): Promise<Result<readonly Group[]>> {
+export async function getAllWithMember(member: Prisma.AccountWhereUniqueInput) {
   return await query(
     (database) =>
       database.account
@@ -82,16 +80,7 @@ export async function getAllWithMember(
 }
 
 /** Gets information about a group, including its manager and member lists. */
-export async function getWithMembers(
-  group: Prisma.GroupWhereUniqueInput
-): Promise<
-  Result<
-    Group & {
-      readonly managers: readonly Account[]
-      readonly members: readonly Account[]
-    }
-  >
-> {
+export async function getWithMembers(group: Prisma.GroupWhereUniqueInput) {
   return await query(
     (database) =>
       database.group.findUnique({
@@ -106,7 +95,7 @@ export async function getWithMembers(
 export async function update(
   filter: Prisma.GroupWhereUniqueInput,
   data: Prisma.GroupUpdateInput
-): Promise<Result<Group>> {
+) {
   return await query(
     (database) => database.group.update({ where: filter, data }),
     errorNoGroupExists

@@ -2,7 +2,7 @@ import { Prisma, PrismaClient } from "@prisma/client"
 import { error, ok, type Result } from "../result"
 
 const prisma = new PrismaClient()
-await prisma.$connect()
+prisma.$connect()
 
 /** The type of Prisma Client exposed to queries. */
 export type PartialPrismaClient = Omit<

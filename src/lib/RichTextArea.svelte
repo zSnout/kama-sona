@@ -262,7 +262,7 @@ line 2 of my program
         }
       }}
     >
-      <div class="cursor-default select-none">
+      <div class="cursor-default">
         <slot name="prelude" />
       </div>
     </div>

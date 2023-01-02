@@ -1,23 +1,44 @@
 <script lang="ts">
   import type { Account } from "@prisma/client"
 
-  export let account: Account
-  export let href: string | undefined = undefined
+  /** Only pass `account={undefined}` if you also pass an `override` slot. */
+  export let account: Account | undefined
+  export let href = `/directory/${account?.id}`
+  export let isButton = false
+  export let title: string | undefined = undefined
+
+  const id = Math.random().toString(36).slice(2)
 </script>
 
-<a
-  class="flex flex-col rounded-lg bg-white py-4 px-6 shadow-md dark:bg-slate-850"
-  href={href || `/directory/${account.id}`}
->
-  <div
-    class="overflow-hidden text-ellipsis whitespace-nowrap text-sm opacity-60"
-  >
-    <p class="sr-only">Email address:</p>
-    {account.email}
-  </div>
+{#if isButton}
+  <form class="hidden" id="x-{id}" />
+{/if}
 
-  <div class="whitespace-nowrap text-xl font-bold">
-    <p class="sr-only">Name:</p>
-    {account.name}
-  </div>
-</a>
+<svelte:element
+  this={isButton ? "button" : "a"}
+  class="flex flex-col rounded-lg bg-white py-4 px-6 text-left shadow-md before:whitespace-nowrap dark:bg-slate-850"
+  form="x-{id}"
+  formaction={isButton ? href : undefined}
+  formmethod={isButton ? "post" : undefined}
+  href={isButton ? undefined : href}
+  type="submit"
+  data-tooltip={title}
+>
+  <slot name="override">
+    <div class="max-w-full">
+      <div
+        class="overflow-hidden text-ellipsis whitespace-nowrap text-sm opacity-60"
+      >
+        <p class="sr-only">Email address:</p>
+        {account?.email}
+      </div>
+
+      <div
+        class="overflow-hidden text-ellipsis whitespace-nowrap text-xl font-bold"
+      >
+        <p class="sr-only">Name:</p>
+        {account?.name}
+      </div>
+    </div>
+  </slot>
+</svelte:element>

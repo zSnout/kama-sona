@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { PUBLIC_KS_APP_NAME } from "$env/static/public"
   import AccountCard from "$lib/AccountCard.svelte"
   import CardGrid from "$lib/CardGrid.svelte"
   import type { PageData } from "./$types"
@@ -17,7 +18,11 @@
 </script>
 
 {#if data.accounts.length != 0}
-  <p>Click a user's account to add them to your group.</p>
+  <p class="flex items-center">
+    <span class="mr-4">Click a user's account to add them to your group.</span>
+
+    <a class="field ml-auto inline" href="/group/{data.group.id}">Back</a>
+  </p>
 
   <input
     type="search"
@@ -27,7 +32,7 @@
   />
 {:else}
   <p class="prefer-w-96 m-auto flex flex-1 items-center">
-    It looks like every person on MyBrandeis is already in your group!
+    It looks like every person on {PUBLIC_KS_APP_NAME} is already in your group!
   </p>
 {/if}
 
@@ -39,7 +44,8 @@
       {#each filtered as account}
         <AccountCard
           {account}
-          href="/group/{data.group.id}/members/add/{account.id}"
+          isButton
+          href="/group/{data.group.id}/add-members/{account.id}"
         />
       {/each}
     </CardGrid>

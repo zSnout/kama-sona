@@ -13,7 +13,7 @@
 
 <Title title={PUBLIC_KS_APP_NAME} mode="head-only" />
 
-<p class="mb-5 select-none text-center text-lg font-semibold">
+<p class="mb-5 text-center text-lg font-semibold">
   Welcome back, {data.account.name}!
 </p>
 

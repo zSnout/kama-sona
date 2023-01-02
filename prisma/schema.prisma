@@ -15,11 +15,6 @@ model UnverifiedAccount {
   updated  DateTime @default(now()) @updatedAt
 }
 
-enum AssignmentView {
-  Student
-  Teacher
-}
-
 model Account {
   creation             DateTime           @default(now())
   id                   String             @id @default(auto()) @map("_id") @db.ObjectId
@@ -44,7 +39,7 @@ model Account {
 model Session {
   code     String   @unique @default(uuid())
   creation DateTime @default(now())
-  for      Account? @relation("AccountSession", fields: [forId], references: [id])
+  for      Account? @relation("AccountSession", fields: [forId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   forId    String   @unique @db.ObjectId
   id       String   @id @default(auto()) @map("_id") @db.ObjectId
   updated  DateTime @default(now()) @updatedAt
@@ -54,7 +49,7 @@ model MagicLink {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   code       String   @unique
   expiration DateTime
-  for        Account  @relation("MagicLink", fields: [forId], references: [id])
+  for        Account  @relation("MagicLink", fields: [forId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   forId      String   @unique @db.ObjectId
 }
 
@@ -97,10 +92,9 @@ model Discussion {
   title      String?
   updated    DateTime  @default(now()) @updatedAt
   // Relations:
-  category   Category? @relation("DiscussionCategory", fields: [categoryId], references: [id])
-  categoryId String    @db.ObjectId
+  category   Category? @relation("DiscussionCategory", fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  categoryId String?   @db.ObjectId
   content    Message[] @relation("Discusses")
-  commentsOn Message?  @relation("Comments")
 }
 
 model Message {
@@ -109,11 +103,9 @@ model Message {
   id          String       @id @default(auto()) @map("_id") @db.ObjectId
   updated     DateTime     @default(now()) @updatedAt
   // Relations:
-  comments    Discussion?  @relation("Comments", fields: [commentsId], references: [id])
-  commentsId  String       @unique @db.ObjectId
-  discusses   Discussion   @relation("Discusses", fields: [discussesId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  discusses   Discussion   @relation("Discusses", fields: [discussesId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   discussesId String       @db.ObjectId
-  sender      Account      @relation("MessageSender", fields: [senderId], references: [id])
+  sender      Account      @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   senderId    String       @db.ObjectId
 }
 
@@ -163,7 +155,7 @@ model Resource {
   updated       DateTime     @default(now()) @updatedAt
   viewableAfter DateTime     @default(now())
   // Relations:
-  category      Category     @relation("ResourceCategory", fields: [categoryId], references: [id])
+  category      Category     @relation("ResourceCategory", fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   categoryId    String       @db.ObjectId
 }
 
@@ -178,7 +170,7 @@ model Assignment {
   updated       DateTime           @default(now()) @updatedAt
   viewableAfter DateTime
   // Relations:
-  category      Category           @relation("AssignmentCategory", fields: [categoryId], references: [id])
+  category      Category           @relation("AssignmentCategory", fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   categoryId    String             @db.ObjectId
   groups        Group[]            @relation("AssignmentGroups", fields: [groupIds], references: [id])
   groupIds      String[]           @db.ObjectId
@@ -200,9 +192,9 @@ model AssignmentStatus {
   teacherComment String       @default("")
   updated        DateTime     @default(now()) @updatedAt
   // Relations:
-  assignee       Account      @relation("AssignmentAssignee", fields: [assigneeId], references: [id])
+  assignee       Account      @relation("AssignmentAssignee", fields: [assigneeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   assigneeId     String       @db.ObjectId
-  assignment     Assignment   @relation("AssignmentStatus", fields: [assignmentId], references: [id])
+  assignment     Assignment   @relation("AssignmentStatus", fields: [assignmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   assignmentId   String       @db.ObjectId
 }
 

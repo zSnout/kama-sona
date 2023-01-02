@@ -94,7 +94,7 @@
       />
 
       {#if values.length > 0}
-        <p class="w-10 select-none text-center">
+        <p class="w-10 text-center">
           {values.length}
           <span class="sr-only"
             >item{values.length == 1 ? "" : "s"} selected</span
