@@ -118,6 +118,7 @@ export async function create(
     managers: managers.length
       ? { connect: managers.map(({ id }) => ({ id })) }
       : undefined,
+    points: data.points,
     statuses: assignees.length
       ? {
           createMany: {
@@ -130,6 +131,7 @@ export async function create(
         }
       : undefined,
     title: data.title.slice(0, 100),
+    viewableAfter: data.viewableAfter,
   })
 }
 
@@ -145,7 +147,17 @@ export const errorNoAssignmentExists = error(
 /** Gets a specific assignment. */
 export async function get(assignment: Prisma.AssignmentWhereUniqueInput) {
   return await query(
-    (database) => database.assignment.findUnique({ where: assignment }),
+    (database) =>
+      database.assignment.findUnique({
+        where: assignment,
+        include: {
+          category: true,
+          groups: true,
+          statuses: {
+            include: { assignee: true },
+          },
+        },
+      }),
     errorNoAssignmentExists
   )
 }

@@ -248,7 +248,8 @@ line 2 of my program
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
       bind:this={element}
-      class="rta prose flex flex-1 cursor-text select-text flex-col pt-3"
+      class="rta prose flex flex-1 cursor-text select-text flex-col"
+      class:pt-3={!readonly}
       style:--placeholder={(editor?.getText().trim() == "" &&
         editor.getHTML().startsWith("<p>") &&
         `"${placeholder}"`) ||

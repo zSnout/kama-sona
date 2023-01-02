@@ -413,6 +413,10 @@ body {
   .icon-label {
     @apply relative -top-[0.125rem] mr-1 inline h-[1em] w-[1em] text-gray-350 dark:text-slate-500;
   }
+
+  :where(.red) .icon-label {
+    @apply text-red-300 dark:text-red-500;
+  }
 }
 
 :root.no-transitions *,

@@ -1,7 +1,7 @@
 import { unwrapOr500 } from "$lib/result"
-import { sanitize } from "$lib/sanitize"
 import * as AssignmentStatus from "$lib/server/assignment-status"
 import { extractData } from "$lib/server/extract"
+import { sanitize } from "$lib/server/sanitize"
 import { error } from "@sveltejs/kit"
 import type { Actions, PageServerLoad } from "./$types"
 
@@ -63,6 +63,34 @@ export const actions = {
         { id: params.id },
         { body: sanitize(description), submitted: new Date() }
       )
+    )
+  },
+  async unsubmit({ locals: { account }, params }) {
+    const status = unwrapOr500(await AssignmentStatus.get({ id: params.id }))
+
+    if (status.assigneeId != account.id) {
+      throw error(
+        503,
+        "Why are you trying to unsubmit someone else's assignment?"
+      )
+    }
+
+    if (!status.submitted) {
+      throw error(
+        409,
+        "I don't think I can unsubmit an assignment that isn't submitted yet."
+      )
+    }
+
+    if (new Date() > status.due) {
+      throw error(
+        409,
+        "Well aren't you sneaky, changing your assignment after it's due!"
+      )
+    }
+
+    unwrapOr500(
+      await AssignmentStatus.update({ id: params.id }, { submitted: null })
     )
   },
 } satisfies Actions

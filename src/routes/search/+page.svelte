@@ -118,11 +118,17 @@
           icon: faCalendarCheck,
           title: "Due date:",
         },
-        {
-          content: toDateString(status.due),
-          icon: faPercent,
-          title: "Number of points:",
-        },
+        ...(status.assignment.points == 0
+          ? []
+          : [
+              {
+                content: `${status.assignment.points} point${
+                  status.assignment.points == 1 ? "" : "s"
+                }`,
+                icon: faPercent,
+                title: "Points:",
+              },
+            ]),
       ],
       title: status.assignment.title,
       category: status.assignment.category.title,
@@ -519,10 +525,7 @@
           icon={itemToIcon(item.type)}
         />
 
-        <p
-          class="prefer-w-80 col-start-2 col-end-3 row-start-1 row-end-2"
-          href={item.href}
-        >
+        <p class="prefer-w-80 col-start-2 col-end-3 row-start-1 row-end-2">
           {item.title}
         </p>
 

@@ -1,8 +1,8 @@
 import { unwrapOr500 } from "$lib/result"
-import { sanitize } from "$lib/sanitize"
 import { create } from "$lib/server/assignment"
 import * as Category from "$lib/server/category"
 import * as Extract from "$lib/server/extract"
+import { sanitize } from "$lib/server/sanitize"
 import { error, redirect } from "@sveltejs/kit"
 import type { Actions, PageServerLoad } from "./$types"
 
