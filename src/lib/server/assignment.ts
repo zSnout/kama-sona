@@ -155,6 +155,7 @@ export async function get(assignment: Prisma.AssignmentWhereUniqueInput) {
           groups: true,
           statuses: {
             include: { assignee: true },
+            orderBy: { assignee: { name: "asc" } },
           },
         },
       }),

@@ -1,6 +1,10 @@
 <script lang="ts">
   import { enhance } from "$app/forms"
-  import { PUBLIC_KS_APP_NAME } from "$env/static/public"
+  import {
+    PUBLIC_KS_APP_NAME,
+    PUBLIC_KS_BYPASS_LOGIN,
+    PUBLIC_KS_ENABLE_SIGN_UP,
+  } from "$env/static/public"
   import CenterOnPage from "$lib/CenterOnPage.svelte"
   import type { ActionData } from "./$types"
 
@@ -52,9 +56,18 @@
           <button class="field w-full" type="submit" {disabled}>Log In</button>
         </label>
 
-        <p class="mt-4 text-center">
-          Or <a class="link" href="/sign-up">sign up</a> for a new account.
-        </p>
+        {#if PUBLIC_KS_BYPASS_LOGIN == "true"}
+          <p class="mx-auto mt-4 max-w-[300px] text-center">
+            {PUBLIC_KS_APP_NAME} won't require verification to log in to accounts
+            at the moment.
+          </p>
+        {/if}
+
+        {#if PUBLIC_KS_ENABLE_SIGN_UP == "true"}
+          <p class="mt-4 text-center">
+            Or <a class="link" href="/sign-up">sign up</a> for a new account.
+          </p>
+        {/if}
       </form>
     </div>
   {/if}

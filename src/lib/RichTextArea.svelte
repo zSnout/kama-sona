@@ -32,6 +32,10 @@
   let element: HTMLElement | undefined
 
   onMount(() => {
+    if (!element) {
+      return
+    }
+
     editor = new Editor({
       element,
       editable: !readonly,
@@ -121,23 +125,38 @@
   }
 </script>
 
-<textarea
-  bind:value
-  class="{className} field min-h-[16rem]"
-  class:degroup={browser}
-  class:sr-only={browser}
-  class:w-full={!browser}
-  {name}
-  {placeholder}
-/>
-
-{#if browser}
+{#if readonly}
   <div
-    class="field flex min-h-[16rem] flex-col overflow-auto md:flex-1"
-    aria-hidden="true"
+    class="field rta prose flex flex-1 cursor-text select-text flex-col"
+    style:--placeholder={(editor?.getText().trim() == "" &&
+      editor.getHTML().startsWith("<p>") &&
+      `"${placeholder}"`) ||
+      null}
   >
-    <!-- #region buttons -->
-    {#if !readonly}
+    <div class="cursor-default">
+      <slot name="prelude" />
+    </div>
+
+    {@html value}
+  </div>
+{:else}
+  <textarea
+    bind:value
+    class="{className} field min-h-[16rem]"
+    class:degroup={browser}
+    class:sr-only={browser}
+    class:w-full={!browser}
+    {name}
+    {placeholder}
+  />
+
+  {#if browser}
+    <div
+      class="field flex min-h-[16rem] flex-col overflow-auto md:flex-1"
+      aria-hidden="true"
+    >
+      <!-- #region buttons -->
+
       <div
         class="sticky -top-2 z-20 -mx-3 -mt-2 -mb-1 flex overflow-x-auto border-b border-gray-300 bg-white p-1 transition scrollbar:hidden dark:border-slate-600 dark:bg-slate-850"
       >
@@ -242,29 +261,30 @@ line 2 of my program
 ```"
         />
       </div>
-    {/if}
-    <!-- #endregion buttons -->
 
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <div
-      bind:this={element}
-      class="rta prose flex flex-1 cursor-text select-text flex-col"
-      class:pt-3={!readonly}
-      style:--placeholder={(editor?.getText().trim() == "" &&
-        editor.getHTML().startsWith("<p>") &&
-        `"${placeholder}"`) ||
-        null}
-      on:mousedown={() => requestAnimationFrame(() => editor?.commands.focus())}
-      on:click={() => requestAnimationFrame(() => editor?.commands.focus())}
-      on:click={(event) => {
-        if (event.target instanceof HTMLAnchorElement) {
-          event.stopPropagation()
-        }
-      }}
-    >
-      <div class="cursor-default">
-        <slot name="prelude" />
+      <!-- #endregion buttons -->
+
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <div
+        bind:this={element}
+        class="rta prose flex flex-1 cursor-text select-text flex-col pt-3"
+        style:--placeholder={(editor?.getText().trim() == "" &&
+          editor.getHTML().startsWith("<p>") &&
+          `"${placeholder}"`) ||
+          null}
+        on:mousedown={() =>
+          requestAnimationFrame(() => editor?.commands.focus())}
+        on:click={() => requestAnimationFrame(() => editor?.commands.focus())}
+        on:click={(event) => {
+          if (event.target instanceof HTMLAnchorElement) {
+            event.stopPropagation()
+          }
+        }}
+      >
+        <div class="cursor-default">
+          <slot name="prelude" />
+        </div>
       </div>
     </div>
-  </div>
+  {/if}
 {/if}

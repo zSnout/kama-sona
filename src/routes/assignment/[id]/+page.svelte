@@ -27,7 +27,7 @@
 <Title mode="head-only" title={assignment.title} />
 
 <div class="flex flex-1 flex-col gap-8 lg:flex-row">
-  <div class="flex flex-1 flex-col">
+  <div class="top-22 flex flex-1 flex-col self-start lg:sticky">
     <div class="prose">
       <h1 class="mt-0 mb-2 border-0 pb-0">{assignment.title}</h1>
 
@@ -90,7 +90,7 @@
     {/if}
   </div>
 
-  <div class="prefer-w-xl mx-auto lg:mx-0">
+  <div class="prefer-w-xl top-22 mx-auto self-start lg:sticky lg:mx-0">
     <div class="field-group">
       <div class="field mb-12 flex items-center">
         <p class="text-gray-500 dark:text-gray-400">Assignment status:</p>
@@ -136,7 +136,7 @@
         />
       </div>
 
-      <div class="w-full justify-evenly lg:flex">
+      <div class="flex w-full justify-evenly">
         {#if status.submitted}
           {#if new Date() < status.due}
             <button

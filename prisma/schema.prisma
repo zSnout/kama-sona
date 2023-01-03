@@ -24,7 +24,6 @@ model Account {
   updated              DateTime           @default(now()) @updatedAt
   // Relations:
   assignedTo           AssignmentStatus[] @relation("AssignmentAssignee")
-  assignedToIds        String[]           @db.ObjectId
   magicLink            MagicLink?         @relation("MagicLink")
   managedAssignments   Assignment[]       @relation("AssignmentManager", fields: [managedAssignmentIds], references: [id])
   managedAssignmentIds String[]           @db.ObjectId
@@ -177,7 +176,6 @@ model Assignment {
   managers      Account[]          @relation("AssignmentManager", fields: [managerIds], references: [id])
   managerIds    String[]           @db.ObjectId
   statuses      AssignmentStatus[] @relation("AssignmentStatus")
-  statusIds     String[]           @db.ObjectId
 }
 
 model AssignmentStatus {

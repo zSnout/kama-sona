@@ -8,6 +8,7 @@
   import IconLabels from "$lib/IconLabels.svelte"
   import { mergeQueryParam } from "$lib/mergeQueryParam"
   import { getPage, pages, type Searchable } from "$lib/pages"
+  import Table from "$lib/Table.svelte"
   import { toDateString, toMonthString } from "$lib/toDateString"
   import { itemToIcon } from "$lib/toIcon"
   import type { IconDefinition } from "@fortawesome/free-brands-svg-icons"
@@ -487,7 +488,7 @@
     {/if}
 
     {#if categoryFilterNames.length > 1}
-      <FilterList class="ml-auto hidden md:block">
+      <FilterList class="ml-auto hidden md:flex">
         {#each categoryFilterNames as category (category)}
           <Filter bind:active={categoryFilters[category]}>
             {category}
@@ -508,10 +509,10 @@
 {/if}
 
 {#if items.length != 0}
-  <div class="mt-4">
+  <Table class="mt-4">
     {#each browser ? items : itemsFilteredByIsManager as item (item.href)}
       <a
-        class="ring-color-initial transition-with-[grid-template-columns] grid w-full grid-rows-[auto_auto] gap-x-3 gap-y-1 rounded-lg px-3 py-2 odd:bg-gray-100 even:bg-gray-200 focus:outline-none focus-visible:z-10 focus-visible:-my-[1px] focus-visible:-ml-[1px] focus-visible:w-[calc(100%_+_2px)] focus-visible:border focus-visible:ring dark:odd:bg-slate-800 dark:even:bg-slate-700 {numberOfItemTypesSelected ==
+        class="ring-color-initial transition-with-[grid-template-columns] grid w-full grid-rows-[auto_auto] gap-x-3 gap-y-1 rounded-lg px-3 py-2 focus:outline-none focus-visible:z-10 focus-visible:-my-[1px] focus-visible:-ml-[1px] focus-visible:w-[calc(100%_+_2px)] focus-visible:border focus-visible:ring {numberOfItemTypesSelected ==
         1
           ? 'grid-cols-[0,minmax(0,1fr),minmax(0,0.5fr)] pl-0 md:grid-cols-[0,minmax(0,1fr),repeat(2,minmax(0,0.5fr))]'
           : 'grid-cols-[2rem,minmax(0,1fr),minmax(0,0.5fr)] pl-3 md:grid-cols-[2rem,minmax(0,1fr),repeat(2,minmax(0,0.5fr))]'} relative"
@@ -562,7 +563,7 @@
         {/if}
       </a>
     {/each}
-  </div>
+  </Table>
 {:else}
   <p class="prefer-w-96 mx-auto flex flex-1 items-center">
     We can't find any items that involve you. Try picking a different set of

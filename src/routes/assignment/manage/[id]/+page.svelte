@@ -2,6 +2,7 @@
   import IconLabel from "$lib/IconLabel.svelte"
   import IconLabels from "$lib/IconLabels.svelte"
   import LinkedObject from "$lib/LinkedObject.svelte"
+  import Table from "$lib/Table.svelte"
   import Title from "$lib/Title.svelte"
   import { toDateString } from "$lib/toDateString"
   import {
@@ -9,6 +10,11 @@
     faPercent,
     faUserGroup,
   } from "@fortawesome/free-solid-svg-icons"
+  import {
+    Label,
+    labelToSortPrecedence,
+    statusToLabel,
+  } from "../../statusToLabel"
   import type { PageData } from "./$types"
 
   export let data: PageData
@@ -16,12 +22,23 @@
   $: files = assignment.attachments.filter((e) => e.type == "File")
   $: links = assignment.attachments.filter((e) => e.type == "Link")
   $: groups = assignment.groups.map((group) => group.title)
+  $: labels = assignment.statuses
+    .map((status) => statusToLabel(status, assignment))
+    .reduce<Partial<Record<Label, number>>>((record, label) => {
+      if (label in record) {
+        record[label]!++
+      } else {
+        record[label] = 0
+      }
+
+      return record
+    }, {})
 </script>
 
 <Title mode="head-only" title={assignment.title} />
 
 <div class="flex flex-1 flex-col gap-8 lg:flex-row">
-  <div class="flex flex-1 flex-col">
+  <div class="top-22 flex flex-1 flex-col self-start lg:sticky">
     <div class="prose">
       <h1 class="mt-0 mb-2 border-0 pb-0">{assignment.title}</h1>
 
@@ -81,15 +98,25 @@
     {/if}
   </div>
 
-  <div class="prefer-w-xl mx-auto lg:mx-0">
-    needs improvement:
+  <div
+    class="field-group prefer-w-xl top-22 mx-auto self-start lg:sticky lg:mx-0"
+  >
+    <p class="mb-4 px-3">Assigned to:</p>
 
-    {#each assignment.statuses as status}
-      <div>
-        {status.assignee.name}
-      </div>
+    {#if assignment.statuses.length == 0}
+      <div>No assignees found.</div>
     {:else}
-      <div>No assignees</div>
-    {/each}
+      <Table highlightFirst>
+        {#each assignment.statuses.sort((a, b) => labelToSortPrecedence(statusToLabel(a, assignment)) - labelToSortPrecedence(statusToLabel(b, assignment))) as status}
+          <div class="flex rounded-md px-3 py-1">
+            <p>{status.assignee.name}</p>
+
+            <p class="ml-auto w-22 text-left">
+              {statusToLabel(status, assignment)}
+            </p>
+          </div>
+        {/each}
+      </Table>
+    {/if}
   </div>
 </div>

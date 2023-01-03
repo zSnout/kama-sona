@@ -25,6 +25,9 @@ experience while browsing the website.
 Priority IV items are ideas that aren't important to add anytime soon, but might
 be useful or fun.
 
+- flash cards
+- maps
+- timelines
 - an AI that tells you which assignments to focus on
 - emails about assignments (maybe only missing assignments?)
 - homework scheduler

@@ -83,6 +83,7 @@ const config = {
 
       addVariant("bafter", ["&:before", "&:after"])
       addVariant("scrollbar", ["&::-webkit-scrollbar"])
+      addVariant("child", ["& > "])
 
       matchVariant("has", (value) => `&:has(${value.replace(/_/g, " ")})`)
     }),
@@ -104,6 +105,9 @@ const config = {
           // 400: 156 163 175
           350: "rgb(182 188 197)",
         },
+      },
+      spacing: {
+        22: "5.5rem",
       },
     },
   },

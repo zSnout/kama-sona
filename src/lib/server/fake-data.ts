@@ -89,6 +89,10 @@ function plural(noun: string) {
     return noun + "es"
   }
 
+  if (noun.endsWith("x")) {
+    return noun.slice(0, -1) + "es"
+  }
+
   if (noun.endsWith("y")) {
     return noun.slice(0, -1) + "ies"
   }
@@ -396,25 +400,23 @@ function createParagraph() {
 }
 
 function createBody() {
-  return faker.helpers.arrayElement([
-    createParagraph(),
-    createParagraph(),
-    createParagraph(),
-    createParagraph(),
-    createParagraph(),
-    createParagraph(),
-    createParagraph(), // 7
-    createList(),
-    createList(),
-    createList(),
-    createList(), // 4
-    createParagraph() + createList(),
-    createParagraph() + createList(),
-    createList() + createParagraph(),
-    createList() + createParagraph(), // 4
-    createParagraph() + createList() + createParagraph(),
-    createParagraph() + createList() + createParagraph(), // 2
-  ])
+  const items: string[] = [
+    faker.helpers.arrayElement([createParagraph(), createList()]),
+  ]
+
+  syncRepeat(between(0, 3), () => {
+    const item = faker.helpers.arrayElement([
+      createParagraph(),
+      createList(),
+      undefined,
+    ])
+
+    if (item) {
+      items.push(item)
+    }
+  })
+
+  return items.join("")
 }
 
 function createSection() {
@@ -482,28 +484,13 @@ export function createAssignments(count: number) {
     console.log("got category list")
 
     return repeat(count, () => {
-      const [a, b] = faker.helpers.arrayElement<[a: number, b: number]>([
-        [1, 2], // upcoming
-        [1, 2], // upcoming
-        [1, 2], // upcoming
-        [1, 2], // upcoming
-        [1, 2], // upcoming
-        [1, 2], // upcoming
-        [3, 5], // assigning in the future
-        [3, 5], // assigning in the future
-        [3, 5], // assigning in the future
-        [10, 30], // very far future
-      ])
-
-      const viewableAfter = new Date(+new Date() + between(a * day, b * day))
-
       const category = faker.helpers.arrayElement(categories)
 
       return Assignment.create({
         category: { id: category.id },
         description: createDescription(),
         due: new Date(
-          +viewableAfter +
+          +new Date() +
             faker.helpers.arrayElement([
               between(1 * day, 2 * day), // homework
               between(1 * day, 2 * day), // homework
@@ -539,7 +526,7 @@ export function createAssignments(count: number) {
           between(20, 30), // major test or project
         ]),
         title: createAssignmentTitle(),
-        viewableAfter,
+        viewableAfter: new Date(),
       })
     })
   })
@@ -585,6 +572,14 @@ export async function suite() {
   await createGroupsForUnpopular(50)
   await createGroups(100)
   await createGroupsForUnpopular(50)
+  await createGroups(100)
+  await createGroupsForUnpopular(50)
+  await createGroups(100)
+  await createGroupsForUnpopular(50)
+  await createGroups(100)
+  await createGroupsForUnpopular(50)
+  await createGroups(100)
+  await createGroupsForUnpopular(50)
 
   console.clear()
   console.log("created accounts.")
@@ -592,8 +587,8 @@ export async function suite() {
   console.log("creating categories...")
   await wait(2000)
   await createMinimumRequiredCategories()
-  for (let i = 0; i < 40; i++) {
-    await createExtraCategories(250)
+  for (let i = 0; i < 8; i++) {
+    await createExtraCategories(125)
   }
 
   console.clear()
