@@ -1,15 +1,3 @@
-query((database) =>
-  database.account.findMany({
-    take: 100,
-    orderBy: {
-      managedAssignments: {
-        _count: "desc",
-      },
-    },
-  })
-)
-
-import { query } from "$lib/server/database"
 import type { Assignment, AssignmentStatus } from "@prisma/client"
 
 export const Label = {
