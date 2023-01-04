@@ -125,6 +125,7 @@ export async function create(
             data: assignees.map(({ id: assigneeId }) => ({
               assigneeId,
               due: data.due,
+              exempt: false,
               missing: false,
             })),
           },
