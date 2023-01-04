@@ -33,9 +33,9 @@ class at the appropriate time.
 
 ## Links
 
-<img align="left" alt="An example of `.link`." src="link-light.png" vspace="8" width="140" />
-
 <img align="right" alt="An example of `.link`." src="link-dark.png" vspace="8" width="140" />
+
+<img align="right" alt="An example of `.link`." src="link-light.png" vspace="8" width="140" />
 
 To style links, add the `.link` class to them. It makes an element blue and
 shows an underline upon hovering or focusing. It can also be used on buttons. To
@@ -44,6 +44,8 @@ keep the underline styles but omit the blue color, use `.link-colorless`.
 ## Tooltips
 
 <img align="left" alt="An example of `data-tooltip`." src="tooltip-light.png" vspace="8" />
+
+<img align="left" alt="An example of `data-tooltip`." src="tooltip-dark.png" vspace="8" />
 
 To show text when an element is hovered over, add the `data-tooltip` attribute
 to it. It makes the applied element `position: relative` and adds content in the
