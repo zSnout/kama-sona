@@ -134,7 +134,7 @@
       on:contextmenu|preventDefault
       class="button-icon icon-bg-gray ml-0 outline-none ring-current focus-visible:ring-2 active:ring-0 dark:bg-gray-600 dark:before:text-slate-400 md:before:whitespace-pre"
       title="Report a Bug"
-      href="https://github.com/zSnout/kama-sona/issues/new/choose"
+      href="https://github.com/zSnout/kama-sona/issues"
       data-tooltip="Report a Bug"
     >
       <NavIcon icon={faBug} class="icon-gray" />
