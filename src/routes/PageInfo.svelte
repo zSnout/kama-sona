@@ -19,6 +19,7 @@
 
   <div class="stats">
     <slot name="stats">
+      <p>Fake data:</p>
       <p><strong>23</strong> to do</p>
       <p><strong>5</strong> in progress</p>
       <p><strong>3</strong> completed</p>
