@@ -2,10 +2,10 @@ import type { Assignment, AssignmentStatus } from "@prisma/client"
 
 export const Label = {
   Completed: "Completed",
+  Exempt: "Exempt",
   Graded: "Graded",
   InProgress: "In Progress",
   Late: "Late",
-  Missing: "Missing",
   Overdue: "Overdue",
   Submitted: "Submitted",
   ToDo: "To Do",
@@ -17,19 +17,21 @@ export function statusToLabel(
   status: AssignmentStatus,
   assignment: Assignment
 ) {
-  return status.missing
-    ? Label.Missing
+  return status.exempt
+    ? Label.Exempt
     : status.submitted
     ? status.score != null && assignment.points != 0
       ? Label.Graded
       : status.due < status.submitted
       ? Label.Late
-      : status.attachments.length > 0 || status.body.trim()
+      : status.attachments.length > 0 ||
+        (status.body.trim() && status.body.trim() != "<p></p>")
       ? Label.Submitted
       : Label.Completed
     : new Date() > status.due
     ? Label.Overdue
-    : status.attachments.length > 0 || status.body.trim()
+    : status.attachments.length > 0 ||
+      (status.body.trim() && status.body.trim() != "<p></p>")
     ? Label.InProgress
     : Label.ToDo
 }
@@ -49,7 +51,7 @@ export function statusToColor(
 ) {
   const label = statusToLabel(status, assignment)
 
-  return label == Label.Missing || label == Label.Overdue
+  return label == Label.Overdue
     ? Color.Red
     : label == Label.ToDo
     ? Color.Purple
@@ -64,24 +66,27 @@ export function statusToColor(
  * important tasks. Things near the bottom should be less important.
  */
 const labelToSortPrecedenceRecord: Record<Label, number> = {
-  // Missing and overdue work should be talked about with students ASAP, so it
-  // is at the very top of this list.
-  [Label.Missing]: 1,
-  [Label.Overdue]: 2,
-
   // Completed work is ready to be graded, so it should be next in a teacher's
   // queue. We'll organize this subsection by quality of work, helping students
   // who submit attachments and a description, and forcing those who turned in
   // work late to the bottom of the queue.
-  [Label.Submitted]: 3,
-  [Label.Completed]: 4,
-  [Label.Late]: 5,
+  [Label.Submitted]: 1,
+  [Label.Completed]: 2,
+  [Label.Late]: 3,
+
+  // Overdue work is also important, so let's put it between completed and
+  // incomplete work.
+  [Label.Overdue]: 4,
 
   // In progress and to do work can't be graded, but isn't invalid in any way.
   // These assignments will go in the middle of the queue, as graded work will
   // always be at the bottom.
-  [Label.InProgress]: 6,
-  [Label.ToDo]: 7,
+  [Label.InProgress]: 5,
+  [Label.ToDo]: 6,
+
+  // We'll also stuff exempt work here, as it doesn't need to be thought about
+  // often.
+  [Label.Exempt]: 7,
 
   // Work that has already been graded should be moved out of the way to make
   // room for new and more important tasks.
