@@ -29,7 +29,7 @@ export const actions = {
 
       cookies.set("session", code, {
         path: "/",
-        maxAge: 60 * 60 * 24 * 30,
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
       })
 
       throw redirect(303, "/")
