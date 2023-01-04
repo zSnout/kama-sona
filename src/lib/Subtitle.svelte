@@ -1,5 +1,3 @@
-<h2
-  class="mb-4 mt-8 border-0 pb-0 font-semibold text-slate-800 dark:text-slate-100"
->
+<p class="-mt-3 mb-4 text-sm">
   <slot />
-</h2>
+</p>

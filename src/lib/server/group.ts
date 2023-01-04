@@ -1,4 +1,4 @@
-import type { Account, Group, Prisma } from "@prisma/client"
+import type { Prisma } from "@prisma/client"
 import { error, type Result } from "../result"
 import { errorNoAccountExists } from "./account"
 import { query } from "./database"

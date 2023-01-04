@@ -3,9 +3,9 @@
   import CardGrid from "$lib/CardGrid.svelte"
   import Icon from "$lib/Icon.svelte"
   import MegaStat from "$lib/MegaStat.svelte"
-  import Subtitle from "$lib/Subtitle.svelte"
+  import Subheading from "$lib/Subheading.svelte"
   import Title from "$lib/Title.svelte"
-  import { faPlus, faUserPlus } from "@fortawesome/free-solid-svg-icons"
+  import { faUserPlus } from "@fortawesome/free-solid-svg-icons"
   import type { Account } from "@prisma/client"
   import type { PageData } from "./$types"
 
@@ -25,7 +25,7 @@
   </MegaStat>
 </CardGrid>
 
-<Subtitle>Managers</Subtitle>
+<Subheading>Managers</Subheading>
 
 <CardGrid
   class="grid-cols-[repeat(auto-fill,minmax(min(13rem,100%),1fr))] gap-2"
@@ -35,7 +35,7 @@
   {/each}
 </CardGrid>
 
-<Subtitle>Members</Subtitle>
+<Subheading>Members</Subheading>
 
 <CardGrid
   class="grid-cols-[repeat(auto-fill,minmax(min(13rem,100%),1fr))] gap-2"

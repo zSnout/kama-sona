@@ -1,9 +1,12 @@
 <script lang="ts">
   import { browser } from "$app/environment"
+  import { enhance } from "$app/forms"
   import IconLabel from "$lib/IconLabel.svelte"
   import IconLabels from "$lib/IconLabels.svelte"
+  import LargeTitle from "$lib/LargeTitle.svelte"
   import LinkedObject from "$lib/LinkedObject.svelte"
   import RichTextArea from "$lib/RichTextArea.svelte"
+  import { Color, statusToColor, statusToLabel } from "$lib/statusToLabel"
   import Title from "$lib/Title.svelte"
   import { toDateString } from "$lib/toDateString"
   import {
@@ -11,7 +14,6 @@
     faPercent,
     faUserGroup,
   } from "@fortawesome/free-solid-svg-icons"
-  import { Color, statusToColor, statusToLabel } from "../statusToLabel"
   import type { PageData } from "./$types"
 
   export let data: PageData
@@ -29,7 +31,7 @@
 <div class="flex flex-1 flex-col gap-8 lg:flex-row">
   <div class="top-22 flex flex-1 flex-col self-start lg:sticky">
     <div class="prose">
-      <h1 class="mt-0 mb-2 border-0 pb-0">{assignment.title}</h1>
+      <LargeTitle>{assignment.title}</LargeTitle>
 
       <IconLabels class="mb-4">
         <IconLabel
@@ -95,6 +97,8 @@
       <div class="field mb-12 flex items-center">
         <p class="text-gray-500 dark:text-gray-400">Assignment status:</p>
 
+        <!-- TODO: Add missing and exempt indicators. -->
+
         <div
           class="relative -my-2 mr-[calc(0.75rem_-_1px)] ml-auto h-10 w-6 bg-gradient-to-r from-white before:-top-[1px] bafter:absolute bafter:-bottom-[1px] bafter:left-0 bafter:h-[1px] bafter:w-full bafter:bg-gradient-to-r bafter:from-gray-300 bafter:content-['_'] dark:from-slate-850 dark:bafter:from-slate-600 {color ==
           Color.Red
@@ -122,10 +126,11 @@
       </div>
     </div>
 
-    <form class="flex w-full flex-col" method="post">
+    <form class="flex w-full flex-col" method="post" use:enhance>
       <div
         class="focus-within:z-10"
-        class:-mb-[0.375em]={!browser && !status.submitted}
+        class:-mb-[0.375em]={!browser &&
+          !(status.submitted && new Date() > status.due)}
       >
         <RichTextArea
           class="rounded-bl-lg"

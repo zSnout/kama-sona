@@ -12,7 +12,9 @@
 
 <a
   on:contextmenu|preventDefault
-  class="{className} button-icon {isHomeIcon ? '' : 'hidden sm:block'}"
+  class="{className} button-icon {isHomeIcon
+    ? ''
+    : 'hidden sm:block'} outline-none ring-current focus-visible:ring-2 active:ring-0"
   class:active={href == "/"
     ? $page.url.pathname == "/"
     : $page.url.pathname.startsWith(href)}

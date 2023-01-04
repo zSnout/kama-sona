@@ -40,14 +40,35 @@
 
   $: if (navState == "loading") {
     navProgress.set(0.7)
-  } else {
+  } else if (navState == "loaded") {
     navProgress
       .set(1, { duration: 500 })
       .then(() => navProgress.set(0, { duration: 0 }))
   }
 
-  beforeNavigate(() => (navState = "loading"))
-  afterNavigate(() => (navState = "loaded"))
+  let navStateChangeTimeoutId = 0
+
+  beforeNavigate((navigation) => {
+    if (navigation.type == "leave") {
+      return
+    }
+
+    navStateChangeTimeoutId = setTimeout(() => {
+      navState = "loading"
+    }, 500) as unknown as number
+  })
+
+  afterNavigate((navigation) => {
+    if (navigation.type == "enter") {
+      return
+    }
+
+    clearTimeout(navStateChangeTimeoutId)
+
+    if (navState == "loading") {
+      navState = "loaded"
+    }
+  })
 </script>
 
 <nav
@@ -101,7 +122,7 @@
 
     <button
       on:contextmenu|preventDefault
-      class="button-icon icon-bg-gray ml-auto dark:bg-gray-600 dark:before:text-slate-400"
+      class="button-icon icon-bg-gray ml-auto outline-none ring-current focus-visible:ring-2 active:ring-0 dark:bg-gray-600 dark:before:text-slate-400"
       on:click={Theme.toggle}
       title="Toggle Theme"
       data-tooltip="Theme"
@@ -111,7 +132,7 @@
 
     <a
       on:contextmenu|preventDefault
-      class="button-icon icon-bg-gray ml-0 dark:bg-gray-600 dark:before:text-slate-400 md:before:whitespace-pre"
+      class="button-icon icon-bg-gray ml-0 outline-none ring-current focus-visible:ring-2 active:ring-0 dark:bg-gray-600 dark:before:text-slate-400 md:before:whitespace-pre"
       title="Report a Bug"
       href="https://github.com/zSnout/kama-sona/issues/new/choose"
       data-tooltip="Report a Bug"
