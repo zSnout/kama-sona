@@ -183,7 +183,10 @@ model AssignmentStatus {
   body           String       @default("")
   creation       DateTime     @default(now())
   due            DateTime
+  /// `exempt` and `missing` should never both be `true` at once.
+  exempt         Boolean
   id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  /// `exempt` and `missing` should never both be `true` at once.
   missing        Boolean
   score          Float?
   submitted      DateTime?
