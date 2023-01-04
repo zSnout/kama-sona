@@ -9,7 +9,7 @@ go.
 
 ## Fields
 
-<img align="right" alt="An example of `.field`." src="field-light.png" width="348" />
+<img align="right" alt="An example of `.field`." src="field-light.png" vspace="8" width="348" />
 
 Interfaces are littered with fields. Search bars, inputs, buttons, and
 dropdowns. To keep from copy-pasting Tailwind utilities everywhere, we've made a
@@ -17,7 +17,7 @@ CSS class that encloses all the styles necessary for a field: `.field`. It
 normalizes all kinds of fields, whether they be inputs, textareas, buttons, or
 dropdowns.
 
-<img align="left" alt="An example of `.field`." src="field-dark.png" width="348" />
+<img align="left" alt="An example of `.field`." src="field-dark.png" vspace="8" width="348" />
 
 Of course, different types of elements have different purposes. That's why
 `.field` makes sure to treat each element for its unique needs. Buttons and
@@ -33,6 +33,12 @@ providing a beautiful focus style using a blue border and ring. It also applies
 a hover style by lightening the background and border of a given element. And by
 only applying hover styles to links and buttons, we give users a clue as to what
 can be clicked and what is just an input field.
+
+**Active Fields:** If you have eyes, you will notice that some of the fields
+have a blue background. These elements are marked as "active." Active elements
+are commonly used in filters, but you might find uses for them elsewhere. To
+mark a field as active, add the `.active` class to it. This should be in
+addition to the `.field` class.
 
 Finally, other components also try to match the styles of `.field`. For
 instance, [RichTextArea](#richtextarea) matches the background and border styles
