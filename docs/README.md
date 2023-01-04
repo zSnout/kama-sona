@@ -11,36 +11,40 @@ go.
 
 <img align="right" alt="An example of `.field`." src="field-light.png" vspace="8" width="348" />
 
-Interfaces are littered with fields. Search bars, inputs, buttons, and
-dropdowns. To keep from copy-pasting Tailwind utilities everywhere, we've made a
-CSS class that encloses all the styles necessary for a field: `.field`. It
-normalizes all kinds of fields, whether they be inputs, textareas, buttons, or
-dropdowns.
+If you're trying to make a button, input field, or dropdown, use `.field`. It
+adds background, border, hover, and focus styles for many types of elements. It
+also makes textareas vertically resizable, handles placeholder colors, and works
+well in dark mode.
 
 <img align="left" alt="An example of `.field`." src="field-dark.png" vspace="8" width="348" />
 
-Of course, different types of elements have different purposes. That's why
-`.field` makes sure to treat each element for its unique needs. Buttons and
-links are centered, as they're often used for similar purposes, but textareas
-and inputs are left aligned, as it provides a better user experience when the
-content isn't shifting as they type. Additionally, textareas are vertically
-resizable by default. And did I forget to mention it also styles placeholders in
-textareas and input fields? My bad.
+It also has a sibling class called `.active`, which makes the background and
+border blue to mark the element as "activated." This can be used for filters and
+checkboxes.
 
-And let's not forget hover and focus styles, as they make up a core part of
-navigating an app with keyboard and mouse. `.field` takes care of this by
-providing a beautiful focus style using a blue border and ring. It also applies
-a hover style by lightening the background and border of a given element. And by
-only applying hover styles to links and buttons, we give users a clue as to what
-can be clicked and what is just an input field.
+### Components
 
-#### Active Fields
+`.field` uses a border style of `border-gray-300 dark:border-slate-600`. These
+borders are dark enough to show up when needed, but aren't intrusive to the user
+experience. To match the border and ring styles of `.field` when an element is
+focused, add `.ring-color` to your elements. To match them even when an element
+isn't focused, use `.ring-color-initial`. You'll also need to add the `ring`
+class at the appropriate time.
 
-If you have eyes, you will notice that some of the fields have a blue
-background. These elements are marked as "active." Active elements are commonly
-used in filters, but you might find uses for them elsewhere. To mark a field as
-active, add the `.active` class to it. This should be in addition to the
-`.field` class.
+## Links
 
-Finally, other components also try to match the styles of `.field`. For
-instance, [RichTextArea](#richtextarea) matches the background and border styles
+<img align="left" alt="An example of `.link`." src="link-light.png" vspace="8" width="140" />
+
+<img align="right" alt="An example of `.link`." src="link-dark.png" vspace="8" width="140" />
+
+To style links, add the `.link` class to them. It makes an element blue and
+shows an underline upon hovering or focusing. It can also be used on buttons. To
+keep the underline styles but omit the blue color, use `.link-colorless`.
+
+## Tooltips
+
+<img align="left" alt="An example of `data-tooltip`." src="tooltip-light.png" vspace="8" />
+
+To show text when an element is hovered over, add the `data-tooltip` attribute
+to it. It makes the applied element `position: relative` and adds content in the
+`::before` pseudo element. The tooltip respects the current text color.
