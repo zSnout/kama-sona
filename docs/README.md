@@ -9,7 +9,7 @@ go.
 
 ## Fields
 
-<img align="right" alt="An example of `.field`." src="field-light.png" width="232" />
+<img align="right" alt="An example of `.field`." src="field-light.png" width="348" />
 
 Interfaces are littered with fields. Search bars, inputs, buttons, and
 dropdowns. To keep from copy-pasting Tailwind utilities everywhere, we've made a
@@ -17,7 +17,7 @@ CSS class that encloses all the styles necessary for a field: `.field`. It
 normalizes all kinds of fields, whether they be inputs, textareas, buttons, or
 dropdowns. It even add proper hover and focus styling.
 
-<img align="left" alt="An example of `.field`." src="field-dark.png" width="232" />
+<img align="left" alt="An example of `.field`." src="field-dark.png" width="348" />
 
 Of course, different types of elements have different purposes. That's why
 `.field` makes sure to treat each element specially. Buttons and links are
