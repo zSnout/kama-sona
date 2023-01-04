@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { enhance } from "$app/forms"
   import type { Account } from "@prisma/client"
 
   /** Only pass `account={undefined}` if you also pass an `override` slot. */
@@ -12,7 +11,7 @@
 </script>
 
 {#if isButton}
-  <form class="hidden" id="x-{id}" use:enhance />
+  <form class="hidden" id="x-{id}" />
 {/if}
 
 <svelte:element

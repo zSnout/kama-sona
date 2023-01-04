@@ -32,10 +32,7 @@
           <Title title={data.assignment.title} />
 
           <Subtitle>
-            <a
-              class="link-colorless"
-              href="/directory/{status.assignee.id}"
-            >
+            <a class="link-colorless" href="/directory/{status.assignee.id}">
               {status.assignee.name}
             </a>
 
@@ -64,8 +61,10 @@
         <div class="field-group field-group-row ml-auto flex gap-4">
           <form action="?/missing" method="post" use:enhance>
             <button
+              aria-checked={status.missing}
               class="field h-10 text-center"
               class:active={status.missing}
+              role="checkbox"
               type="submit"
               data-tooltip="Missing"
               aria-label="Missing"
@@ -79,8 +78,10 @@
 
           <form action="?/exempt" method="post" use:enhance>
             <button
+              aria-checked={status.exempt}
               class="field h-10 text-center"
               class:active={status.exempt}
+              role="checkbox"
               type="submit"
               data-tooltip="Exempt"
               aria-label="Exempt"

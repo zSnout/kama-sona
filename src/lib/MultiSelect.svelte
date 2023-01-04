@@ -11,14 +11,32 @@
   import { browser } from "$app/environment"
   import Checkbox from "./Checkbox.svelte"
   import { search } from "fast-fuzzy"
+  import type { ClassNameWith } from "./types"
 
-  export let required = false
-  export let name: string | undefined = undefined
-  export let options: readonly SelectItemOrText[] = []
-  export let values: string[] = []
+  /** The number of options that must exist before a search bar is shown. */
+  export let minSearchableItems = 8
+
+  let className: ClassNameWith<`h-${number}`> = "h-48"
+  export { className as class }
+
+  $: heightClass = className
+    .split(" ")
+    .filter((name) => name.startsWith("h-"))
+    .join(" ")
+
+  $: otherClasses = className
+    .split(" ")
+    .filter((name) => !name.startsWith("h-"))
+    .join(" ")
+
   export let items: SelectItem[] = []
-  export let searchLabel = "Search..."
+  export let name: string | undefined = undefined
+  export let noWrap = false
+  export let options: readonly SelectItemOrText[] = []
+  export let required = false
   export let strictHeight = false
+  export let searchLabel = "Search..."
+  export let values: string[] = []
 
   $: mappedItems = options.map((item) =>
     typeof item == "string" ? { label: item, value: item } : item
@@ -43,7 +61,7 @@
 </script>
 
 <select
-  class="field h-48"
+  class="field {otherClasses}"
   class:sr-only={browser}
   {required}
   multiple
@@ -58,14 +76,16 @@
 </select>
 
 <div
-  class="field overflow-y-scroll"
+  class="field overflow-y-scroll {otherClasses} {strictHeight ||
+  mappedItems.length >= minSearchableItems
+    ? heightClass
+    : ''}"
   class:hidden={!browser}
-  class:h-48={strictHeight || mappedItems.length > 7}
   aria-hidden="true"
 >
-  {#if mappedItems.length > 7}
+  {#if mappedItems.length >= minSearchableItems}
     <div
-      class="sticky -top-2 -mx-3 -mt-2 mb-2 flex w-[calc(100%_+_1.5rem)] items-center border-b border-gray-300 bg-white transition focus-within:border-blue-500 dark:border-slate-600 dark:bg-slate-850 dark:focus-within:border-blue-500"
+      class="sticky -top-2 -mx-3 -mt-2 mb-2 flex w-[calc(100%_+_1.5rem)] items-center border-b border-gray-300 bg-white transition focus-within:border-blue-500 dark:border-slate-600 dark:bg-slate-850 dark:focus-visible:border-blue-500"
     >
       <input
         class="flex-1 border-0 border-gray-300 bg-transparent transition focus-visible:border-blue-500 focus-visible:ring-0 dark:border-slate-600 dark:focus-visible:border-blue-500"
@@ -96,9 +116,10 @@
       {#if values.length > 0}
         <p class="w-10 text-center">
           {values.length}
-          <span class="sr-only"
-            >item{values.length == 1 ? "" : "s"} selected</span
-          >
+
+          <span class="sr-only">
+            item{values.length == 1 ? "" : "s"} selected
+          </span>
         </p>
       {/if}
     </div>
@@ -116,6 +137,7 @@
         values = values
       }}
       checked={values.includes(option.value)}
+      {noWrap}
       tabindex={-1}
     >
       {option.label}

@@ -7,6 +7,7 @@
   }
 
   export let checked = false
+  export let noWrap = false
   export let tabindex: -1 | 0 | undefined = undefined
 </script>
 
@@ -22,5 +23,11 @@
     <span class="h-4 w-4" />
   {/if}
 
-  <span><slot /></span>
+  <span
+    class:overflow-hidden={noWrap}
+    class:text-ellipsis={noWrap}
+    class:whitespace-nowrap={noWrap}
+  >
+    <slot />
+  </span>
 </button>

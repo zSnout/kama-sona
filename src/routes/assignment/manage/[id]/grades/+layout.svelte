@@ -29,11 +29,13 @@
 
       {#if browser}
         <button
+          aria-checked={$showingStatus}
+          aria-label="Status"
           class="field ml-auto h-10"
           class:active={$showingStatus}
+          role="checkbox"
           on:click={() => showingStatus.update((value) => !value)}
           data-tooltip="Status"
-          aria-label="Status"
         >
           <Icon class="h-4 w-4" icon={faListCheck} />
         </button>

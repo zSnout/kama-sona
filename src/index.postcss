@@ -59,9 +59,9 @@ body {
 
   .field {
     @apply rounded-lg border border-gray-300 bg-white py-2 px-3 shadow-sm outline-0 transition;
-    @apply focus-within:border focus-within:border-blue-500 focus-within:ring focus-within:ring-blue-200;
+    @apply focus-visible:border focus-visible:border-blue-500 focus-visible:ring focus-visible:ring-blue-200;
     @apply dark:border-slate-600 dark:bg-slate-850;
-    @apply dark:focus-within:border-blue-500 dark:focus-within:ring-blue-900;
+    @apply dark:focus-visible:border-blue-500 dark:focus-visible:ring-blue-900;
     @apply placeholder:text-slate-400 dark:placeholder:text-slate-500;
   }
 
@@ -123,8 +123,8 @@ body {
 
   :where(a).field,
   :where(button.field):enabled {
-    @apply hover:border-gray-400 hover:bg-gray-200 hover:focus-within:border-blue-500;
-    @apply dark:hover:border-slate-500 dark:hover:bg-slate-700 dark:hover:focus-within:border-blue-500;
+    @apply hover:border-gray-400 hover:bg-gray-200 hover:focus-visible:border-blue-500;
+    @apply dark:hover:border-slate-500 dark:hover:bg-slate-700 dark:hover:focus-visible:border-blue-500;
   }
 
   .field:where(.active) {
@@ -140,7 +140,7 @@ body {
 
   .ring-color-initial,
   .ring-color:focus-visible,
-  .ring-color:focus-within:not(:focus) {
+  .ring-color:focus-visible:not(:focus) {
     @apply border-blue-500 ring-blue-200;
     @apply dark:border-blue-500 dark:ring-blue-900;
   }
@@ -392,7 +392,7 @@ body {
       }
     }
 
-    a {
+    a:where(:not(.link)):where(:not(.link-colorless)) {
       @apply text-blue-600 underline-offset-2 dark:text-blue-500;
 
       &:is(.ProseMirror a) {

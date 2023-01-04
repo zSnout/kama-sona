@@ -45,6 +45,7 @@
 
         <IconLabel
           content={group?.title || "Unknown group"}
+          href={group && `/group/${group.id}`}
           icon={faUserGroup}
           title="Published in group:"
         />

@@ -85,7 +85,10 @@ export async function getWithMembers(group: Prisma.GroupWhereUniqueInput) {
     (database) =>
       database.group.findUnique({
         where: group,
-        include: { managers: true, members: true },
+        include: {
+          managers: { orderBy: { name: "asc" } },
+          members: { orderBy: { name: "asc" } },
+        },
       }),
     errorNoGroupExists
   )

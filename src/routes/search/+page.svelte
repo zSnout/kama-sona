@@ -7,6 +7,7 @@
   import IconLabel from "$lib/IconLabel.svelte"
   import IconLabels from "$lib/IconLabels.svelte"
   import { mergeQueryParam } from "$lib/mergeQueryParam"
+  import MultiSelect from "$lib/MultiSelect.svelte"
   import { getPage, pages, type Searchable } from "$lib/pages"
   import Table from "$lib/Table.svelte"
   import { toDateString, toMonthString } from "$lib/toDateString"
@@ -281,33 +282,27 @@
   // #endregion
   // #region filter by groups
 
-  let groupFilters: Record<string, boolean> = {}
-
   $: groupFilterNames = [
     ...new Set(itemsFilteredByIsManager.map((e) => e.group!).filter((e) => e)),
   ].sort((a, b) => a.localeCompare(b, undefined))
 
-  $: selectedFilters = groupFilterNames.filter((name) => groupFilters[name])
+  let selectedGroupFilters: string[] = []
 
   $: itemsFilteredByGroup =
-    selectedFilters.length != 0
+    selectedGroupFilters.length != 0
       ? itemsFilteredByIsManager.filter(({ group }) =>
-          selectedFilters.includes(group || "")
+          selectedGroupFilters.includes(group || "")
         )
       : itemsFilteredByIsManager
 
   // #endregion
   // #region filter by categories
 
-  let categoryFilters: Record<string, boolean> = {}
-
   $: categoryFilterNames = [
     ...new Set(itemsFilteredByGroup.map((e) => e.category!).filter((e) => e)),
   ].sort((a, b) => a.localeCompare(b, undefined))
 
-  $: selectedCategoryFilters = categoryFilterNames.filter(
-    (name) => categoryFilters[name]
-  )
+  let selectedCategoryFilters: string[] = []
 
   $: itemsFilteredByCategory =
     selectedCategoryFilters.length != 0
@@ -476,40 +471,48 @@
 </div>
 
 {#if browser}
-  <div class="mt-2 flex flex-wrap gap-2">
-    {#if groupFilterNames.length > 1}
-      <FilterList class="mr-auto">
-        {#each groupFilterNames as group (group)}
-          <Filter bind:active={groupFilters[group]}>
-            {group}
-          </Filter>
-        {/each}
-      </FilterList>
-    {/if}
+  {#if groupFilterNames.length > 1 || categoryFilterNames.length > 1}
+    <div class="z-20 mt-4 flex flex-wrap gap-2">
+      {#if groupFilterNames.length > 1}
+        <MultiSelect
+          bind:values={selectedGroupFilters}
+          class="prefer-w-72 h-60"
+          minSearchableItems={9}
+          noWrap
+          options={groupFilterNames}
+          searchLabel="Search for groups..."
+        />
+      {/if}
 
-    {#if categoryFilterNames.length > 1}
-      <FilterList class="ml-auto hidden md:flex">
-        {#each categoryFilterNames as category (category)}
-          <Filter bind:active={categoryFilters[category]}>
-            {category}
-          </Filter>
-        {/each}
-      </FilterList>
-    {/if}
+      {#if categoryFilterNames.length > 1}
+        <MultiSelect
+          bind:values={selectedCategoryFilters}
+          class="prefer-w-72 ml-auto h-60"
+          minSearchableItems={9}
+          noWrap
+          options={categoryFilterNames}
+          searchLabel="Search for categories..."
+        />
+      {/if}
+    </div>
+  {/if}
+
+  <div
+    class="sticky top-16 z-10 box-content w-full -translate-x-4 py-4 px-4 backdrop-blur-lg md:-translate-x-8 md:px-8 lg:-translate-x-12 lg:px-12"
+  >
+    <input
+      class="field z-10 w-full"
+      placeholder="Search your items..."
+      type="search"
+      bind:value={query}
+      bind:this={searchEl}
+      on:keydown|stopPropagation={() => {}}
+    />
   </div>
-
-  <input
-    class="field mt-4"
-    placeholder="Search your items..."
-    type="search"
-    bind:value={query}
-    bind:this={searchEl}
-    on:keydown|stopPropagation={() => {}}
-  />
 {/if}
 
 {#if items.length != 0}
-  <Table class="mt-4">
+  <Table>
     {#each browser ? items : itemsFilteredByIsManager as item (item.href)}
       <a
         class="ring-color-initial transition-with-[grid-template-columns] grid w-full grid-rows-[auto_auto] gap-x-3 gap-y-1 rounded-lg px-3 py-2 focus:outline-none focus-visible:z-10 focus-visible:-my-[1px] focus-visible:-ml-[1px] focus-visible:w-[calc(100%_+_2px)] focus-visible:border focus-visible:ring {numberOfItemTypesSelected ==
