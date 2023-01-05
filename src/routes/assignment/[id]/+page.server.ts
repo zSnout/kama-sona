@@ -19,7 +19,7 @@ export const load = (async ({ locals: { account }, params }) => {
 }) satisfies PageServerLoad
 
 const descriptionExtractor = Extract.fromRequest(
-  Extract.optional("description", Extract.text)
+  Extract.optional("body", Extract.text)
 )
 
 export const actions = {
@@ -37,12 +37,12 @@ export const actions = {
       throw error(409, "You can't change an assignment after it's submitted!")
     }
 
-    const { description } = await descriptionExtractor(request)
+    const { body } = await descriptionExtractor(request)
 
     unwrapOr500(
       await AssignmentStatus.update(
         { id: params.id },
-        { body: sanitize(description || "") }
+        { body: sanitize(body || "") }
       )
     )
   },
@@ -60,12 +60,12 @@ export const actions = {
       throw error(409, "You can't change an assignment after it's submitted!")
     }
 
-    const { description } = await descriptionExtractor(request)
+    const { body } = await descriptionExtractor(request)
 
     unwrapOr500(
       await AssignmentStatus.update(
         { id: params.id },
-        { body: sanitize(description || ""), submitted: new Date() }
+        { body: sanitize(body || ""), submitted: new Date() }
       )
     )
   },

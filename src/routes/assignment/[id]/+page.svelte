@@ -19,6 +19,7 @@
   export let data: PageData
   $: ({ status } = data)
   $: ({ assignment } = status)
+  $: body = status.body
   $: group = assignment.groups[0]
   $: files = assignment.attachments.filter((e) => e.type == "File")
   $: links = assignment.attachments.filter((e) => e.type == "Link")
@@ -127,7 +128,13 @@
       </div>
     </div>
 
-    <form class="flex w-full flex-col" method="post" use:enhance>
+    <form
+      class="flex w-full flex-col"
+      method="post"
+      use:enhance={() =>
+        ({ update }) =>
+          update({ reset: false })}
+    >
       <div
         class="focus-within:z-10"
         class:-mb-[0.375em]={!browser &&
@@ -135,10 +142,10 @@
       >
         <RichTextArea
           class="rounded-bl-lg"
-          name="description"
-          placeholder="Type a description for your submission..."
+          name="body"
+          placeholder="Type a submission..."
           readonly={status.submitted != null}
-          value={status.body}
+          value={body}
         />
       </div>
 
