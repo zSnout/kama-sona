@@ -143,6 +143,7 @@
   <textarea
     class="{className} field min-h-[16rem]"
     class:degroup={browser}
+    class:sr-only={browser}
     class:w-full={!browser}
     {name}
     {placeholder}
