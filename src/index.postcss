@@ -42,7 +42,7 @@ body {
     @apply content-[attr(href)];
   }
 
-  [data-tooltip]:hover::before,
+  [data-tooltip]:hover:where(:not(:disabled))::before,
   [data-tooltip]:focus::before {
     @apply scale-100 opacity-100;
   }

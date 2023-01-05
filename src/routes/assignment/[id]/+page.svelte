@@ -136,7 +136,7 @@
           update({ reset: false })}
     >
       <div
-        class="focus-within:z-10"
+        class="focus:z-10"
         class:-mb-[0.375em]={!browser &&
           !(status.submitted && new Date() > status.due)}
       >
@@ -153,7 +153,7 @@
         {#if status.submitted}
           {#if new Date() < status.due}
             <button
-              class="field prefer-w-40 rounded-t-none border-t-0 focus-within:-mt-[1px]"
+              class="field prefer-w-40 rounded-t-none border-t-0 focus:-mt-[1px]"
               type="submit"
               formaction="?/unsubmit"
             >
@@ -162,7 +162,7 @@
           {/if}
         {:else}
           <button
-            class="field prefer-w-40 rounded-t-none border-t-0 focus-within:-mt-[1px]"
+            class="field prefer-w-40 rounded-t-none border-t-0 focus:-mt-[1px]"
             type="submit"
             formaction="?/draft"
           >
@@ -170,7 +170,7 @@
           </button>
 
           <button
-            class="field prefer-w-40 rounded-t-none border-t-0 focus-within:-mt-[1px]"
+            class="field prefer-w-40 rounded-t-none border-t-0 focus:-mt-[1px]"
             type="submit"
             formaction="?/submit"
           >

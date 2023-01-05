@@ -20,15 +20,21 @@
       <label class="label w-full">
         <p>Group name:</p>
 
-        <input type="text" name="title" class="field w-full" required />
+        <input
+          type="text"
+          name="title"
+          class="field w-full"
+          required
+          maxlength="32"
+        />
       </label>
 
       <label class="label w-full">
         <p>Click to create your group:</p>
 
-        <button class="field w-full" type="submit" {disabled}
-          >Create Group</button
-        >
+        <button class="field w-full" type="submit" {disabled}>
+          Create Group
+        </button>
       </label>
     </form>
   </div>

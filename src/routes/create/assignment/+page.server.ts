@@ -84,7 +84,10 @@ export const actions = {
     const assignment = unwrapOr500(
       await create({
         category: data.willCreateCategory
-          ? { name: data.newCategoryName!, weight: data.newCategoryWeight! }
+          ? {
+              name: data.newCategoryName!.trim().slice(0, 32),
+              weight: Math.max(Math.min(data.newCategoryWeight!, 1000), 0),
+            }
           : { id: data.category! },
         description: sanitize(data.description),
         due: data.due,
@@ -103,8 +106,8 @@ export const actions = {
               return { href, title }
             })
             .filter((link): link is typeof link & object => !!link) || [],
-        points: data.points,
-        title: data.title,
+        points: Math.max(Math.min(data.points, 1000), 0),
+        title: data.title.trim().slice(0, 100),
         viewableAfter: data.viewableAfter,
       })
     )

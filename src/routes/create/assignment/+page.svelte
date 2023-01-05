@@ -83,6 +83,7 @@
                 type="text"
                 name="title"
                 class="field w-full"
+                maxlength="100"
                 required
                 bind:value={title}
               />
@@ -161,6 +162,7 @@
                 required
                 bind:value={points}
                 min="0"
+                max="1000"
                 step="1"
               />
             </label>
@@ -219,6 +221,7 @@
                   type="text"
                   class="field block w-full"
                   name="newCategoryName"
+                  maxlength="32"
                   required
                 />
               {:else}
@@ -250,6 +253,7 @@
                   type="number"
                   class="field block w-full"
                   min="0"
+                  max="1000"
                   name="newCategoryWeight"
                   bind:value={newCategoryWeight}
                 />

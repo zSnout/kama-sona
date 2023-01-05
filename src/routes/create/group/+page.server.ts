@@ -10,7 +10,7 @@ export const actions = {
 
     const { id } = unwrapOr500(
       await Group.create({
-        group: { title },
+        group: { title: title.trim().slice(0, 32) },
         manager: { id: account.id },
       })
     )

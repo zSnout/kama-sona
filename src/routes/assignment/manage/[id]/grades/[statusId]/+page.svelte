@@ -1,6 +1,6 @@
 <script lang="ts">
   import { browser } from "$app/environment"
-  import { enhance } from "$app/forms"
+  import { enhance, type SubmitFunction } from "$app/forms"
   import { page } from "$app/stores"
   import Icon from "$lib/Icon.svelte"
   import RichTextArea from "$lib/RichTextArea.svelte"
@@ -19,6 +19,10 @@
   $: status = data.assignment.statuses.find(
     (status) => status.id == $page.params.statusId
   )
+
+  let isMissingDisabled = false
+  let isExemptDisabled = false
+  let isCommentDisabled = false
 </script>
 
 {#if status}
@@ -59,15 +63,27 @@
         </div>
 
         <div class="field-group field-group-row ml-auto flex gap-4">
-          <form action="?/missing" method="post" use:enhance>
+          <form
+            action="?/missing"
+            method="post"
+            use:enhance={() => {
+              isMissingDisabled = true
+
+              return async ({ update }) => {
+                await update({ reset: false })
+                isMissingDisabled = false
+              }
+            }}
+          >
             <button
               aria-checked={status.missing}
+              aria-label="Missing"
               class="field h-10 text-center"
               class:active={status.missing}
+              disabled={isMissingDisabled}
               role="checkbox"
               type="submit"
               data-tooltip="Missing"
-              aria-label="Missing"
             >
               <Icon
                 class="relative left-[1px] h-5 w-5"
@@ -76,15 +92,27 @@
             </button>
           </form>
 
-          <form action="?/exempt" method="post" use:enhance>
+          <form
+            action="?/exempt"
+            method="post"
+            use:enhance={() => {
+              isExemptDisabled = true
+
+              return async ({ update }) => {
+                await update({ reset: false })
+                isExemptDisabled = false
+              }
+            }}
+          >
             <button
               aria-checked={status.exempt}
+              aria-label="Exempt"
               class="field h-10 text-center"
               class:active={status.exempt}
+              disabled={isExemptDisabled}
               role="checkbox"
               type="submit"
               data-tooltip="Exempt"
-              aria-label="Exempt"
             >
               <Icon class="relative left-[1px] h-5 w-5" icon={faThumbsUp} />
             </button>
@@ -93,7 +121,7 @@
       </div>
 
       {#if status.submitted}
-        <div class="prefer-w-96">
+        <div class="prose prefer-w-96">
           {@html status.body}
         </div>
       {:else}
@@ -102,8 +130,19 @@
     </div>
 
     <div class="prefer-w-md">
-      <form use:enhance method="post">
-        <div class="relative focus-within:z-10" class:-mb-[0.375em]={!browser}>
+      <form
+        use:enhance={() => {
+          isCommentDisabled = true
+
+          return ({ update }) => {
+            isCommentDisabled = false
+            return update({ reset: false })
+          }
+        }}
+        method="post"
+        action="?/comment"
+      >
+        <div class="relative focus:z-10" class:-mb-[0.375em]={!browser}>
           <RichTextArea
             class="rounded-bl-lg"
             name="comment"
@@ -114,7 +153,8 @@
 
         <div class="relative flex flex-row">
           <button
-            class="field prefer-w-40 mx-auto rounded-t-none border-t-0 focus-within:-mt-[1px]"
+            disabled={isCommentDisabled}
+            class="field prefer-w-40 mx-auto rounded-t-none border-t-0 focus:-mt-[1px]"
             type="submit"
           >
             Add Comment

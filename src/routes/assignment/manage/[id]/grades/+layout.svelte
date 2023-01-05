@@ -64,16 +64,6 @@
           {status.assignee.name}
         </p>
 
-        {#if status.missing}
-          <p
-            class="overflow-hidden text-ellipsis whitespace-nowrap text-sm text-red-400 transition-all"
-            class:h-5={$showingStatus}
-            class:h-0={!$showingStatus}
-          >
-            Missing
-          </p>
-        {/if}
-
         <p
           class="overflow-hidden text-ellipsis whitespace-nowrap text-sm transition-all {color ==
           Color.Red
@@ -90,6 +80,16 @@
         >
           {label}
         </p>
+
+        {#if status.missing}
+          <p
+            class="overflow-hidden text-ellipsis whitespace-nowrap text-sm text-red-400 transition-all"
+            class:h-5={$showingStatus}
+            class:h-0={!$showingStatus}
+          >
+            Missing
+          </p>
+        {/if}
       </a>
     {/each}
   </div>
