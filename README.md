@@ -5,7 +5,7 @@ resources, and assignments.
 
 ## Developing
 
-> **Note:** If you want to develop for kama sona, _please_ first look at the
+> **Note** If you want to develop for kama sona, _please_ first look at the
 > [documentation](docs). It's very useful and will save you a lot of time and
 > confusion.
 
