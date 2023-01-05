@@ -2,6 +2,7 @@ import { error, ok, type Error, type Result } from "$lib/result"
 import { faker } from "@faker-js/faker"
 import * as Account from "./account"
 import * as Assignment from "./assignment"
+import * as Resource from "./resource"
 import * as Category from "./category"
 import { query } from "./database"
 import * as Group from "./group"
@@ -326,7 +327,7 @@ export function createExtraCategories(count: number) {
   })
 }
 
-function createAssignmentTitle() {
+function createTitle() {
   return capitalize(faker.company.bs())
 }
 
@@ -476,7 +477,6 @@ function createLink(): { href: string; title: string } {
 
 const day = 24 * 60 * 60 * 1000
 
-/**  */
 export function createAssignments(count: number) {
   return run(async () => {
     const categories = unwrap(await Category.getAll())
@@ -525,7 +525,32 @@ export function createAssignments(count: number) {
           between(10, 15), // quiz
           between(20, 30), // major test or project
         ]),
-        title: createAssignmentTitle(),
+        title: createTitle(),
+        viewableAfter: new Date(),
+      })
+    })
+  })
+}
+
+export function createResources(count: number) {
+  return run(async () => {
+    const categories = unwrap(await Category.getAll())
+
+    console.log("got category list")
+
+    return repeat(count, () => {
+      const category = faker.helpers.arrayElement(categories)
+
+      return Resource.create({
+        category: { id: category.id },
+        description: createDescription(),
+        files: [],
+        groups: category.groupIds.map((id) => ({ id })),
+        links: faker.helpers.arrayElements(
+          [createLink(), createLink(), createLink(), createLink()],
+          faker.helpers.arrayElement([0, 0, 0, 0, 1, 2, 2, 3, 3, 4])
+        ),
+        title: createTitle(),
         viewableAfter: new Date(),
       })
     })

@@ -14,6 +14,8 @@
   import { itemToIcon } from "$lib/toIcon"
   import type { IconDefinition } from "@fortawesome/free-brands-svg-icons"
   import {
+    faArrowUp,
+    faCalendar,
     faCalendarCheck,
     faChevronLeft,
     faChevronRight,
@@ -29,6 +31,7 @@
     AssignmentStatus,
     Category,
     Group,
+    Resource,
   } from "@prisma/client"
   import { search } from "fast-fuzzy"
   import type { PageData } from "./$types"
@@ -137,6 +140,30 @@
     }
   }
 
+  function resourceToItem(
+    resource: Resource & {
+      category: Category
+      groups: Group[]
+    }
+  ): Item {
+    return {
+      type: "resource",
+      isManager: resource.managerIds.includes(data.account.id),
+      category: resource.category.title,
+      date: [resource.creation, new Date()],
+      href: `/resource/${resource.id}`,
+      group: findGroupThatUserIsMemberOf(resource.groups)?.title,
+      title: resource.title,
+      labels: [
+        {
+          content: toDateString(resource.viewableAfter),
+          icon: faCalendar,
+          title: "Visible after:",
+        },
+      ],
+    }
+  }
+
   function groupToItem(group: Group): Item {
     const isManager = group.managerIds.includes(data.account.id)
 
@@ -160,6 +187,7 @@
   $: allItems = [
     ...data.assignedAssignments.map(assignmentStatusToItem),
     ...data.managedAssignments.map(managedAssignmentToItem),
+    ...data.resources.map(resourceToItem),
     ...data.groups.map(groupToItem),
   ]
     .sort((a, b) => (a.title == b.title ? 0 : a.title < b.title ? -1 : 1))
@@ -222,7 +250,7 @@
   $: itemsFilteredByDate = floorDate
     ? allItems.filter((item) => {
         if (!item.date) {
-          return false
+          return true
         }
 
         const [start, end] = item.date
@@ -245,10 +273,13 @@
   let itemTypeFilter: Record<Searchable, boolean> = {
     assignment: type.includes("assignment"),
     group: type.includes("group"),
+    resource: type.includes("resource"),
   }
 
   $: numberOfItemTypesSelected =
-    +itemTypeFilter.assignment + +itemTypeFilter.group
+    +itemTypeFilter.assignment +
+    +itemTypeFilter.group +
+    +itemTypeFilter.resource
 
   $: itemsFilteredByType =
     numberOfItemTypesSelected == 0
@@ -332,6 +363,8 @@
 
   let searchEl: HTMLInputElement | undefined
   // #endregion
+
+  let scrollY = 0
 </script>
 
 <svelte:window
@@ -341,6 +374,7 @@
       searchEl?.focus()
     }
   }}
+  bind:scrollY
 />
 
 <div class="mb-2 flex flex-col flex-wrap gap-2 sm:flex-row">
@@ -498,16 +532,32 @@
   {/if}
 
   <div
-    class="sticky top-16 z-10 box-content w-full -translate-x-4 py-4 px-4 backdrop-blur-lg md:-translate-x-8 md:px-8 lg:-translate-x-12 lg:px-12"
+    class="sticky top-16 z-10 box-content flex w-full -translate-x-4 gap-4 py-4 px-4 backdrop-blur-lg md:-translate-x-8 md:px-8 lg:-translate-x-12 lg:px-12"
   >
     <input
       class="field z-10 w-full"
-      placeholder="Search your items..."
+      placeholder="Search {itemsFilteredByCategory.length == 0
+        ? 'your'
+        : itemsFilteredByCategory.length} item{itemsFilteredByCategory.length ==
+      1
+        ? ''
+        : 's'}..."
       type="search"
       bind:value={query}
       bind:this={searchEl}
       on:keydown|stopPropagation={() => {}}
     />
+
+    {#if browser}
+      <button
+        class="field transition-all {scrollY > 0
+          ? 'w-[2.625rem]'
+          : '-ml-4 w-0 border-0 px-0 opacity-0'}"
+        on:click={() => scrollTo({ behavior: "smooth", top: 0 })}
+      >
+        <Icon class="h-4 w-4" icon={faArrowUp} />
+      </button>
+    {/if}
   </div>
 {/if}
 

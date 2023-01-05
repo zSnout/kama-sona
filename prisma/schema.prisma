@@ -129,6 +129,8 @@ model Group {
   memberIds     String[]     @db.ObjectId
   periods       Period[]     @relation("GroupPeriod", fields: [periodIds], references: [id])
   periodIds     String[]     @db.ObjectId
+  resources     Resource[]   @relation("ResourceGroups", fields: [resourceIds], references: [id])
+  resourceIds   String[]     @db.ObjectId
 }
 
 model Period {
@@ -161,6 +163,8 @@ model Resource {
   // Relations:
   category      Category     @relation("ResourceCategory", fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   categoryId    String       @db.ObjectId
+  groups        Group[]      @relation("ResourceGroups", fields: [groupIds], references: [id])
+  groupIds      String[]     @db.ObjectId
   managers      Account[]    @relation("ResourceManager", fields: [managerIds], references: [id])
   managerIds    String[]     @db.ObjectId
   viewers       Account[]    @relation("ResourceViewer", fields: [viewerIds], references: [id])

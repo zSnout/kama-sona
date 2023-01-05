@@ -1,17 +1,16 @@
 import { error, isUnwrap500Error, unwrapOr500, type Result } from "$lib/result"
-import { AttachmentType, type Assignment, type Prisma } from "@prisma/client"
+import { AttachmentType, type Prisma, type Resource } from "@prisma/client"
 import sanitize from "sanitize-html"
 import * as Account from "./account"
 import { query } from "./database"
-import { getGroupMembers } from "./group"
+import * as Group from "./group"
 import { upload } from "./upload"
 
-export interface AssignmentCreateOptions {
+export interface ResourceCreateOptions {
   readonly category:
     | { readonly name: string; readonly weight: number }
     | { readonly id: string }
   readonly description: string
-  readonly due: Date
   readonly files: readonly File[]
   readonly groups: readonly {
     readonly id: string
@@ -20,20 +19,19 @@ export interface AssignmentCreateOptions {
     readonly href: string
     readonly title: string
   }[]
-  readonly points: number
   readonly title: string
   readonly viewableAfter: Date
 }
 
-/** Creates an assignment. */
+/** Creates a resource. */
 export async function create(
-  data: AssignmentCreateOptions
-): Promise<Result<Assignment>> {
+  data: ResourceCreateOptions
+): Promise<Result<Resource>> {
   const description = sanitize(data.description)
 
   try {
     // I know that using `var` is like a stab in the back by a friend you trust
-    // most, but I'd rather use it than have a separate `let` and assignment,
+    // most, but I'd rather use it than have a separate `let` and resource,
     // even though it would be completely valid according to TSC.
 
     var attachments: Prisma.AttachmentCreateInput[] = await Promise.all(
@@ -62,7 +60,7 @@ export async function create(
   const groupIds = data.groups.map((group) => group.id)
   const groupFilters = groupIds.map((id) => ({ id }))
 
-  const groupMemberResult = await getGroupMembers(groupIds)
+  const groupMemberResult = await Group.getGroupMembers(groupIds)
 
   if (!groupMemberResult.ok) {
     return groupMemberResult
@@ -70,10 +68,8 @@ export async function create(
 
   const {
     managersOf: { all: managers },
-    not,
+    members: viewers,
   } = groupMemberResult.value
-
-  const assignees = not(managers)
 
   return await rawCreate({
     attachments,
@@ -94,64 +90,49 @@ export async function create(
             },
     },
     description,
-    due: data.due,
     groups: { connect: groupFilters },
     managers: managers.length
       ? { connect: managers.map((id) => ({ id })) }
       : undefined,
-    points: data.points,
-    statuses: assignees.length
-      ? {
-          createMany: {
-            data: assignees.map((assigneeId) => ({
-              assigneeId,
-              due: data.due,
-              exempt: false,
-              missing: false,
-            })),
-          },
-        }
-      : undefined,
     title: data.title.slice(0, 100),
     viewableAfter: data.viewableAfter,
+    viewers: viewers.length
+      ? { connect: viewers.map((id) => ({ id })) }
+      : undefined,
   })
 }
 
-/** Creates an assignment from raw database information. */
-export async function rawCreate(data: Prisma.AssignmentCreateInput) {
-  return await query((database) => database.assignment.create({ data }))
+/** Creates a resource from raw database information. */
+export async function rawCreate(data: Prisma.ResourceCreateInput) {
+  return await query((database) => database.resource.create({ data }))
 }
 
-export const errorNoAssignmentExists = error(
-  "No assignment exists that matches the given information."
+export const errorNoResourceExists = error(
+  "No resource exists that matches the given information."
 )
 
-/** Gets a specific assignment. */
-export async function get(assignment: Prisma.AssignmentWhereUniqueInput) {
+/** Gets a specific resource. */
+export async function get(resource: Prisma.ResourceWhereUniqueInput) {
   return await query(
     (database) =>
-      database.assignment.findUnique({
-        where: assignment,
+      database.resource.findUnique({
+        where: resource,
         include: {
           category: true,
           groups: true,
-          statuses: {
-            include: { assignee: true },
-            orderBy: { assignee: { name: "asc" } },
-          },
         },
       }),
-    errorNoAssignmentExists
+    errorNoResourceExists
   )
 }
 
-/** Gets all assignments that have a specific manager. */
-export async function getAllWithManager(
+/** Gets all resources that have a specific manager. */
+export async function getAllWithMember(
   manager: Prisma.AccountWhereUniqueInput
 ) {
   return await query(
     (database) =>
-      database.account.findUnique({ where: manager }).managedAssignments({
+      database.account.findUnique({ where: manager }).viewedResources({
         orderBy: { title: "asc" },
         include: { category: true, groups: true },
       }),

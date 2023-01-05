@@ -125,3 +125,24 @@ export function isUnwrap500Error(
     typeof error.result == "string"
   )
 }
+
+function unwrapOrThrow<U>(result: Result<U>): U {
+  if (result.ok) {
+    return result.value
+  }
+
+  throw result.error
+}
+
+/** Runs an asynchronous function with intermediate results. */
+export function coroutine<T, A extends readonly unknown[]>(
+  fn: (unwrap: <U>(result: Result<U>) => U, ...args: A) => Promise<T>
+): (...args: A) => Promise<Result<T>> {
+  return async (...args) => {
+    try {
+      return ok(await fn(unwrapOrThrow, ...args))
+    } catch (err) {
+      return error(err instanceof Error ? err.message : String(err))
+    }
+  }
+}

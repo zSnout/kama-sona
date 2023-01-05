@@ -1,5 +1,5 @@
 import type { Prisma } from "@prisma/client"
-import { error, type Result } from "../result"
+import { error, ok, type Result } from "../result"
 import { errorNoAccountExists } from "./account"
 import { query } from "./database"
 
@@ -103,4 +103,71 @@ export async function update(
     (database) => database.group.update({ where: filter, data }),
     errorNoGroupExists
   )
+}
+
+export interface GroupMembers {
+  /** The IDs of all accounts who manage ALL of the selected groups. */
+  managersOf: GroupManagers
+
+  /** The IDs of all accounts present in at least one of the selected groups. */
+  members: string[]
+
+  /** Returns a list of IDs who are members but aren't in the passed list. */
+  not: (ids: readonly string[]) => string[]
+}
+
+export interface GroupManagers {
+  /** IDs of accounts who manage ALL of the selected groups. */
+  all: string[]
+
+  /** IDs of accounts who manage NONE of the selected groups. */
+  none: string[]
+
+  /** IDs of accounts who manage AT LEAST ONE of the selected groups. */
+  some: string[]
+}
+
+/** Gets the manager and member IDs of multiple groups. */
+export async function getGroupMembers(groupIds: readonly string[]) {
+  const groups = await query((database) =>
+    database.group.findMany({
+      where: { id: { in: [...groupIds] } },
+      select: { managerIds: true, memberIds: true },
+    })
+  )
+
+  if (!groups.ok) {
+    return groups
+  }
+
+  const members = groups.value
+    .map((group) => group.memberIds)
+    .reduce((a, b) => a.concat(b), [])
+
+  const not = (ids: readonly string[]) =>
+    members.filter((id) => !ids.includes(id))
+
+  const managersOfSome = groups.value
+    .map((group) => group.managerIds)
+    .reduce((a, b) => a.concat(b), [])
+
+  const managersOfAll = groups.value
+    .map((group) => group.managerIds)
+    .reduce(
+      (previousManagerIds, myManagerIds) =>
+        previousManagerIds.filter((memberId) =>
+          myManagerIds.includes(memberId)
+        ),
+      members
+    )
+
+  return ok<GroupMembers>({
+    managersOf: {
+      all: managersOfAll,
+      some: managersOfSome,
+      none: not(managersOfSome),
+    },
+    members,
+    not,
+  })
 }

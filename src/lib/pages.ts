@@ -1,23 +1,24 @@
 import {
+  faBookOpen,
   faTasks,
   faUserGroup,
   type IconDefinition,
 } from "@fortawesome/free-solid-svg-icons"
 
-export type Creatable = "assignment" | "group"
+export type Creatable = "assignment" | "group" | "resource"
 
 export interface CreateInfo {
   readonly type: Creatable
   readonly singular: string
 }
 
-export type Searchable = "assignment" | "group"
+export type Searchable = "assignment" | "group" | "resource"
 
 export interface SearchInfo {
   readonly type: Searchable
 }
 
-export type PageType = "assignment" | "group"
+export type PageType = "assignment" | "group" | "resource"
 
 export interface Page {
   readonly create?: CreateInfo
@@ -49,7 +50,15 @@ export const pages: readonly Page[] = [
     type: "group",
   },
   // Progress
-  // Resource
+  {
+    create: { singular: "Resource", type: "resource" },
+    color: "green",
+    href: "/search?type=resource",
+    icon: faBookOpen,
+    title: "Resources",
+    search: { type: "resource" },
+    type: "resource",
+  },
   // Discussion
   // Schedule
   // Export
