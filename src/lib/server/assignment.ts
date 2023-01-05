@@ -142,7 +142,7 @@ export async function rawCreate(data: Prisma.AssignmentCreateInput) {
 }
 
 export const errorNoAssignmentExists = error(
-  "No assignments exists that matches the given information."
+  "No assignment exists that matches the given information."
 )
 
 /** Gets a specific assignment. */
