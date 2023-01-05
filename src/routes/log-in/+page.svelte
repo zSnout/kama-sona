@@ -57,9 +57,8 @@
         </label>
 
         {#if PUBLIC_KS_BYPASS_LOGIN == "true"}
-          <p class="mx-auto mt-4 max-w-[300px] text-center">
-            {PUBLIC_KS_APP_NAME} won't require verification to log in to accounts
-            at the moment.
+          <p class="mt-4 text-center">
+            {PUBLIC_KS_APP_NAME} doesn't require verification to log in.
           </p>
         {/if}
 
