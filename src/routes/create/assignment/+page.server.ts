@@ -51,9 +51,7 @@ export const actions = {
       if (!account.managerOfIds.includes(groupId)) {
         throw error(
           503,
-          `You cannot publish an assignment in a group that you don't own. Group id: ${groupId}. Your groups: ${account.managerOfIds.join(
-            ", "
-          )}`
+          "You cannot publish an assignment in a group that you don't own."
         )
       }
     }
