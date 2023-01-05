@@ -141,13 +141,15 @@
   </div>
 {:else}
   <textarea
-    bind:value
     class="{className} field min-h-[16rem]"
     class:degroup={browser}
     class:w-full={!browser}
     {name}
     {placeholder}
+    bind:value
   />
+
+  {@debug value}
 
   {#if browser}
     <div
