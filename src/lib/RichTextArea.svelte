@@ -149,8 +149,6 @@
     bind:value
   />
 
-  {@debug value}
-
   {#if browser}
     <div
       class="field flex min-h-[16rem] flex-col overflow-auto md:flex-1"
