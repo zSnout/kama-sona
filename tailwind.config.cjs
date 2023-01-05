@@ -32,76 +32,84 @@ const config = {
   ],
   plugins: [
     forms,
-    plugin(({ addVariant, matchComponents, matchVariant, theme }) => {
-      matchComponents(
-        {
-          icon: (value) => ({
-            fill: value[200],
-            stroke: value[500],
-            strokeWidth: "16",
-            ".dark &": {
-              fill: value[700],
-              stroke: value[300],
-            },
+    plugin(
+      ({ addComponents, addVariant, matchComponents, matchVariant, theme }) => {
+        addComponents({
+          ".hyphens": {
+            hyphens: "auto",
+          },
+        })
+
+        matchComponents(
+          {
+            icon: (value) => ({
+              fill: value[200],
+              stroke: value[500],
+              strokeWidth: "16",
+              ".dark &": {
+                fill: value[700],
+                stroke: value[300],
+              },
+            }),
+            "icon-fill": (value) => ({
+              fill: value[500],
+            }),
+            "icon-bg": (value) => ({
+              backgroundColor: value[200],
+              color: value[500],
+              ".dark &": {
+                backgroundColor: value[800],
+              },
+            }),
+            "icon-text": (value) => ({
+              color: value[500],
+            }),
+          },
+          { values: theme("colors") }
+        )
+
+        matchComponents(
+          {
+            "prefer-w": (value) => ({
+              width: value,
+              maxWidth: "100%",
+            }),
+          },
+          { values: { ...theme("width"), ...theme("maxWidth") } }
+        )
+
+        matchComponents({
+          "transition-with": (value) => ({
+            "transition-property":
+              "color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, " +
+              value.replace(/_/g, " "),
+            "transition-timing-function": "cubic-bezier(0.4, 0, 0.2, 1)",
+            "transition-duration": "150ms",
           }),
-          "icon-fill": (value) => ({
-            fill: value[500],
-          }),
-          "icon-bg": (value) => ({
-            backgroundColor: value[200],
-            color: value[500],
-            ".dark &": {
-              backgroundColor: value[800],
-            },
-          }),
-          "icon-text": (value) => ({
-            color: value[500],
-          }),
-        },
-        { values: theme("colors") }
-      )
+        })
 
-      matchComponents(
-        {
-          "prefer-w": (value) => ({
-            width: value,
-            maxWidth: "100%",
-          }),
-        },
-        { values: { ...theme("width"), ...theme("maxWidth") } }
-      )
+        addVariant("bafter", ["&:before", "&:after"])
+        addVariant("scrollbar", ["&::-webkit-scrollbar"])
+        addVariant("child", ["& > "])
 
-      matchComponents({
-        "transition-with": (value) => ({
-          "transition-property":
-            "color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, " +
-            value.replace(/_/g, " "),
-          "transition-timing-function": "cubic-bezier(0.4, 0, 0.2, 1)",
-          "transition-duration": "150ms",
-        }),
-      })
+        addVariant("focus", [
+          "&:focus-within:where(:not(:focus))",
+          "&:focus-visible",
+        ])
 
-      addVariant("bafter", ["&:before", "&:after"])
-      addVariant("scrollbar", ["&::-webkit-scrollbar"])
-      addVariant("child", ["& > "])
+        addVariant("peer-focus", [
+          ".peer:focus-within:where(:not(:focus)) ~ &",
+          ".peer:focus-visible ~ &",
+        ])
 
-      addVariant("focus", [
-        "&:focus-within:where(:not(:focus))",
-        "&:focus-visible",
-      ])
+        addVariant("group-focus", [
+          ".group:focus-within:where(:not(:focus)) &",
+          ".group:focus-visible &",
+        ])
 
-      addVariant("peer-focus", [
-        ".peer:focus-within:where(:not(:focus)) ~ &",
-        ".peer:focus-visible ~ &",
-      ])
-
-      addVariant("group-focus", [
-        ".group:focus-within:where(:not(:focus)) &",
-        ".group:focus-visible &",
-      ])
-
-      matchVariant("has", (value) => `&:has(${value.replace(/_/g, " ")})`)
-    }),
+        matchVariant("has", (value) => `&:has(${value.replace(/_/g, " ")})`)
+      }
+    ),
   ],
   theme: {
     extend: {
