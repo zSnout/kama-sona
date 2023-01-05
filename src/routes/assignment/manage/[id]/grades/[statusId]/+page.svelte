@@ -20,9 +20,10 @@
     (status) => status.id == $page.params.statusId
   )
 
-  let isMissingDisabled = false
-  let isExemptDisabled = false
   let isCommentDisabled = false
+  let isExemptDisabled = false
+  let isScoringDisabled = false
+  let isMissingDisabled = false
 </script>
 
 {#if status}
@@ -161,6 +162,65 @@
           </button>
         </div>
       </form>
+
+      {#if data.assignment.points != 0}
+        <form
+          use:enhance={({ action }) => {
+            isScoringDisabled = true
+
+            return ({ update }) => {
+              isScoringDisabled = false
+
+              return update({ reset: action.search == "?/clearScore" })
+            }
+          }}
+          action="?/score"
+          class="mt-8 flex w-full flex-col"
+          method="post"
+        >
+          <label class="label w-full">
+            <p>
+              {#if status.exempt}
+                Students exempt from an assignment cannot be graded.
+              {:else}
+                Grade (out of {data.assignment.points} point{data.assignment
+                  .points == 1
+                  ? ""
+                  : "s"}):
+              {/if}
+            </p>
+
+            <input
+              class="field w-full"
+              min="0"
+              max={data.assignment.points * 2}
+              name="score"
+              type="number"
+              value={status.score}
+              placeholder="Not graded yet"
+              required={!status.exempt}
+              disabled={status.exempt}
+            />
+          </label>
+
+          <div class="flex gap-6">
+            <button
+              class="field mt-6 w-full"
+              disabled={status.exempt || isScoringDisabled}
+            >
+              {status.score == null ? "Save" : "Change"} Grade
+            </button>
+
+            <button
+              class="field mt-6 w-full"
+              disabled={status.exempt || isScoringDisabled}
+              formaction="?/clearScore"
+            >
+              Clear Grade
+            </button>
+          </div>
+        </form>
+      {/if}
     </div>
   </div>
 {:else}
