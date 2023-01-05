@@ -1,3 +1,4 @@
+import { PUBLIC_KS_MAX_UPLOAD_SIZE } from "$env/static/public"
 import { unwrapOr500 } from "$lib/result"
 import { create } from "$lib/server/assignment"
 import * as Category from "$lib/server/category"
@@ -34,6 +35,14 @@ const extractor = Extract.fromRequest(
 export const actions = {
   async default({ locals: { account }, request }) {
     const data = await extractor(request)
+
+    const maxSize = Number.isSafeInteger(+PUBLIC_KS_MAX_UPLOAD_SIZE)
+      ? Math.max(+PUBLIC_KS_MAX_UPLOAD_SIZE, 0)
+      : 0
+
+    if (data.files.reduce((a, b) => a + b.size, 0) > maxSize) {
+      throw error(400, "Your files are too large.")
+    }
 
     // A user should only be able to create an assignment if they are a manager
     // of all the groups they want to create the assignment in.

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { browser } from "$app/environment"
   import { enhance } from "$app/forms"
+  import { PUBLIC_KS_MAX_UPLOAD_SIZE } from "$env/static/public"
   import CenterOnPage from "$lib/CenterOnPage.svelte"
   import HelpText from "$lib/HelpText.svelte"
   import Icon from "$lib/Icon.svelte"
@@ -35,7 +36,7 @@
   let viewableAfter = todayAsString
   let selectedGroups: SelectItem[] = []
   let points = 0
-  let files: FileList
+  let files: FileList | null
   let willCreateCategory = false
   let description: Editor | undefined
   let newCategoryWeight = 1
@@ -49,6 +50,10 @@
       (me, myIndex, a) =>
         a.findIndex((category) => category.id == me.id) == myIndex
     )
+
+  const maxSize = Number.isSafeInteger(+PUBLIC_KS_MAX_UPLOAD_SIZE)
+    ? Math.max(+PUBLIC_KS_MAX_UPLOAD_SIZE, 0)
+    : 0
 </script>
 
 <Title mode="head-only" title="Create an Assignment" />
@@ -295,26 +300,55 @@
 
             <span class="h-4" />
 
-            <label class="label mt-auto w-full">
-              <p>Upload files:</p>
+            {#if PUBLIC_KS_MAX_UPLOAD_SIZE != "0"}
+              <label class="label mt-auto w-full">
+                <p>
+                  Upload files (max size {maxSize < 1e3
+                    ? `${maxSize} byte${maxSize == 1 ? "" : "s"}`
+                    : maxSize < 1e6
+                    ? `${Math.round(maxSize / 1e2) / 10} KB`
+                    : maxSize < 1e9
+                    ? `${Math.round(maxSize / 1e5) / 10} MB`
+                    : maxSize < 1e12
+                    ? `${Math.round(maxSize / 1e8) / 10} GB`
+                    : maxSize < 1e15
+                    ? `${Math.round(maxSize / 1e11) / 10} TB`
+                    : maxSize < 1e18
+                    ? `${Math.round(maxSize / 1e14) / 10} PB`
+                    : "slightly less than infinity"}):
+                </p>
 
-              <input
-                type="file"
-                name="files"
-                class="field w-full"
-                multiple
-                bind:files
-              />
-            </label>
+                <input
+                  type="file"
+                  name="files"
+                  class="field w-full"
+                  multiple
+                  bind:files
+                  on:input={(event) => {
+                    const totalSize = [...(event.currentTarget.files || [])]
+                      .map((file) => file.size)
+                      .reduce((a, b) => a + b, 0)
 
-            {#if files && files.length != 0}
-              <div class="field-group label mt-4">
-                <p>Uploaded files:</p>
+                    if (totalSize > maxSize) {
+                      event.currentTarget.setCustomValidity(
+                        "Your files are too large."
+                      )
+                    } else {
+                      event.currentTarget.setCustomValidity("")
+                    }
+                  }}
+                />
+              </label>
 
-                {#each files as file}
-                  <LinkedObject object={file} />
-                {/each}
-              </div>
+              {#if files && files.length != 0}
+                <div class="field-group label mt-4">
+                  <p>Uploaded files:</p>
+
+                  {#each files as file}
+                    <LinkedObject object={file} />
+                  {/each}
+                </div>
+              {/if}
             {/if}
 
             {#if descriptionLinks && descriptionLinks.length != 0}
