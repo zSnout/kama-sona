@@ -31,8 +31,13 @@ model Account {
   managerOfIds         String[]           @db.ObjectId
   memberOf             Group[]            @relation("GroupMembers", fields: [memberOfIds], references: [id])
   memberOfIds          String[]           @db.ObjectId
+  // Relations:
   sentMessages         Message[]          @relation("MessageSender")
   session              Session?           @relation("AccountSession")
+  managedResources     Resource[]         @relation("ResourceManager", fields: [managedResourceIds], references: [id])
+  managedResourceIds   String[]           @db.ObjectId
+  viewedResources      Resource[]         @relation("ResourceViewer", fields: [viewedResourceIds], references: [id])
+  viewedResourceIds    String[]           @db.ObjectId
 }
 
 model Session {
@@ -156,6 +161,10 @@ model Resource {
   // Relations:
   category      Category     @relation("ResourceCategory", fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   categoryId    String       @db.ObjectId
+  managers      Account[]    @relation("ResourceManager", fields: [managerIds], references: [id])
+  managerIds    String[]     @db.ObjectId
+  viewers       Account[]    @relation("ResourceViewer", fields: [viewerIds], references: [id])
+  viewerIds     String[]     @db.ObjectId
 }
 
 model Assignment {
