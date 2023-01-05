@@ -432,7 +432,7 @@
   {/if}
 </div>
 
-<div class="flex flex-wrap gap-4">
+<div class="z-30 flex flex-wrap gap-4">
   <FilterList class="mr-auto">
     {#each pages as page}
       {#if page.search}
@@ -529,7 +529,9 @@
           icon={itemToIcon(item.type)}
         />
 
-        <p class="prefer-w-80 col-start-2 col-end-3 row-start-1 row-end-2">
+        <p
+          class="hyphens prefer-w-80 col-start-2 col-end-3 row-start-1 row-end-2"
+        >
           {item.title}
         </p>
 
