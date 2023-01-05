@@ -206,3 +206,9 @@ type TimeBlock {
   startDate DateTime
   startTime Int
 }
+
+model Upload {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  blob Bytes
+  name String
+}

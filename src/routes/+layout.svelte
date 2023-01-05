@@ -122,7 +122,7 @@
 
     <button
       on:contextmenu|preventDefault
-      class="button-icon icon-bg-gray ml-auto outline-none ring-current focus-visible:ring-2 active:ring-0 dark:bg-gray-600 dark:before:text-slate-400"
+      class="button-icon icon-bg-gray ml-auto outline-none ring-current active:ring-0 focus:ring-2 dark:bg-gray-600 dark:before:text-slate-400"
       on:click={Theme.toggle}
       title="Toggle Theme"
       data-tooltip="Theme"
@@ -132,7 +132,7 @@
 
     <a
       on:contextmenu|preventDefault
-      class="button-icon icon-bg-gray ml-0 outline-none ring-current focus-visible:ring-2 active:ring-0 dark:bg-gray-600 dark:before:text-slate-400 md:before:whitespace-pre"
+      class="button-icon icon-bg-gray ml-0 outline-none ring-current active:ring-0 focus:ring-2 dark:bg-gray-600 dark:before:text-slate-400 md:before:whitespace-pre"
       title="Report a Bug"
       href="https://github.com/zSnout/kama-sona/issues"
       data-tooltip="Report a Bug"

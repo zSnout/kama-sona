@@ -1,17 +1,6 @@
 import { error, ok, type Result } from "$lib/result"
 import { AttachmentType, type Attachment } from "@prisma/client"
-import { mkdir, readFile, writeFile } from "node:fs/promises"
-import { join } from "node:path"
-
-const uploadDirectory = join(process.cwd(), ".uploads")
-
-/** Sanitizes an identifier. */
-function sanitize(id: string) {
-  return id
-    .replace(/[^\w-.:;]/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-+|-+$/g, "")
-}
+import { query } from "./database"
 
 /** Uploads a file to the internal `.uploads` folder. */
 export async function upload(data: File): Promise<
@@ -20,33 +9,39 @@ export async function upload(data: File): Promise<
     readonly attachment: Attachment
   }>
 > {
-  const id = `${sanitize(data.name)}-${crypto.randomUUID()}`
+  const upload = await query(async (database) =>
+    database.upload.create({
+      data: {
+        blob: Buffer.from(await data.arrayBuffer()),
+        name: data.name.slice(0, 200),
+      },
+    })
+  )
 
-  try {
-    await mkdir(uploadDirectory, { recursive: true })
-
-    await writeFile(
-      join(uploadDirectory, id),
-      new DataView(await data.arrayBuffer())
-    )
-  } catch (e) {
-    return error(String(e))
+  if (!upload.ok) {
+    return upload
   }
 
   return ok({
-    id,
+    id: upload.value.id,
     attachment: {
       creation: new Date(),
       type: AttachmentType.File,
-      content: id,
-      label: data.name,
+      content: upload.value.id,
+      label: data.name.slice(0, 200),
     },
   })
 }
 
 /** Gets an uploaded file. */
-export async function get(id: string): Promise<Result<Buffer>> {
-  return readFile(join(uploadDirectory, sanitize(id)))
-    .then<Result<Buffer>>(ok)
-    .catch(error)
+export function get(id: string): Promise<Result<Buffer>> {
+  return query<Buffer>(
+    (database) =>
+      database.upload
+        .findUnique({
+          where: { id },
+        })
+        .then((value) => value?.blob),
+    error("No upload was found.")
+  )
 }

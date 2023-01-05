@@ -12,7 +12,7 @@
     {#each pages as page}
       {#if page.create}
         <a
-          class="bg-{page.color}-200 dark:bg-{page.color}-900 shadow-{page.color}-100 ring-{page.color}-500 hover:border-{page.color}-500 prefer-w-48 flex h-48 flex-col items-center justify-center gap-4 rounded-lg border border-transparent shadow-lg outline-none transition focus-visible:ring dark:shadow-none"
+          class="bg-{page.color}-200 dark:bg-{page.color}-900 shadow-{page.color}-100 ring-{page.color}-500 hover:border-{page.color}-500 prefer-w-48 flex h-48 flex-col items-center justify-center gap-4 rounded-lg border border-transparent shadow-lg outline-none transition focus:ring dark:shadow-none"
           href="/create/{page.create.type}"
         >
           <Icon class="icon-{page.color} h-8 w-8" icon={page.icon} />

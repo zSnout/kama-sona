@@ -418,7 +418,7 @@
     <div class="hidden h-8 flex-1 justify-end md:flex">
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <a
-        class="ring-color relative mx-0 flex items-center rounded-full border-gray-300 px-4 py-1 shadow transition focus:outline-none focus-visible:z-10 focus-visible:ring dark:border-slate-600"
+        class="ring-color relative mx-0 flex items-center rounded-full border-gray-300 px-4 py-1 shadow transition focus:z-10 focus:outline-none focus:ring dark:border-slate-600"
         class:bg-white={!isRangeCenterToday}
         class:bg-gray-300={isRangeCenterToday}
         class:dark:bg-slate-700={isRangeCenterToday}
@@ -515,7 +515,7 @@
   <Table>
     {#each browser ? items : itemsFilteredByIsManager as item (item.href)}
       <a
-        class="ring-color-initial transition-with-[grid-template-columns] grid w-full grid-rows-[auto_auto] gap-x-3 gap-y-1 rounded-lg px-3 py-2 focus:outline-none focus-visible:z-10 focus-visible:-my-[1px] focus-visible:-ml-[1px] focus-visible:w-[calc(100%_+_2px)] focus-visible:border focus-visible:ring {numberOfItemTypesSelected ==
+        class="ring-color-initial transition-with-[grid-template-columns] grid w-full grid-rows-[auto_auto] gap-x-3 gap-y-1 rounded-lg px-3 py-2 focus:z-10 focus:-my-[1px] focus:-ml-[1px] focus:w-[calc(100%_+_2px)] focus:border focus:outline-none focus:ring {numberOfItemTypesSelected ==
         1
           ? 'grid-cols-[0,minmax(0,1fr),minmax(0,0.5fr)] pl-0 md:grid-cols-[0,minmax(0,1fr),repeat(2,minmax(0,0.5fr))]'
           : 'grid-cols-[2rem,minmax(0,1fr),minmax(0,0.5fr)] pl-3 md:grid-cols-[2rem,minmax(0,1fr),repeat(2,minmax(0,0.5fr))]'} relative"

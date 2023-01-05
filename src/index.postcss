@@ -43,7 +43,7 @@ body {
   }
 
   [data-tooltip]:hover::before,
-  [data-tooltip]:focus-visible::before {
+  [data-tooltip]:focus::before {
     @apply scale-100 opacity-100;
   }
 
@@ -59,9 +59,9 @@ body {
 
   .field {
     @apply rounded-lg border border-gray-300 bg-white py-2 px-3 shadow-sm outline-0 transition;
-    @apply focus-visible:border focus-visible:border-blue-500 focus-visible:ring focus-visible:ring-blue-200;
+    @apply focus:border focus:border-blue-500 focus:ring focus:ring-blue-200;
     @apply dark:border-slate-600 dark:bg-slate-850;
-    @apply dark:focus-visible:border-blue-500 dark:focus-visible:ring-blue-900;
+    @apply dark:focus:border-blue-500 dark:focus:ring-blue-900;
     @apply placeholder:text-slate-400 dark:placeholder:text-slate-500;
   }
 
@@ -123,8 +123,8 @@ body {
 
   :where(a).field,
   :where(button.field):enabled {
-    @apply hover:border-gray-400 hover:bg-gray-200 hover:focus-visible:border-blue-500;
-    @apply dark:hover:border-slate-500 dark:hover:bg-slate-700 dark:hover:focus-visible:border-blue-500;
+    @apply hover:border-gray-400 hover:bg-gray-200 hover:focus:border-blue-500;
+    @apply dark:hover:border-slate-500 dark:hover:bg-slate-700 dark:hover:focus:border-blue-500;
   }
 
   .field:where(.active) {
@@ -140,7 +140,7 @@ body {
 
   .ring-color-initial,
   .ring-color:focus-visible,
-  .ring-color:focus-visible:not(:focus) {
+  .ring-color:focus:not(:focus) {
     @apply border-blue-500 ring-blue-200;
     @apply dark:border-blue-500 dark:ring-blue-900;
   }
@@ -187,7 +187,7 @@ body {
 
   .link,
   .link-colorless {
-    @apply underline decoration-transparent underline-offset-2 transition hover:decoration-inherit focus:outline-none focus-visible:decoration-inherit;
+    @apply underline decoration-transparent underline-offset-2 transition hover:decoration-inherit focus:decoration-inherit focus:outline-none;
   }
 
   .link {
