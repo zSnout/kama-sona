@@ -14,6 +14,7 @@
     faPercent,
     faUserGroup,
   } from "@fortawesome/free-solid-svg-icons"
+  import { assign } from "svelte/internal"
   import type { PageData } from "./$types"
 
   export let data: PageData
@@ -95,11 +96,11 @@
   </div>
 
   <div class="prefer-w-xl top-22 mx-auto self-start lg:sticky lg:mx-0">
-    <div class="field-group">
-      <div class="field mb-12 flex items-center">
-        <p class="text-gray-500 dark:text-gray-400">Assignment status:</p>
+    <div class="field-group mb-12">
+      <div class="field flex items-center">
+        <p class="text-gray-500 dark:text-slate-400">Assignment status:</p>
 
-        <!-- TODO: Add missing and exempt indicators. -->
+        <!-- TODO: Add missing indicator. -->
 
         <div
           class="relative -my-2 mr-[calc(0.75rem_-_1px)] ml-auto h-10 w-6 bg-gradient-to-r from-white before:-top-[1px] bafter:absolute bafter:-bottom-[1px] bafter:left-0 bafter:h-[1px] bafter:w-full bafter:bg-gradient-to-r bafter:from-gray-300 bafter:content-['_'] dark:from-slate-850 dark:bafter:from-slate-600 {color ==
@@ -114,7 +115,10 @@
         />
 
         <p
-          class="relative -right-[1px] -top-[1px] -mx-3 -mt-2 mb-[calc(-0.5rem_-_2px)] h-[calc(100%_+_2px)] rounded-r-lg border border-l-0 py-2 pl-1 pr-4 {color ==
+          class="relative -right-[1px] -top-[1px] -mx-3 -mt-2 mb-[calc(-0.5rem_-_2px)] h-[calc(100%_+_2px)] {status.score ==
+          null
+            ? 'rounded-r-lg'
+            : 'rounded-tr-lg'} border border-l-0 py-2 pl-1 pr-4 {color ==
           Color.Red
             ? 'border-red-500 bg-red-200 text-red-900 dark:bg-red-900 dark:text-red-200'
             : color == Color.Green
@@ -126,6 +130,13 @@
           {label}
         </p>
       </div>
+
+      {#if status.score != null}
+        <div class="field flex items-center gap-1">
+          <span class="text-gray-500 dark:text-slate-400">Grade:</span>
+          <span>{status.score} of {assignment.points}</span>
+        </div>
+      {/if}
     </div>
 
     <form
@@ -138,6 +149,7 @@
       <div
         class="focus:z-10"
         class:-mb-[0.375em]={!browser &&
+          status.submitted == null &&
           !(status.submitted && new Date() > status.due)}
       >
         <RichTextArea
