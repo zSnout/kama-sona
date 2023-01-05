@@ -84,9 +84,20 @@ const config = {
       addVariant("bafter", ["&:before", "&:after"])
       addVariant("scrollbar", ["&::-webkit-scrollbar"])
       addVariant("child", ["& > "])
-      addVariant("focus-visible", [
+
+      addVariant("focus", [
         "&:focus-within:where(:not(:focus))",
         "&:focus-visible",
+      ])
+
+      addVariant("peer-focus", [
+        ".peer:focus-within:where(:not(:focus)) ~ &",
+        ".peer:focus-visible ~ &",
+      ])
+
+      addVariant("group-focus", [
+        ".group:focus-within:where(:not(:focus)) &",
+        ".group:focus-visible &",
       ])
 
       matchVariant("has", (value) => `&:has(${value.replace(/_/g, " ")})`)

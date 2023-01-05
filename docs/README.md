@@ -50,3 +50,10 @@ keep the underline styles but omit the blue color, use `.link-colorless`.
 To show text when an element is hovered over, add the `data-tooltip` attribute
 to it. It makes the applied element `position: relative` and adds content in the
 `::before` pseudo element. The tooltip respects the current text color.
+
+## Focus States
+
+When making focus states, use the `focus:` Tailwind modifier. It automatically
+combines `:focus-visible` and `:focus-within`, which is the preferred behavior
+in most circumstances. Specifically, it matches
+`&:focus-visible, &:focus-within:not(:focus)`.
