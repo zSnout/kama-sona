@@ -16,28 +16,32 @@ model UnverifiedAccount {
 }
 
 model Account {
-  creation             DateTime           @default(now())
-  id                   String             @id @default(auto()) @map("_id") @db.ObjectId
-  isAdmin              Boolean
-  email                String             @unique
-  name                 String
-  updated              DateTime           @default(now()) @updatedAt
+  creation                 DateTime           @default(now())
+  id                       String             @id @default(auto()) @map("_id") @db.ObjectId
+  isAdmin                  Boolean
+  email                    String             @unique
+  name                     String
+  updated                  DateTime           @default(now()) @updatedAt
   // Relations:
-  assignedTo           AssignmentStatus[] @relation("AssignmentAssignee")
-  magicLink            MagicLink?         @relation("MagicLink")
-  managedAssignments   Assignment[]       @relation("AssignmentManager", fields: [managedAssignmentIds], references: [id])
-  managedAssignmentIds String[]           @db.ObjectId
-  managerOf            Group[]            @relation("GroupManagers", fields: [managerOfIds], references: [id])
-  managerOfIds         String[]           @db.ObjectId
-  memberOf             Group[]            @relation("GroupMembers", fields: [memberOfIds], references: [id])
-  memberOfIds          String[]           @db.ObjectId
+  assignedTo               AssignmentStatus[] @relation("AssignmentAssignee")
+  magicLink                MagicLink?         @relation("MagicLink")
+  managedAssignments       Assignment[]       @relation("AssignmentManager", fields: [managedAssignmentIds], references: [id])
+  managedAssignmentIds     String[]           @db.ObjectId
+  managedDiscussions       Discussion[]       @relation("DiscussionManager", fields: [managedDiscussionIds], references: [id])
+  managedDiscussionIds     String[]           @db.ObjectId
+  commentableDiscussions   Discussion[]       @relation("DiscussionViewer", fields: [commentableDiscussionIds], references: [id])
+  commentableDiscussionIds String[]           @db.ObjectId
+  managerOf                Group[]            @relation("GroupManagers", fields: [managerOfIds], references: [id])
+  managerOfIds             String[]           @db.ObjectId
+  memberOf                 Group[]            @relation("GroupMembers", fields: [memberOfIds], references: [id])
+  memberOfIds              String[]           @db.ObjectId
   // Relations:
-  sentMessages         Message[]          @relation("MessageSender")
-  session              Session?           @relation("AccountSession")
-  managedResources     Resource[]         @relation("ResourceManager", fields: [managedResourceIds], references: [id])
-  managedResourceIds   String[]           @db.ObjectId
-  viewedResources      Resource[]         @relation("ResourceViewer", fields: [viewedResourceIds], references: [id])
-  viewedResourceIds    String[]           @db.ObjectId
+  sentMessages             Message[]          @relation("MessageSender")
+  session                  Session?           @relation("AccountSession")
+  managedResources         Resource[]         @relation("ResourceManager", fields: [managedResourceIds], references: [id])
+  managedResourceIds       String[]           @db.ObjectId
+  viewedResources          Resource[]         @relation("ResourceViewer", fields: [viewedResourceIds], references: [id])
+  viewedResourceIds        String[]           @db.ObjectId
 }
 
 model Session {
@@ -90,27 +94,38 @@ model Category {
 }
 
 model Discussion {
-  creation   DateTime  @default(now())
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  isTopLevel Boolean
-  title      String?
-  updated    DateTime  @default(now()) @updatedAt
+  attachments   Attachment[]
+  creation      DateTime     @default(now())
+  description   String?
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  isTopLevel    Boolean
+  title         String
+  updated       DateTime     @default(now()) @updatedAt
+  viewableAfter DateTime
   // Relations:
-  category   Category? @relation("DiscussionCategory", fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: SetNull)
-  categoryId String?   @db.ObjectId
-  content    Message[] @relation("Discusses")
+  category      Category?    @relation("DiscussionCategory", fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  categoryId    String?      @db.ObjectId
+  content       Message[]    @relation("Discusses")
+  groups        Group[]      @relation("DiscussionGroups", fields: [groupIds], references: [id])
+  groupIds      String[]     @db.ObjectId
+  managers      Account[]    @relation("DiscussionManager", fields: [managerIds], references: [id])
+  managerIds    String[]     @db.ObjectId
+  commenters    Account[]    @relation("DiscussionViewer", fields: [commenterIds], references: [id])
+  commenterIds  String[]     @db.ObjectId
 }
 
 model Message {
-  creation    DateTime     @default(now())
-  content     Attachment[]
-  id          String       @id @default(auto()) @map("_id") @db.ObjectId
-  updated     DateTime     @default(now()) @updatedAt
+  attachments  Attachment[]
+  body         String
+  creation     DateTime     @default(now())
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  senderName   String
+  updated      DateTime     @default(now()) @updatedAt
   // Relations:
-  discusses   Discussion   @relation("Discusses", fields: [discussesId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  discussesId String       @db.ObjectId
-  sender      Account      @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  senderId    String       @db.ObjectId
+  discusses    Discussion   @relation("Discusses", fields: [discussionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  discussionId String       @db.ObjectId
+  sender       Account      @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  senderId     String       @db.ObjectId
 }
 
 model Group {
@@ -123,6 +138,8 @@ model Group {
   assignmentIds String[]     @db.ObjectId
   categories    Category[]   @relation("GroupCategories", fields: [categoryIds], references: [id])
   categoryIds   String[]     @db.ObjectId
+  discussions   Discussion[] @relation("DiscussionGroups", fields: [assignmentIds], references: [id])
+  discussionIds String[]     @db.ObjectId
   managers      Account[]    @relation("GroupManagers", fields: [managerIds], references: [id])
   managerIds    String[]     @db.ObjectId
   members       Account[]    @relation("GroupMembers", fields: [memberIds], references: [id])

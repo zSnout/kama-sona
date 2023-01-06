@@ -1,8 +1,8 @@
 import { PUBLIC_KS_MAX_UPLOAD_SIZE } from "$env/static/public"
 import { unwrapOr500 } from "$lib/result"
 import * as Category from "$lib/server/category"
+import * as Discussion from "$lib/server/discussion"
 import * as Extract from "$lib/server/extract"
-import * as Resource from "$lib/server/resource"
 import { sanitize } from "$lib/server/sanitize"
 import { error, redirect } from "@sveltejs/kit"
 import type { Actions, PageServerLoad } from "./$types"
@@ -42,14 +42,14 @@ export const actions = {
       throw error(400, "Your files are too large.")
     }
 
-    // A user should only be able to create a resource if they are a manager
-    // of all the groups they want to create the resource in.
+    // A user should only be able to create a discussion if they are a manager
+    // of all the groups they want to create the discussion in.
 
     for (const groupId of data.groups) {
       if (!account.managerOfIds.includes(groupId)) {
         throw error(
           503,
-          "You cannot publish a resource in a group that you don't own."
+          "You cannot publish a discussion in a group that you don't own."
         )
       }
     }
@@ -86,8 +86,8 @@ export const actions = {
       }
     }
 
-    const resource = unwrapOr500(
-      await Resource.create({
+    const discussion = unwrapOr500(
+      await Discussion.create({
         category: data.willCreateCategory
           ? {
               name: data.newCategoryName!.trim().slice(0, 32),
@@ -115,6 +115,6 @@ export const actions = {
       })
     )
 
-    throw redirect(302, `/resource/${resource.id}`)
+    throw redirect(302, `/discussion/${discussion.id}`)
   },
 } satisfies Actions

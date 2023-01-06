@@ -11,9 +11,7 @@
   import MultiSelect, { type SelectItem } from "$lib/MultiSelect.svelte"
   import RichTextArea from "$lib/RichTextArea.svelte"
   import Title from "$lib/Title.svelte"
-  import {
-    faUserGroup
-  } from "@fortawesome/free-solid-svg-icons"
+  import { faUserGroup } from "@fortawesome/free-solid-svg-icons"
   import type { Editor } from "@tiptap/core"
   import type { PageData } from "./$types"
 
@@ -49,12 +47,12 @@
     : 0
 </script>
 
-<Title mode="head-only" title="Create a Resource" />
+<Title mode="head-only" title="Create a Discussion" />
 
 <CenterOnPage>
   {#if data.groups.length == 0}
     <p class="prefer-w-96">
-      You must be the manager of a group in order to create a resource.
+      You must be the manager of a group in order to create a discussion.
     </p>
   {:else}
     <div class="prefer-w-96 lg:prefer-w-[1280px]">
@@ -75,7 +73,7 @@
         <div class="flex flex-col lg:flex-row lg:gap-4">
           <div class="flex max-w-xs flex-col lg:prefer-w-80">
             <label class="label w-full">
-              <p>Resource title:</p>
+              <p>Discussion title:</p>
 
               <input
                 type="text"
@@ -89,7 +87,7 @@
 
             <!-- svelte-ignore a11y-label-has-associated-control -->
             <label class="label w-full">
-              <p>Show to:</p>
+              <p>Add commenters:</p>
 
               <MultiSelect
                 name="groups"
@@ -107,7 +105,7 @@
               <p>Viewable after:</p>
 
               <HelpText
-                content="Students will only see this resource on or after this date."
+                content="Students will only see this discussion on or after this date."
               />
 
               <input
@@ -135,7 +133,7 @@
             >
               <svelte:fragment slot="prelude">
                 <h1 class="mt-0 mb-2 border-0 pb-0">
-                  {title || "Resource title"}
+                  {title || "Discussion title"}
                 </h1>
 
                 <IconLabels class="mb-4">
@@ -151,7 +149,7 @@
 
           <div class="mt-4 flex max-w-xs flex-col lg:mt-0 lg:w-80 lg:flex-1">
             <label class="label w-full">
-              <p>Resource category:</p>
+              <p>Discussion category:</p>
 
               {#if willCreateCategory || categories.length == 0}
                 <input
@@ -299,10 +297,10 @@
         </div>
 
         <label class="label mt-4 w-full lg:mx-auto lg:prefer-w-96">
-          <p>Click to create your resource:</p>
+          <p>Click to create your discussion:</p>
 
           <button class="field w-full" type="submit" {disabled}>
-            Create Resource
+            Create Discussion
           </button>
         </label>
       </form>

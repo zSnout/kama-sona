@@ -1,24 +1,25 @@
 import {
   faBookOpen,
+  faComments,
   faTasks,
   faUserGroup,
   type IconDefinition,
 } from "@fortawesome/free-solid-svg-icons"
 
-export type Creatable = "assignment" | "group" | "resource"
+export type Creatable = "assignment" | "discussion" | "group" | "resource"
 
 export interface CreateInfo {
   readonly type: Creatable
   readonly singular: string
 }
 
-export type Searchable = "assignment" | "group" | "resource"
+export type Searchable = "assignment" | "discussion" | "group" | "resource"
 
 export interface SearchInfo {
   readonly type: Searchable
 }
 
-export type PageType = "assignment" | "group" | "resource"
+export type PageType = "assignment" | "discussion" | "group" | "resource"
 
 export interface Page {
   readonly create?: CreateInfo
@@ -59,7 +60,16 @@ export const pages: readonly Page[] = [
     search: { type: "resource" },
     type: "resource",
   },
-  // Discussion
+
+  {
+    create: { singular: "Discussion", type: "discussion" },
+    color: "purple",
+    href: "/search?type=discussion",
+    icon: faComments,
+    title: "Discussions",
+    search: { type: "discussion" },
+    type: "discussion",
+  },
   // Schedule
   // Export
   // Settings
