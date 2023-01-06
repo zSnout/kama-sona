@@ -37,7 +37,7 @@
 </CardGrid>
 
 <Subheading>
-  Members{data.group.members.length == 1 ? "" : "s"} ({data.group.members
+  Member{data.group.members.length == 1 ? "" : "s"} ({data.group.members
     .length})
 </Subheading>
 
