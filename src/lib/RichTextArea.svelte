@@ -11,11 +11,13 @@
     faListUl,
     faQuoteLeft,
     faStrikethrough,
+    faUnderline,
   } from "@fortawesome/free-solid-svg-icons"
   import { Editor } from "@tiptap/core"
   import { Highlight } from "@tiptap/extension-highlight"
   import { Link } from "@tiptap/extension-link"
   import { Typography } from "@tiptap/extension-typography"
+  import { Underline } from "@tiptap/extension-underline"
   import StarterKit from "@tiptap/starter-kit"
   import { onDestroy, onMount } from "svelte"
   import RichTextAreaButton from "./RichTextAreaButton.svelte"
@@ -52,6 +54,7 @@
         }),
         Highlight,
         Typography,
+        Underline,
       ],
       content: value,
       onTransaction: () => {
@@ -151,10 +154,7 @@
   />
 
   {#if browser}
-    <div
-      class="field flex min-h-[16rem] flex-col overflow-auto md:flex-1"
-      aria-hidden="true"
-    >
+    <div class="field min-h-[16rem] overflow-auto md:flex-1" aria-hidden="true">
       <!-- #region buttons -->
 
       <div
@@ -191,6 +191,14 @@
           title="Toggle italics"
           tooltip="Surround text with underscores:
 _italicized text_"
+        />
+
+        <RichTextAreaButton
+          action={() => editor?.chain().focus().toggleUnderline().run()}
+          active={editor?.isActive("underline")}
+          icon={faUnderline}
+          title="Toggle underline"
+          tooltip="You really shouldn't use underlines."
         />
 
         <RichTextAreaButton
@@ -272,6 +280,7 @@ line 2 of my program
           editor.getHTML().startsWith("<p>") &&
           `"${placeholder}"`) ||
           null}
+        style:min-height="calc(100% - 2rem)"
         on:mousedown={() =>
           requestAnimationFrame(() => editor?.commands.focus())}
         on:click={() => requestAnimationFrame(() => editor?.commands.focus())}
