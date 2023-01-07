@@ -35,7 +35,7 @@ export const pages: readonly Page[] = [
   {
     create: { singular: "Assignment", type: "assignment" },
     color: "red",
-    href: "/search?type=assignment",
+    href: "/search?range=week&type=assignment",
     icon: faTasks,
     title: "Assignments",
     search: { type: "assignment" },
@@ -44,7 +44,7 @@ export const pages: readonly Page[] = [
   {
     create: { singular: "Group", type: "group" },
     color: "blue",
-    href: "/search?type=group",
+    href: "/search?range=week&type=group",
     icon: faUserGroup,
     title: "Groups",
     search: { type: "group" },
@@ -54,17 +54,16 @@ export const pages: readonly Page[] = [
   {
     create: { singular: "Resource", type: "resource" },
     color: "green",
-    href: "/search?type=resource",
+    href: "/search?range=week&type=resource",
     icon: faBookOpen,
     title: "Resources",
     search: { type: "resource" },
     type: "resource",
   },
-
   {
     create: { singular: "Discussion", type: "discussion" },
     color: "purple",
-    href: "/search?type=discussion",
+    href: "/search?range=week&type=discussion",
     icon: faComments,
     title: "Discussions",
     search: { type: "discussion" },
