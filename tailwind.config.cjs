@@ -9,29 +9,56 @@ const config = {
   darkMode: "class",
   safelist: [
     {
-      pattern:
-        /icon-(?:bg-|fill-|text-)?(?:red|orange|yellow|green|blue|purple)/,
+      pattern: /icon-(?:bg-|fill-|text-)?(?:red|green|blue|purple|gray|slate)/,
     },
-    { pattern: /bg-(?:red|orange|yellow|green|blue|purple)-200/ },
+    { pattern: /bg-(?:red|green|blue|purple|gray|slate)-200/ },
     {
-      pattern: /bg-(?:red|orange|yellow|green|blue|purple)-900/,
+      pattern: /bg-(?:red|green|blue|purple|gray|slate)-900/,
       variants: ["dark"],
     },
-    { pattern: /shadow-(?:red|orange|yellow|green|blue|purple)-100/ },
+    { pattern: /shadow-(?:red|green|blue|purple|gray|slate)-100/ },
     {
-      pattern: /border-(?:red|orange|yellow|green|blue|purple)-500/,
+      pattern: /border-(?:red|green|blue|purple|gray|slate)-500/,
       variants: ["hover"],
     },
-    { pattern: /text-(?:red|orange|yellow|green|blue|purple)-500/ },
-    { pattern: /text-(?:red|orange|yellow|green|blue|purple)-700/ },
+    { pattern: /text-(?:red|green|blue|purple|gray|slate)-500/ },
+    { pattern: /text-(?:red|green|blue|purple|gray|slate)-700/ },
     {
-      pattern: /text-(?:red|orange|yellow|green|blue|purple)-300/,
+      pattern: /text-(?:red|green|blue|purple|gray|slate)-300/,
       variants: ["dark"],
     },
-    { pattern: /ring-(?:red|orange|yellow|green|blue|purple)-500/ },
+    { pattern: /ring-(?:red|green|blue|purple|gray|slate)-500/ },
   ],
   plugins: [
     forms,
+    plugin(({ addUtilities, theme }) => {
+      addUtilities({
+        ".bg-body": {
+          "background-color": theme("colors.gray.100"),
+          ".dark &": {
+            "background-color": theme("colors.slate.800"),
+          },
+        },
+        ".bg-layer": {
+          "background-color": theme("colors.white"),
+          ".dark &": {
+            "background-color": theme("colors.slate.900"),
+          },
+        },
+        ".bg-nav": {
+          "background-color": theme("colors.white"),
+          ".dark &": {
+            "background-color": theme("colors.slate.800"),
+          },
+        },
+        ".text-body": {
+          color: theme("colors.slate.600"),
+          ".dark &": {
+            color: theme("colors.slate.300"),
+          },
+        },
+      })
+    }),
     plugin(
       ({ addComponents, addVariant, matchComponents, matchVariant, theme }) => {
         addComponents({

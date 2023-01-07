@@ -14,7 +14,7 @@
   import { tweened } from "svelte/motion"
   import { fade } from "svelte/transition"
   import "../index.postcss"
-  import NavIcon from "./NavIcon.svelte"
+  import NavIcon from "./home/NavIcon.svelte"
   import NavLink from "./NavLink.svelte"
   import NavLinkWide from "./NavLinkWide.svelte"
 
@@ -84,8 +84,7 @@
 
   <div class="mx-auto flex w-full max-w-7xl items-center px-4 sm:px-6 md:px-8">
     <NavLink
-      isHomeIcon
-      href="/"
+      href="/home"
       class="bg-gray-250 icon-bg-gray mr-auto dark:bg-gray-600 dark:before:text-slate-400"
       title="Home"
       tooltip="Home"

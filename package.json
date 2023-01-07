@@ -44,6 +44,7 @@
     "@tiptap/extension-highlight": "^2.0.0-beta.207",
     "@tiptap/extension-link": "^2.0.0-beta.207",
     "@tiptap/extension-typography": "^2.0.0-beta.207",
+    "@tiptap/extension-underline": "^2.0.0-beta.209",
     "@tiptap/starter-kit": "^2.0.0-beta.207",
     "fast-fuzzy": "^1.12.0",
     "htmlparser2": "^8.0.1",
