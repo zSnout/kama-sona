@@ -60,15 +60,15 @@ export const pages: readonly Page[] = [
     search: { type: "resource" },
     type: "resource",
   },
-  {
-    create: { singular: "Discussion", type: "discussion" },
-    color: "purple",
-    href: "/search?range=week&type=discussion",
-    icon: faComments,
-    title: "Discussions",
-    search: { type: "discussion" },
-    type: "discussion",
-  },
+  // {
+  //   create: { singular: "Discussion", type: "discussion" },
+  //   color: "purple",
+  //   href: "/search?range=week&type=discussion",
+  //   icon: faComments,
+  //   title: "Discussions",
+  //   search: { type: "discussion" },
+  //   type: "discussion",
+  // },
   // Schedule
   // Export
   // Settings
