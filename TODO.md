@@ -2,8 +2,8 @@
 
 Priority I items should be implemented as soon as possible.
 
-- creating resources
 - streamlined homepage
+- get discussions working
 
 # Priority II
 
