@@ -16,7 +16,7 @@
 
 <svelte:element
   this={isButton ? "button" : "a"}
-  class="flex flex-col rounded-lg bg-white py-4 px-6 text-left shadow-md before:whitespace-nowrap dark:bg-slate-850"
+  class="flex flex-col rounded-lg py-4 px-6 text-left shadow-md bg-field before:whitespace-nowrap"
   form="x-{id}"
   formaction={isButton ? href : undefined}
   formmethod={isButton ? "post" : undefined}

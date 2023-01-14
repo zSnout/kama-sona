@@ -75,7 +75,7 @@
 </script>
 
 <nav
-  class="sticky top-0 z-50 flex h-16 w-screen select-none bg-white shadow-md dark:bg-slate-800 print:hidden"
+  class="sticky top-0 z-50 flex h-16 w-screen select-none shadow-md bg-nav print:hidden"
 >
   {#if navState == "loading" || $navProgress != 0}
     <div
@@ -157,7 +157,7 @@
   <div
     class="{isNavIconFocused || isNavIconHovered
       ? 'visible scale-100 opacity-100'
-      : 'invisible'} mobile-nav fixed top-14 w-screen bg-white px-4 pt-2 pb-4 shadow-md transition-all hover:opacity-100 dark:bg-slate-800 sm:hidden"
+      : 'invisible'} mobile-nav fixed top-14 w-screen px-4 pt-2 pb-4 shadow-md transition-all bg-nav hover:opacity-100 sm:hidden"
   >
     {#each pages as page}
       <NavLinkWide

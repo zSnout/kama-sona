@@ -456,7 +456,7 @@
     <div class="hidden h-8 flex-1 justify-end md:flex">
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <a
-        class="ring-color relative mx-0 flex items-center rounded-full border-gray-300 px-4 py-1 shadow transition focus:z-10 focus:outline-none focus:ring dark:border-slate-600"
+        class="ring-color relative mx-0 flex items-center rounded-full border-standard px-4 py-1 shadow transition focus:z-10 focus:outline-none focus:ring "
         class:bg-white={!isRangeCenterToday}
         class:bg-gray-300={isRangeCenterToday}
         class:dark:bg-slate-700={isRangeCenterToday}

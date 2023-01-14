@@ -44,7 +44,7 @@
     ? 'right-0'
     : $isSidebarOpen
     ? '-right-82'
-    : '-right-[25rem]'} hidden h-full w-96 bg-white pt-16 shadow-horiz-lg transition-all dark:bg-slate-850 lg:flex"
+    : '-right-[25rem]'} hidden h-full w-96 pt-16 shadow-horiz-lg transition-all bg-field lg:flex"
 >
   <div class="flex h-full w-14 flex-col items-center pt-2">
     {#each sidebarItems as { name, icon, open, onClick }, index (name)}
@@ -60,12 +60,12 @@
     {/each}
   </div>
 
-  <!-- Useful classes for a generic container: h-full flex-1 border-l border-gray-300 dark:border-slate-600 -->
+  <!-- Useful classes for a generic container: h-full flex-1 border-l border-standard -->
 
   {#if $isNotesOpen}
     <RichTextArea
       class="resize-none"
-      fieldClass="rounded-none border-0 border-l focus-within:border-0 focus-within:border-l focus-within:border-gray-300 focus-within:ring-0 dark:focus-within:border-slate-600"
+      fieldClass="rounded-none border-0 border-l focus-within:border-0 focus-within:border-l focus-within:border-standard focus-within:ring-0"
       placeholder="Type a note to yourself..."
       bind:value={$note}
       on:input={(event) => notifyOtherSetters(event.detail[0])}
@@ -73,10 +73,7 @@
       on:remove-value-setter={(event) => setters.delete(event.detail)}
     />
   {:else if $isTodosOpen}
-    <Todo
-      borderless
-      class="flex-1 border-l border-gray-300 dark:border-slate-600"
-    />
+    <Todo borderless class="flex-1 border-l border-standard" />
   {/if}
 </div>
 
@@ -93,11 +90,9 @@
     ? ''
     : 'border-r-0'} {$isSidebarOpen
     ? 'border-transparent'
-    : 'border-gray-300'} bg-white {$isSidebarOpen
+    : 'border-standard'} bg-field {$isSidebarOpen
     ? 'pl-3'
-    : 'pl-2.5'} transition-all hover:pl-3 {$isSidebarOpen
-    ? ''
-    : 'dark:border-slate-600'} ring-color outline-none focus:ring dark:bg-slate-850"
+    : 'pl-2.5'} ring-color outline-none transition-all hover:pl-3 focus:ring"
   class:hover:bg-gray-200={$isSidebarOpen}
   class:hover:dark:bg-slate-700={$isSidebarOpen}
   on:click={() => isSidebarOpen.update(($open) => !$open)}

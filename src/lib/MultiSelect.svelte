@@ -85,10 +85,10 @@
 >
   {#if mappedItems.length >= minSearchableItems}
     <div
-      class="sticky -top-2 -mx-3 -mt-2 mb-2 flex w-[calc(100%_+_1.5rem)] items-center border-b border-gray-300 bg-white transition focus:border-blue-500 dark:border-slate-600 dark:bg-slate-850 dark:focus:border-blue-500"
+      class="sticky -top-2 -mx-3 -mt-2 mb-2 flex w-[calc(100%_+_1.5rem)] items-center border-b transition bg-field border-standard focus:border-blue-500  dark:focus:border-blue-500"
     >
       <input
-        class="flex-1 border-0 border-gray-300 bg-transparent transition focus:border-blue-500 focus:ring-0 dark:border-slate-600 dark:focus:border-blue-500"
+        class="flex-1 border-0 bg-transparent transition border-standard focus:border-blue-500 focus:ring-0  dark:focus:border-blue-500"
         class:border-r={values.length > 0}
         type="search"
         placeholder={searchLabel}

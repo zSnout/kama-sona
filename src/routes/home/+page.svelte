@@ -27,20 +27,4 @@
       {feature}
     />
   {/each}
-
-  <!-- <div class="w-full bg-red-300" />
-  <div class="w-full bg-sky-300" />
-  <div class="w-full bg-green-300" />
-
-  <div class="w-full bg-blue-300" />
-  <div class="w-full bg-purple-300" />
-  <div class="w-full bg-yellow-300" />
-
-  <div class="w-full bg-fuchsia-300" />
-  <div class="w-full bg-emerald-300" />
-  <div class="w-full bg-orange-300" />
-
-  <div class="w-full bg-lime-300" />
-  <div class="w-full bg-pink-300" />
-  <div class="w-full bg-teal-300" /> -->
 </div>

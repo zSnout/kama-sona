@@ -24,12 +24,13 @@ checkboxes.
 
 ### Components
 
-`.field` uses a border style of `border-gray-300 dark:border-slate-600`. These
-borders are dark enough to show up when needed, but aren't intrusive to the user
-experience. To match the border and ring styles of `.field` when an element is
-focused, add `.ring-color` to your elements. To match them even when an element
-isn't focused, use `.ring-color-initial`. You'll also need to add the `ring`
-class at the appropriate time.
+`.field` uses a border style of `border-gray-300 dark:border-slate-600`, which
+is aliased to `border-standard` for convenience. These borders are dark enough
+to show up when needed, but aren't intrusive to the user experience. To match
+the border and ring styles of `.field` when an element is focused, add
+`.ring-color` to your elements. To match them even when an element isn't
+focused, use `.ring-color-initial`. You'll also need to add the `ring` class at
+the appropriate time.
 
 ## Links
 

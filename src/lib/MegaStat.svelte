@@ -1,6 +1,4 @@
-<div
-  class="flex flex-col rounded-2xl bg-white py-4 px-6 shadow-md dark:bg-slate-850"
->
+<div class="flex flex-col rounded-2xl py-4 px-6 shadow-md bg-field">
   {#if $$slots.title}
     <div class="whitespace-nowrap opacity-60">
       <slot name="title" />

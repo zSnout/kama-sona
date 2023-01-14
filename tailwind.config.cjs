@@ -9,54 +9,38 @@ const config = {
   darkMode: "class",
   safelist: [
     {
-      pattern: /icon-(?:bg-|fill-|text-)?(?:red|green|blue|purple|gray|slate)/,
+      pattern:
+        /^icon-(?:bg-|fill-|text-)?(?:red|green|blue|purple|gray|slate)$/,
     },
-    { pattern: /bg-(?:red|green|blue|purple|gray|slate)-200/ },
+    { pattern: /^bg-(?:red|green|blue|purple|gray|slate)-200$/ },
     {
-      pattern: /bg-(?:red|green|blue|purple|gray|slate)-900/,
+      pattern: /^bg-(?:red|green|blue|purple|gray|slate)-900$/,
       variants: ["dark"],
     },
-    { pattern: /shadow-(?:red|green|blue|purple|gray|slate)-100/ },
+    { pattern: /^shadow-(?:red|green|blue|purple|gray|slate)-100$/ },
     {
-      pattern: /border-(?:red|green|blue|purple|gray|slate)-500/,
+      pattern: /^border-(?:red|green|blue|purple|gray|slate)-500$/,
       variants: ["hover"],
     },
-    { pattern: /text-(?:red|green|blue|purple|gray|slate)-500/ },
-    { pattern: /text-(?:red|green|blue|purple|gray|slate)-700/ },
+    { pattern: /^text-(?:red|green|blue|purple|gray|slate)-500$/ },
+    { pattern: /^text-(?:red|green|blue|purple|gray|slate)-700$/ },
     {
-      pattern: /text-(?:red|green|blue|purple|gray|slate)-300/,
+      pattern: /^text-(?:red|green|blue|purple|gray|slate)-300$/,
       variants: ["dark"],
     },
-    { pattern: /ring-(?:red|green|blue|purple|gray|slate)-500/ },
+    { pattern: /^ring-(?:red|green|blue|purple|gray|slate)-500$/ },
+    { pattern: /^border-standard$/, variants: ["focus-within"] },
   ],
   plugins: [
     forms,
-    plugin(({ addUtilities, theme }) => {
+    plugin(({ addUtilities }) => {
       addUtilities({
-        ".bg-body": {
-          "background-color": theme("colors.gray.100"),
-          ".dark &": {
-            "background-color": theme("colors.slate.800"),
-          },
-        },
-        ".bg-layer": {
-          "background-color": theme("colors.white"),
-          ".dark &": {
-            "background-color": theme("colors.slate.900"),
-          },
-        },
-        ".bg-nav": {
-          "background-color": theme("colors.white"),
-          ".dark &": {
-            "background-color": theme("colors.slate.800"),
-          },
-        },
-        ".text-body": {
-          color: theme("colors.slate.600"),
-          ".dark &": {
-            color: theme("colors.slate.300"),
-          },
-        },
+        ".bg-body": { "background-color": "var(--bg-body)" },
+        ".bg-field": { "background-color": "var(--bg-field)" },
+        ".bg-layer": { "background-color": "var(--bg-layer)" },
+        ".bg-nav": { "background-color": "var(--bg-nav)" },
+        ".border-standard": { "border-color": "var(--border-standard)" },
+        ".text-body": { color: "var(--text-body)" },
       })
     }),
     plugin(
@@ -145,16 +129,19 @@ const config = {
         slate: {
           // 400: 148 163 184
           // 500: 100 116 139
-          450: "rgb(124 139 162)",
+          // 450: 124 139 162
+          450: "#7c8ba2",
 
           // 900: 15 23 42
           // 800: 30 41 59
-          850: "rgb(22 32 50)",
+          // 850: 22 32 50
+          850: "#162032",
         },
         gray: {
           // 300: 209 213 219
           // 400: 156 163 175
-          350: "rgb(182 188 197)",
+          // 350: 182 188 197)
+          350: "#b6bcc5",
         },
       },
       boxShadow: {
@@ -167,6 +154,12 @@ const config = {
         84: "21rem",
       },
     },
+    backdropOpacity: {},
+    backgroundOpacity: {},
+    borderOpacity: {},
+    divideOpacity: {},
+    placeholderOpacity: {},
+    textOpacity: {},
   },
 }
 

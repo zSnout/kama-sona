@@ -22,7 +22,7 @@
   let newTodoEl: HTMLInputElement | undefined
 </script>
 
-<div class="{className} flex flex-col bg-white dark:bg-slate-850" {style}>
+<div class="{className} flex flex-col bg-field" {style}>
   <form
     class="-mx-px -mt-px flex"
     on:submit={() => {
