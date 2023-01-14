@@ -103,7 +103,7 @@
         <!-- TODO: Add missing indicator. -->
 
         <div
-          class="relative -my-2 mr-[calc(0.75rem_-_1px)] ml-auto h-10 w-6 bg-gradient-to-r from-white before:-top-[1px] bafter:absolute bafter:-bottom-[1px] bafter:left-0 bafter:h-[1px] bafter:w-full bafter:bg-gradient-to-r bafter:from-gray-300 bafter:content-['_'] dark:from-slate-850 dark:bafter:from-slate-600 {color ==
+          class="relative -my-2 mr-[calc(0.75rem_-_1px)] ml-auto h-10 w-6 bg-gradient-to-r from-white before:-top-px bafter:absolute bafter:-bottom-px bafter:left-0 bafter:h-px bafter:w-full bafter:bg-gradient-to-r bafter:from-gray-300 bafter:content-['_'] dark:from-slate-850 dark:bafter:from-slate-600 {color ==
           Color.Red
             ? 'to-red-200 bafter:to-red-500 dark:to-red-900 dark:bafter:to-red-500'
             : color == Color.Green
@@ -115,7 +115,7 @@
         />
 
         <p
-          class="relative -right-[1px] -top-[1px] -mx-3 -mt-2 mb-[calc(-0.5rem_-_2px)] h-[calc(100%_+_2px)] {status.score ==
+          class="relative -right-px -top-px -mx-3 -mt-2 mb-[calc(-0.5rem_-_2px)] h-[calc(100%_+_2px)] {status.score ==
           null
             ? 'rounded-r-lg'
             : 'rounded-tr-lg'} border border-l-0 py-2 pl-1 pr-4 {color ==
@@ -165,7 +165,7 @@
         {#if status.submitted}
           {#if new Date() < status.due}
             <button
-              class="field prefer-w-40 rounded-t-none border-t-0 focus:-mt-[1px]"
+              class="field prefer-w-40 rounded-t-none border-t-0 focus:-mt-px"
               type="submit"
               formaction="?/unsubmit"
             >
@@ -174,7 +174,7 @@
           {/if}
         {:else}
           <button
-            class="field prefer-w-40 rounded-t-none border-t-0 focus:-mt-[1px]"
+            class="field prefer-w-40 rounded-t-none border-t-0 focus:-mt-px"
             type="submit"
             formaction="?/draft"
           >
@@ -182,7 +182,7 @@
           </button>
 
           <button
-            class="field prefer-w-40 rounded-t-none border-t-0 focus:-mt-[1px]"
+            class="field prefer-w-40 rounded-t-none border-t-0 focus:-mt-px"
             type="submit"
             formaction="?/submit"
           >

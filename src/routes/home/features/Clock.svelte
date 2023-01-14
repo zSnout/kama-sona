@@ -24,8 +24,8 @@
 
 <div
   class="m-auto flex flex-col"
-  style:grid-row="{feature.startY} / {feature.endY + 1}"
-  style:grid-column="{feature.startX} / {feature.startX + 1}"
+  style:grid-area="{feature.startY} / {feature.startX} / {feature.endY + 1} / {feature.endX +
+    1}"
 >
   <p class="m-auto whitespace-nowrap text-[3rem] font-extralight">
     {date.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}

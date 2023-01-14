@@ -31,7 +31,7 @@
 <!-- svelte-ignore a11y-click-events-have-key-events This element is always either a link or button. -->
 <svelte:element
   this={param && !disabled ? "a" : "button"}
-  class="{className} ring-color relative -ml-[1px] mr-1 flex h-8 items-center border border-transparent px-3 shadow transition first:ml-0 first:rounded-l-full first:pl-4 last:mr-0 last:rounded-r-full last:pr-4 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring"
+  class="{className} ring-color relative -ml-px mr-1 flex h-8 items-center border border-transparent px-3 shadow transition first:ml-0 first:rounded-l-full first:pl-4 last:mr-0 last:rounded-r-full last:pr-4 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring"
   role="checkbox"
   aria-checked={active}
   class:flex={param && !disabled}

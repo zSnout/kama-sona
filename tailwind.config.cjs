@@ -60,8 +60,8 @@ const config = {
       })
     }),
     plugin(
-      ({ addComponents, addVariant, matchComponents, matchVariant, theme }) => {
-        addComponents({
+      ({ addUtilities, addVariant, matchComponents, matchVariant, theme }) => {
+        addUtilities({
           ".hyphens": {
             hyphens: "auto",
           },
@@ -135,6 +135,7 @@ const config = {
         ])
 
         matchVariant("has", (value) => `&:has(${value.replace(/_/g, " ")})`)
+        matchVariant("prev", (value) => `${value.replace(/_/g, " ")} + &`)
       }
     ),
   ],
@@ -156,8 +157,14 @@ const config = {
           350: "rgb(182 188 197)",
         },
       },
+      boxShadow: {
+        "horiz-lg":
+          "-10px 0 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+      },
       spacing: {
         22: "5.5rem",
+        82: "20.5rem",
+        84: "21rem",
       },
     },
   },

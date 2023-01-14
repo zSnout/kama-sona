@@ -76,7 +76,7 @@
 </select>
 
 <div
-  class="field overflow-y-scroll {otherClasses} {strictHeight ||
+  class="field overflow-y-auto {otherClasses} {strictHeight ||
   mappedItems.length >= minSearchableItems
     ? heightClass
     : ''}"

@@ -2,6 +2,7 @@
   import Clock from "./features/Clock.svelte"
   import Note from "./features/Note.svelte"
   import QuickActions from "./features/QuickActions.svelte"
+  import Todo from "./features/Todo.svelte"
   import { layout } from "./layout"
 
   // export let data: PageData
@@ -20,6 +21,8 @@
         ? Note
         : feature.name == "QuickActions"
         ? QuickActions
+        : feature.name == "Todo"
+        ? Todo
         : undefined}
       {feature}
     />

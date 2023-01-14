@@ -34,6 +34,7 @@
     Resource,
   } from "@prisma/client"
   import { search } from "fast-fuzzy"
+  import { writable } from "svelte-local-storage-store"
   import type { PageData } from "./$types"
 
   export let data: PageData
@@ -272,6 +273,7 @@
 
   let itemTypeFilter: Record<Searchable, boolean> = {
     assignment: type.includes("assignment"),
+    discussion: type.includes("discussion"),
     group: type.includes("group"),
     resource: type.includes("resource"),
   }
@@ -365,6 +367,8 @@
   // #endregion
 
   let scrollY = 0
+
+  const showAdvancedFilters = writable("show-advanced-filters", false)
 </script>
 
 <svelte:window
@@ -467,67 +471,79 @@
 </div>
 
 <div class="z-30 flex flex-wrap gap-4">
-  <FilterList class="mr-auto">
-    {#each pages as page}
-      {#if page.search}
-        <Filter
-          disabled={!itemsFilteredByDate.some(
-            (item) => item.type == page.search?.type
-          )}
-          param={["type", page.search.type]}
-          tooltip={page.title}
-          class="text-{page.color}-500 before:mt-1 before:font-semibold"
-          bind:active={itemTypeFilter[page.search.type]}
-        >
-          <Icon class="icon-fill-{page.color} h-5 w-5" icon={page.icon} />
-        </Filter>
-      {/if}
-    {/each}
-  </FilterList>
+  <div class="mr-auto md:flex-1">
+    <FilterList>
+      {#each pages as page}
+        {#if page.search}
+          <Filter
+            disabled={!itemsFilteredByDate.some(
+              (item) => item.type == page.search?.type
+            )}
+            param={["type", page.search.type]}
+            tooltip={page.title}
+            class="text-{page.color}-500 before:mt-1 before:font-semibold"
+            bind:active={itemTypeFilter[page.search.type]}
+          >
+            <Icon class="icon-fill-{page.color} h-5 w-5" icon={page.icon} />
+          </Filter>
+        {/if}
+      {/each}
+    </FilterList>
+  </div>
 
-  <FilterList>
-    <Filter
-      disabled={!itemsFilteredByType.some((item) => item.isManager)}
-      param={["is-manager", "true"]}
-      bind:active={isManagerFilter.true}
+  {#if browser}
+    <button
+      class="link"
+      on:click={() =>
+        showAdvancedFilters.update(
+          ($showAdvancedFilters) => !$showAdvancedFilters
+        )}
     >
-      Manager
-    </Filter>
+      {$showAdvancedFilters ? "Hide" : "Show"} advanced filters
+    </button>
+  {/if}
 
-    <Filter
-      disabled={!itemsFilteredByType.some((item) => !item.isManager)}
-      param={["is-manager", "false"]}
-      bind:active={isManagerFilter.false}
-    >
-      Viewer
-    </Filter>
-  </FilterList>
+  <div class="ml-auto flex justify-end md:flex-1">
+    <FilterList>
+      <Filter
+        disabled={!itemsFilteredByType.some((item) => item.isManager)}
+        param={["is-manager", "true"]}
+        bind:active={isManagerFilter.true}
+      >
+        <Icon class="h-5 w-5 text-slate-500" icon={faGear} />
+      </Filter>
+
+      <Filter
+        disabled={!itemsFilteredByType.some((item) => !item.isManager)}
+        param={["is-manager", "false"]}
+        bind:active={isManagerFilter.false}
+      >
+        <Icon class="h-5 w-5 text-slate-500" icon={faEye} />
+      </Filter>
+    </FilterList>
+  </div>
 </div>
 
 {#if browser}
-  {#if groupFilterNames.length > 1 || categoryFilterNames.length > 1}
+  {#if $showAdvancedFilters}
     <div class="z-20 mt-4 flex flex-wrap gap-2">
-      {#if groupFilterNames.length > 1}
-        <MultiSelect
-          bind:values={selectedGroupFilters}
-          class="prefer-w-72 h-60"
-          minSearchableItems={9}
-          noWrap
-          options={groupFilterNames}
-          searchLabel="Search for groups..."
-        />
-      {/if}
+      <MultiSelect
+        bind:values={selectedGroupFilters}
+        class="prefer-w-72 h-60"
+        minSearchableItems={9}
+        noWrap
+        options={groupFilterNames}
+        searchLabel="Search for groups..."
+      />
 
-      {#if categoryFilterNames.length > 1}
-        <MultiSelect
-          bind:values={selectedCategoryFilters}
-          class="prefer-w-72 ml-auto h-60"
-          minSearchableItems={9}
-          noWrap
-          options={categoryFilterNames}
-          searchLabel="Search for categories..."
-        />
-      {/if}
+      <MultiSelect
+        bind:values={selectedCategoryFilters}
+        class="prefer-w-72 ml-auto h-60"
+        minSearchableItems={9}
+        noWrap
+        options={categoryFilterNames}
+        searchLabel="Search for categories..."
+      />
     </div>
   {/if}
 
@@ -565,7 +581,7 @@
   <Table>
     {#each browser ? items : itemsFilteredByIsManager as item (item.href)}
       <a
-        class="ring-color-initial transition-with-[grid-template-columns] grid w-full grid-rows-[auto_auto] gap-x-3 gap-y-1 rounded-lg px-3 py-2 focus:z-10 focus:-my-[1px] focus:-ml-[1px] focus:w-[calc(100%_+_2px)] focus:border focus:outline-none focus:ring {numberOfItemTypesSelected ==
+        class="ring-color-initial transition-with-[grid-template-columns] grid w-full grid-rows-[auto_auto] gap-x-3 gap-y-1 rounded-lg px-3 py-2 focus:z-10 focus:-my-px focus:-ml-px focus:w-[calc(100%_+_2px)] focus:border focus:outline-none focus:ring {numberOfItemTypesSelected ==
         1
           ? 'grid-cols-[0,minmax(0,1fr),minmax(0,0.5fr)] pl-0 md:grid-cols-[0,minmax(0,1fr),repeat(2,minmax(0,0.5fr))]'
           : 'grid-cols-[2rem,minmax(0,1fr),minmax(0,0.5fr)] pl-3 md:grid-cols-[2rem,minmax(0,1fr),repeat(2,minmax(0,0.5fr))]'} relative"
@@ -580,7 +596,7 @@
         />
 
         <p
-          class="hyphens prefer-w-80 col-start-2 col-end-3 row-start-1 row-end-2"
+          class="prefer-w-80 col-start-2 col-end-3 row-start-1 row-end-2 hyphens"
         >
           {item.title}
         </p>

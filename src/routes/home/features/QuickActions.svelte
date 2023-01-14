@@ -9,11 +9,11 @@
 
 <div
   class="my-auto flex justify-center gap-4"
-  style:grid-row="{feature.startY} / {feature.endY + 1}"
-  style:grid-column="{feature.startX} / {feature.startX + 1}"
+  style:grid-area="{feature.startY} / {feature.startX} / {feature.endY + 1} / {feature.endX +
+    1}"
 >
   <IconColorAndText
-    class="h-32 max-w-[8rem] flex-1"
+    class="prefer-w-32 h-32 max-w-[8rem] flex-1"
     color={$isDark ? "slate" : "gray"}
     href="/create"
     icon={faPlus}
@@ -21,7 +21,7 @@
   />
 
   <IconColorAndText
-    class="h-32 max-w-[8rem] flex-1"
+    class="prefer-w-32 h-32 max-w-[8rem] flex-1"
     color={$isDark ? "slate" : "gray"}
     href="/search?range=week"
     icon={faSearch}

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { browser } from "$app/environment"
   import { afterNavigate, beforeNavigate } from "$app/navigation"
   import { pages } from "$lib/pages"
   import * as Theme from "$lib/theme"
@@ -8,6 +9,7 @@
     faHome,
     faMoon,
     faNavicon,
+    faSearch,
     faSun,
   } from "@fortawesome/free-solid-svg-icons"
   import { expoOut } from "svelte/easing"
@@ -17,6 +19,7 @@
   import NavIcon from "./home/NavIcon.svelte"
   import NavLink from "./NavLink.svelte"
   import NavLinkWide from "./NavLinkWide.svelte"
+  import Sidebar from "./Sidebar.svelte"
 
   let isNavIconHovered = false
   let isNavIconFocused = false
@@ -85,22 +88,33 @@
   <div class="mx-auto flex w-full max-w-7xl items-center px-4 sm:px-6 md:px-8">
     <NavLink
       href="/home"
-      class="bg-gray-250 icon-bg-gray mr-auto dark:bg-gray-600 dark:before:text-slate-400"
+      class="bg-gray-250 icon-bg-gray dark:bg-gray-600 dark:before:text-slate-400"
       title="Home"
       tooltip="Home"
     >
       <NavIcon icon={faHome} class="icon-gray" />
     </NavLink>
 
+    <NavLink
+      href="/search?range=week"
+      class="bg-gray-250 icon-bg-gray ml-0 mr-auto dark:bg-gray-600 dark:before:text-slate-400"
+      title="Search"
+      tooltip="Search"
+    >
+      <NavIcon icon={faSearch} class="icon-gray" />
+    </NavLink>
+
     {#each pages as page}
-      <NavLink
-        href={page.href}
-        class="icon-bg-{page.color}"
-        title={page.title}
-        tooltip={page.title}
-      >
-        <NavIcon icon={page.icon} class="icon-{page.color}" />
-      </NavLink>
+      {#if !page.search}
+        <NavLink
+          href={page.href}
+          class="icon-bg-{page.color}"
+          title={page.title}
+          tooltip={page.title}
+        >
+          <NavIcon icon={page.icon} class="icon-{page.color}" />
+        </NavLink>
+      {/if}
     {/each}
 
     <button
@@ -126,7 +140,7 @@
       title="Toggle Theme"
       data-tooltip="Theme"
     >
-      <NavIcon icon={$isDark ? faMoon : faSun} class="icon-gray" />
+      <NavIcon icon={$isDark ? faSun : faMoon} class="icon-gray" />
     </button>
 
     <a
@@ -176,3 +190,7 @@
 >
   <slot />
 </main>
+
+{#if browser}
+  <Sidebar />
+{/if}

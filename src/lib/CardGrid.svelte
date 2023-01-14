@@ -12,9 +12,7 @@
 <div
   class="{className} grid"
   class:grid={!className.split(" ").includes("flex")}
-  class:gap-[1px]={!(
-    className.startsWith("gap-") || className.includes(" gap-")
-  )}
+  class:gap-px={!(className.startsWith("gap-") || className.includes(" gap-"))}
   class:overflow-clip={clip}
 >
   <slot />

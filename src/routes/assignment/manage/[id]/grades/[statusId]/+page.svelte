@@ -87,7 +87,7 @@
               data-tooltip="Missing"
             >
               <Icon
-                class="relative left-[1px] h-5 w-5"
+                class="relative left-px h-5 w-5"
                 icon={faFileCircleExclamation}
               />
             </button>
@@ -115,7 +115,7 @@
               type="submit"
               data-tooltip="Exempt"
             >
-              <Icon class="relative left-[1px] h-5 w-5" icon={faThumbsUp} />
+              <Icon class="relative left-px h-5 w-5" icon={faThumbsUp} />
             </button>
           </form>
         </div>
@@ -155,7 +155,7 @@
         <div class="relative flex flex-row">
           <button
             disabled={isCommentDisabled}
-            class="field prefer-w-40 mx-auto rounded-t-none border-t-0 focus:-mt-[1px]"
+            class="field prefer-w-40 mx-auto rounded-t-none border-t-0 focus:-mt-px"
             type="submit"
           >
             Add Comment

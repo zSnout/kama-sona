@@ -19,8 +19,31 @@
   import { Typography } from "@tiptap/extension-typography"
   import { Underline } from "@tiptap/extension-underline"
   import StarterKit from "@tiptap/starter-kit"
-  import { onDestroy, onMount } from "svelte"
+  import { createEventDispatcher, onDestroy, onMount } from "svelte"
   import RichTextAreaButton from "./RichTextAreaButton.svelte"
+
+  // This dispatcher is used to notify other RichTextArea instances of changes.
+  // At the moment, it's only used to sync between the note field on the
+  // homepage and the note field in the sidebar, but it might be useful in
+  // other places in the future.
+
+  const dispatch = createEventDispatcher<{
+    input: [valueSetter: (value: string) => void, newValue: string]
+    "value-setter": (value: string) => void
+    "remove-value-setter": (value: string) => void
+  }>()
+
+  const valueSetter = (value: string) => {
+    editor?.commands.setContent(value)
+  }
+
+  onMount(() => {
+    dispatch("value-setter", valueSetter)
+  })
+
+  onDestroy(() => {
+    dispatch("remove-value-setter", valueSetter)
+  })
 
   export let name = ""
   export let placeholder = ""
@@ -29,6 +52,8 @@
 
   let className = ""
   export { className as class }
+
+  export let fieldClass = ""
 
   export let editor: Editor | undefined = undefined
   let element: HTMLElement | undefined
@@ -64,6 +89,7 @@
 
     editor.on("update", ({ editor }) => {
       value = editor.getHTML()
+      dispatch("input", [valueSetter, value])
     })
   })
 
@@ -154,7 +180,10 @@
   />
 
   {#if browser}
-    <div class="field min-h-[16rem] overflow-auto md:flex-1" aria-hidden="true">
+    <div
+      class="{fieldClass} field min-h-[16rem] overflow-auto md:flex-1"
+      aria-hidden="true"
+    >
       <!-- #region buttons -->
 
       <div
@@ -277,7 +306,7 @@ line 2 of my program
         bind:this={element}
         class="rta prose flex flex-1 cursor-text select-text flex-col pt-3"
         style:--placeholder={(editor?.getText().trim() == "" &&
-          editor.getHTML().startsWith("<p>") &&
+          value.startsWith("<p>") &&
           `"${placeholder}"`) ||
           null}
         style:min-height="calc(100% - 2rem)"

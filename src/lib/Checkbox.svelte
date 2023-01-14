@@ -12,10 +12,12 @@
 </script>
 
 <button
-  class="flex w-full items-center gap-2 text-left"
+  class="flex w-full items-center gap-2 py-px text-left"
   type="button"
   on:click={action}
   {tabindex}
+  role="checkbox"
+  aria-checked={checked}
 >
   {#if checked}
     <Icon icon={faCheck} class="h-4 w-4" />
