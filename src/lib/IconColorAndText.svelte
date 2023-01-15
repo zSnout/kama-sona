@@ -1,18 +1,8 @@
 <script lang="ts">
   import type { IconDefinition } from "@fortawesome/free-solid-svg-icons"
   import Icon from "./Icon.svelte"
-  import type { ClassNameWith } from "./types"
 
-  export let color:
-    | "red"
-    | "orange"
-    | "yellow"
-    | "green"
-    | "blue"
-    | "purple"
-    | "gray"
-    | "slate"
-
+  export let color: "red" | "orange" | "yellow" | "green" | "blue" | "purple"
   export let href: string
   export let icon: IconDefinition
   export let label: string

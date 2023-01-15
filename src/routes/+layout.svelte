@@ -4,6 +4,7 @@
   import { pages } from "$lib/pages"
   import * as Theme from "$lib/theme"
   import { isDark } from "$lib/theme"
+  import { customTheme, themeable } from "$lib/themeable"
   import {
     faBug,
     faHome,
@@ -72,10 +73,31 @@
       navState = "loaded"
     }
   })
+
+  $: if (browser) {
+    for (const { css } of themeable) {
+      document.documentElement.style.setProperty(css, $customTheme[css] || null)
+    }
+
+    document.documentElement.classList.toggle(
+      "flat",
+      $customTheme.flat == "true"
+    )
+
+    document.documentElement.classList.toggle(
+      "instant",
+      $customTheme.instant == "true"
+    )
+
+    document.documentElement.classList.toggle(
+      "sharp",
+      $customTheme.sharp == "true"
+    )
+  }
 </script>
 
 <nav
-  class="sticky top-0 z-50 flex h-16 w-screen select-none shadow-md bg-nav print:hidden"
+  class="sticky top-0 z-50 flex h-16 w-screen select-none border-y border-t-transparent shadow-md nav-bg nav-border-b print:hidden"
 >
   {#if navState == "loading" || $navProgress != 0}
     <div
@@ -86,18 +108,13 @@
   {/if}
 
   <div class="mx-auto flex w-full max-w-7xl items-center px-4 sm:px-6 md:px-8">
-    <NavLink
-      href="/home"
-      class="nav-icon-bg nav-icon-text before:text-label"
-      title="Home"
-      tooltip="Home"
-    >
+    <NavLink href="/home" class="nav-icon-bg" title="Home" tooltip="Home">
       <NavIcon icon={faHome} class="nav-icon-fill nav-icon-stroke" />
     </NavLink>
 
     <NavLink
       href="/search?range=week"
-      class="ml-0 mr-auto nav-icon-bg nav-icon-text before:text-label"
+      class="ml-0 mr-auto nav-icon-bg"
       title="Search"
       tooltip="Search"
     >
@@ -119,7 +136,7 @@
 
     <button
       on:contextmenu|preventDefault
-      class="button-icon block nav-icon-bg nav-icon-text before:text-label sm:hidden"
+      class="button-icon block nav-icon-bg sm:hidden"
       class:active={isNavIconFocused || isNavIconHovered}
       title="Open Mobile Navigation"
       on:click={() => (
@@ -135,32 +152,32 @@
 
     <button
       on:contextmenu|preventDefault
-      class="button-icon ml-auto outline-none ring-current nav-icon-bg nav-icon-text before:text-label active:ring-0 focus:ring-2"
+      class="button-icon ml-auto outline-none ring-current nav-icon-bg active:ring-0 focus:ring-2 md:before:whitespace-pre"
       on:click={Theme.toggle}
       title="Toggle Theme"
       data-tooltip="Theme"
     >
       <NavIcon
         icon={$isDark ? faSun : faMoon}
-        class="nav-icon-fill nav-icon-stroke"
+        class="duration-[0ms] nav-icon-fill nav-icon-stroke"
       />
     </button>
 
     <a
       on:contextmenu|preventDefault
-      class="button-icon ml-0 outline-none ring-current nav-icon-bg nav-icon-text before:text-label active:ring-0 focus:ring-2 md:before:whitespace-pre"
+      class="button-icon ml-0 outline-none ring-current nav-icon-bg active:ring-0 focus:ring-2 md:before:whitespace-pre"
       title="Report a Bug"
       href="https://github.com/zSnout/kama-sona/issues"
       data-tooltip="Report a Bug"
     >
-      <NavIcon icon={faBug} class="stroke-16 nav-icon-fill nav-icon-stroke" />
+      <NavIcon icon={faBug} class="nav-icon-fill nav-icon-stroke" />
     </a>
   </div>
 
   <div
     class="{isNavIconFocused || isNavIconHovered
       ? 'visible scale-100 opacity-100'
-      : 'invisible'} mobile-nav fixed top-14 w-screen px-4 pt-2 pb-4 shadow-md transition-all bg-nav hover:opacity-100 sm:hidden"
+      : 'invisible'} mobile-nav fixed top-14 w-screen px-4 pt-2 pb-4 shadow-md transition-all nav-bg hover:opacity-100 sm:hidden"
   >
     {#each pages as page}
       <NavLinkWide

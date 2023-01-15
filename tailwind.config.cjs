@@ -42,22 +42,55 @@ const config = {
         ".bg-filter": { "background-color": "var(--bg-filter)" },
         ".bg-filter-active": { "background-color": "var(--bg-filter-active)" },
         ".bg-hover": { "background-color": "var(--bg-hover)" },
-        ".bg-layer": { "background-color": "var(--bg-layer)" },
+        ".bg-tooltip": { "background-color": "var(--bg-tooltip)" },
         ".bg-loading-bar": { "background-color": "var(--bg-loading-bar)" },
-        ".bg-nav": { "background-color": "var(--bg-nav)" },
+        ".bg-table-row": { "background-color": "var(--bg-table-row)" },
+
+        ".big-button-bg": { "background-color": "var(--big-button-bg)" },
+        ".big-button-border": { "border-color": "var(--big-button-border)" },
+        ".big-button-icon": { color: "var(--big-button-icon)" },
+        ".big-button-text": { color: "var(--big-button-text)" },
+
+        ".big-button-hover-bg": {
+          "background-color": "var(--big-button-hover-bg)",
+        },
+        ".big-button-hover-border": {
+          "border-color": "var(--big-button-hover-border)",
+        },
+        ".big-button-hover-icon": { color: "var(--big-button-hover-icon)" },
+        ".big-button-hover-text": { color: "var(--big-button-hover-text)" },
 
         ".border-active": { "border-color": "var(--border-active)" },
         ".border-focus": { "border-color": "var(--border-focus)" },
         ".border-hover": { "border-color": "var(--border-hover)" },
         ".border-standard": { "border-color": "var(--border-standard)" },
 
+        ".nav-bg": { "background-color": "var(--nav-bg)" },
+        ".nav-border-b": { "border-bottom-color": "var(--nav-border)" },
         ".nav-icon-bg": { "background-color": "var(--nav-icon-bg)" },
         ".nav-icon-fill": { fill: "var(--nav-icon-fill)" },
         ".nav-icon-fill-active": { fill: "var(--nav-icon-fill-active)" },
         ".nav-icon-stroke": { stroke: "var(--nav-icon-stroke)" },
-        ".nav-icon-text": { color: "var(--nav-icon-text)" },
 
         ".ring-focus": { "--tw-ring-color": "var(--ring-focus)" },
+
+        ".sidebar-bg": { "background-color": "var(--sidebar-bg)" },
+        ".sidebar-border-l": { "border-left-color": "var(--sidebar-border)" },
+        ".sidebar-button-color": {
+          color: "var(--sidebar-button-color)",
+        },
+        ".sidebar-button-hover-bg": {
+          "background-color": "var(--sidebar-button-hover-bg)",
+        },
+        ".sidebar-button-hover-color": {
+          color: "var(--sidebar-button-hover-color)",
+        },
+        ".sidebar-opener-bg": {
+          "background-color": "var(--sidebar-opener-bg)",
+        },
+        ".sidebar-opener-border": {
+          "border-color": "var(--sidebar-opener-border)",
+        },
 
         ".text-active": { color: "var(--text-active)" },
         ".text-body": { color: "var(--text-body)" },
@@ -66,6 +99,7 @@ const config = {
         ".text-label": { color: "var(--text-label)" },
         ".text-link": { color: "var(--text-link)" },
         ".text-placeholder": { color: "var(--text-placeholder)" },
+        ".text-tooltip": { color: "var(--text-tooltip)" },
       })
     }),
     plugin(
@@ -127,6 +161,9 @@ const config = {
         addVariant("bafter", ["&:before", "&:after"])
         addVariant("scrollbar", ["&::-webkit-scrollbar"])
         addVariant("child", ["& > "])
+        addVariant("color-swatch-wrapper", ["&::-webkit-color-swatch-wrapper"])
+        addVariant("color-swatch", ["&::-webkit-color-swatch"])
+        addVariant("sharp", [":where(html.sharp) &"])
 
         addVariant("focus", [
           "&:focus-within:where(:not(:focus))",

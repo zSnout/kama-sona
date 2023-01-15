@@ -8,4 +8,4 @@
   export { className as class }
 </script>
 
-<Icon {icon} class="{className} h-8 w-8 stroke-16" />
+<Icon {icon} class="{className} h-8 w-8 stroke-16 transition" />

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="%sveltekit.assets%/favicon.png" />
     <!-- prettier-ignore -->
-    <script>if(typeof localStorage=="object"&&typeof matchMedia=="function"){const t=localStorage.theme,{matches:o}=matchMedia("(prefers-color-scheme: dark)"),e=document.documentElement.classList;e.add("no-transitions"),requestAnimationFrame(()=>{e.toggle("dark",t=="dark"||t=="native"&&o),requestAnimationFrame(()=>e.remove("no-transitions"))})}</script>
+    <script>if(typeof localStorage=="object"&&typeof matchMedia=="function"){let o=localStorage.theme,{matches:r}=matchMedia("(prefers-color-scheme: dark)"),t=document.documentElement.classList;t.add("no-transitions"),requestAnimationFrame(()=>{t.toggle("dark",o=="dark"||o=="native"&&r),requestAnimationFrame(()=>t.remove("no-transitions"))})}try{e=JSON.parse(localStorage.getItem("custom-theme")),e.sharp=="true"&&document.documentElement.classList.add("sharp"),e.instant=="true"&&document.documentElement.classList.add("instant"),e.flat=="true"&&document.documentElement.classList.add("flat");for(a in e)document.documentElement.style.setProperty(a,e[a])}catch{}var e,a;</script>
     %sveltekit.head%
   </head>
 

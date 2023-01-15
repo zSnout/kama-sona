@@ -54,6 +54,7 @@
   export { className as class }
 
   export let fieldClass = ""
+  export let buttonsClass = ""
 
   export let editor: Editor | undefined = undefined
   let element: HTMLElement | undefined
@@ -187,7 +188,7 @@
       <!-- #region buttons -->
 
       <div
-        class="sticky -top-2 z-20 -mx-3 -mt-2 -mb-1 flex overflow-x-auto border-b p-1 transition bg-field border-standard scrollbar:hidden "
+        class="sticky -top-2 z-20 -mx-3 -mt-2 -mb-1 flex overflow-x-auto border-b p-1 transition bg-field border-standard scrollbar:hidden {buttonsClass}"
       >
         <RichTextAreaButton
           action={({ detail }) =>

@@ -7,8 +7,8 @@
 
 <div
   class="{className} {highlightFirst
-    ? 'odd:child:bg-hover even:child:bg-body'
-    : 'odd:child:bg-body even:child:bg-hover'}"
+    ? 'odd:child:bg-table-row'
+    : 'even:child:bg-table-row'}"
 >
   <slot />
 </div>

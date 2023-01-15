@@ -2,30 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Update src/lib/themeable.ts if more CSS variables are added. */
+
 html {
   --bg-active: theme(colors.blue.100);
   --bg-active-hover: theme(colors.blue.200);
   --bg-body: theme(colors.gray.100);
-  --bg-field: white;
-  --bg-filter: white;
+  --bg-field: #ffffff;
+  --bg-filter: #ffffff;
   --bg-filter-active: theme(colors.gray.300);
   --bg-hover: theme(colors.gray.200);
-  --bg-layer: white;
   --bg-loading-bar: theme(colors.blue.500);
-  --bg-nav: white;
+  --bg-table-row: theme(colors.gray.200);
+  --bg-tooltip: #ffffff;
+
+  --big-button-bg: theme(colors.gray.200);
+  --big-button-border: theme(colors.gray.200);
+  --big-button-icon: theme(colors.slate.400);
+  --big-button-text: theme(colors.slate.600);
+
+  --big-button-hover-bg: theme(colors.gray.200);
+  --big-button-hover-border: theme(colors.gray.500);
+  --big-button-hover-icon: theme(colors.slate.400);
+  --big-button-hover-text: theme(colors.slate.600);
 
   --border-active: theme(colors.blue.400);
   --border-focus: theme(colors.blue.500);
   --border-hover: theme(colors.gray.400);
   --border-standard: theme(colors.gray.300);
 
+  --nav-bg: #ffffff;
+  --nav-border: #ffffff;
   --nav-icon-bg: theme(colors.gray.200);
   --nav-icon-fill: theme(colors.gray.200);
-  --nav-icon-fill-active: theme(colors.white);
+  --nav-icon-fill-active: #ffffff;
   --nav-icon-stroke: theme(colors.gray.500);
-  --nav-icon-text: theme(colors.gray.500);
 
   --ring-focus: theme(colors.blue.200);
+
+  --sidebar-bg: #ffffff;
+  --sidebar-border: #ffffff;
+  --sidebar-button-color: theme(colors.gray.500);
+  --sidebar-button-hover-bg: theme(colors.gray.200);
+  --sidebar-button-hover-color: theme(colors.gray.500);
 
   --text-active: theme(colors.blue.600);
   --text-body: theme(colors.slate.600);
@@ -34,6 +53,7 @@ html {
   --text-label: theme(colors.gray.500);
   --text-link: theme(colors.blue.600);
   --text-placeholder: theme(colors.slate.400);
+  --text-tooltip: theme(colors.slate.600);
 }
 
 html.dark {
@@ -44,22 +64,39 @@ html.dark {
   --bg-filter: theme(colors.slate.900);
   --bg-filter-active: theme(colors.slate.700);
   --bg-hover: theme(colors.slate.700);
-  --bg-layer: theme(colors.slate.900);
   --bg-loading-bar: theme(colors.blue.700);
-  --bg-nav: theme(colors.slate.800);
+  --bg-table-row: theme(colors.slate.700);
+  --bg-tooltip: theme(colors.slate.900);
+
+  --big-button-bg: theme(colors.slate.900);
+  --big-button-border: theme(colors.slate.900);
+  --big-button-icon: theme(colors.slate.500);
+  --big-button-text: theme(colors.slate.300);
+
+  --big-button-hover-bg: theme(colors.slate.900);
+  --big-button-hover-border: theme(colors.slate.500);
+  --big-button-hover-icon: theme(colors.slate.400);
+  --big-button-hover-text: theme(colors.slate.300);
 
   --border-active: theme(colors.blue.400);
   --border-focus: theme(colors.blue.500);
   --border-hover: theme(colors.slate.500);
   --border-standard: theme(colors.slate.600);
 
+  --nav-bg: theme(colors.slate.800);
+  --nav-border: theme(colors.slate.800);
   --nav-icon-bg: theme(colors.gray.600);
   --nav-icon-fill: theme(colors.slate.700);
   --nav-icon-fill-active: theme(colors.slate.700);
   --nav-icon-stroke: theme(colors.slate.300);
-  --nav-icon-text: theme(colors.gray.500);
 
   --ring-focus: theme(colors.blue.900);
+
+  --sidebar-bg: theme(colors.slate.850);
+  --sidebar-border: theme(colors.slate.850);
+  --sidebar-button-color: theme(colors.slate.400);
+  --sidebar-button-hover-bg: theme(colors.slate.700);
+  --sidebar-button-hover-color: theme(colors.slate.400);
 
   --text-active: theme(colors.blue.300);
   --text-body: theme(colors.slate.300);
@@ -68,6 +105,29 @@ html.dark {
   --text-label: theme(colors.slate.400);
   --text-link: theme(colors.blue.500);
   --text-placeholder: theme(colors.slate.500);
+  --text-tooltip: theme(colors.slate.300);
+}
+
+html.flat *,
+html.flat :before,
+html.flat :after {
+  box-shadow: none !important;
+  drop-shadow: none !important;
+}
+
+html.instant *,
+html.instant :before,
+html.instant :after {
+  transition-duration: 0s !important;
+}
+
+html.sharp *,
+html.sharp :before,
+html.sharp :after {
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
 }
 
 html,
@@ -84,9 +144,9 @@ body {
     @apply m-1 rounded-lg p-2 font-semibold transition hover:fill-current active:scale-90;
   }
 
-  .button-icon.active svg:not(.dark *),
-  .button-icon:hover svg:not(.dark *),
-  .button-icon:focus svg:not(.dark *) {
+  .button-icon.active svg,
+  .button-icon:hover svg,
+  .button-icon:focus svg {
     @apply nav-icon-fill-active;
   }
 
@@ -95,7 +155,7 @@ body {
   }
 
   .button-icon-wide:not(:hover):not(:focus) {
-    @apply bg-nav;
+    @apply nav-bg;
   }
 
   [data-tooltip] {
@@ -103,7 +163,7 @@ body {
   }
 
   [data-tooltip]::before {
-    @apply pointer-events-none absolute top-full left-1/2 z-10 mt-3 block -translate-x-1/2 scale-90 rounded-lg border py-2 px-4 opacity-0 shadow-lg outline-none transition content-[attr(data-tooltip)] bg-layer border-standard;
+    @apply pointer-events-none absolute top-full left-1/2 z-10 mt-3 block -translate-x-1/2 scale-90 rounded-lg border py-2 px-4 opacity-0 shadow-lg outline-none transition content-[attr(data-tooltip)] bg-tooltip border-standard text-tooltip;
   }
 
   [data-tooltip="%href%"]::before {
