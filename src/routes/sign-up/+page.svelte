@@ -23,9 +23,7 @@
         email, {form.email}. That's it!
       </p>
 
-      <p
-        class="mt-4 border-l-2 py-1 pl-4 dark:border-l-slate-500 dark:text-slate-400"
-      >
+      <p class="mt-4 border-l-2 py-1 pl-4 border-standard text-label">
         Didn't receive a link? Just sign up again!
       </p>
     </div>

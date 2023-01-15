@@ -9,8 +9,7 @@
 </script>
 
 <div
-  class="grid flex-1 grid-cols-3 gap-4"
-  style:max-height="max(100vh - 7rem, 544px + 4rem)"
+  class="flex min-h-[max(100vh_-_7rem,544px_+_4rem)] grid-cols-3 flex-col gap-4 md:grid md:max-h-[max(100vh_-_7rem,544px_+_4rem)] md:flex-1"
   style:grid-template-rows="repeat(4, minmax(136px, 1fr))"
 >
   {#each $layout as feature}

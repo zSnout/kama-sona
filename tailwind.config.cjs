@@ -35,12 +35,37 @@ const config = {
     forms,
     plugin(({ addUtilities }) => {
       addUtilities({
+        ".bg-active": { "background-color": "var(--bg-active)" },
+        ".bg-active-hover": { "background-color": "var(--bg-active-hover)" },
         ".bg-body": { "background-color": "var(--bg-body)" },
         ".bg-field": { "background-color": "var(--bg-field)" },
+        ".bg-filter": { "background-color": "var(--bg-filter)" },
+        ".bg-filter-active": { "background-color": "var(--bg-filter-active)" },
+        ".bg-hover": { "background-color": "var(--bg-hover)" },
         ".bg-layer": { "background-color": "var(--bg-layer)" },
+        ".bg-loading-bar": { "background-color": "var(--bg-loading-bar)" },
         ".bg-nav": { "background-color": "var(--bg-nav)" },
+
+        ".border-active": { "border-color": "var(--border-active)" },
+        ".border-focus": { "border-color": "var(--border-focus)" },
+        ".border-hover": { "border-color": "var(--border-hover)" },
         ".border-standard": { "border-color": "var(--border-standard)" },
+
+        ".nav-icon-bg": { "background-color": "var(--nav-icon-bg)" },
+        ".nav-icon-fill": { fill: "var(--nav-icon-fill)" },
+        ".nav-icon-fill-active": { fill: "var(--nav-icon-fill-active)" },
+        ".nav-icon-stroke": { stroke: "var(--nav-icon-stroke)" },
+        ".nav-icon-text": { color: "var(--nav-icon-text)" },
+
+        ".ring-focus": { "--tw-ring-color": "var(--ring-focus)" },
+
+        ".text-active": { color: "var(--text-active)" },
         ".text-body": { color: "var(--text-body)" },
+        ".text-heading": { color: "var(--text-heading)" },
+        ".text-icon": { color: "var(--text-icon)" },
+        ".text-label": { color: "var(--text-label)" },
+        ".text-link": { color: "var(--text-link)" },
+        ".text-placeholder": { color: "var(--text-placeholder)" },
       })
     }),
     plugin(
@@ -152,6 +177,13 @@ const config = {
         22: "5.5rem",
         82: "20.5rem",
         84: "21rem",
+      },
+      strokeWidth: {
+        16: "16",
+      },
+      gradientColorStops: {
+        "border-standard": "var(--border-standard)",
+        "bg-field": "var(--bg-field)",
       },
     },
     backdropOpacity: {},

@@ -3,21 +3,71 @@
 @tailwind utilities;
 
 html {
-  --bg-body: #f3f4f6; /* gray-100 */
-  --bg-field: #fff; /* white */
-  --bg-layer: #fff; /* white */
-  --bg-nav: #fff; /* white */
-  --border-standard: #d1d5db; /* gray-300 */
-  --text-body: #475569; /* slate-600 */
+  --bg-active: theme(colors.blue.100);
+  --bg-active-hover: theme(colors.blue.200);
+  --bg-body: theme(colors.gray.100);
+  --bg-field: white;
+  --bg-filter: white;
+  --bg-filter-active: theme(colors.gray.300);
+  --bg-hover: theme(colors.gray.200);
+  --bg-layer: white;
+  --bg-loading-bar: theme(colors.blue.500);
+  --bg-nav: white;
+
+  --border-active: theme(colors.blue.400);
+  --border-focus: theme(colors.blue.500);
+  --border-hover: theme(colors.gray.400);
+  --border-standard: theme(colors.gray.300);
+
+  --nav-icon-bg: theme(colors.gray.200);
+  --nav-icon-fill: theme(colors.gray.200);
+  --nav-icon-fill-active: theme(colors.white);
+  --nav-icon-stroke: theme(colors.gray.500);
+  --nav-icon-text: theme(colors.gray.500);
+
+  --ring-focus: theme(colors.blue.200);
+
+  --text-active: theme(colors.blue.600);
+  --text-body: theme(colors.slate.600);
+  --text-heading: theme(colors.slate.800);
+  --text-icon: theme(colors.gray.350);
+  --text-label: theme(colors.gray.500);
+  --text-link: theme(colors.blue.600);
+  --text-placeholder: theme(colors.slate.400);
 }
 
 html.dark {
-  --bg-body: #1e293b; /* slate-800 */
-  --bg-field: #162032; /* slate-850 */
-  --bg-layer: #0f172a; /* slate-900 */
-  --bg-nav: #1e293b; /* slate-800 */
-  --border-standard: #475569; /* slate-600 */
-  --text-body: #cbd5e1; /* slate-300 */
+  --bg-active: theme(colors.blue.900);
+  --bg-active-hover: theme(colors.blue.800);
+  --bg-body: theme(colors.slate.800);
+  --bg-field: theme(colors.slate.850);
+  --bg-filter: theme(colors.slate.900);
+  --bg-filter-active: theme(colors.slate.700);
+  --bg-hover: theme(colors.slate.700);
+  --bg-layer: theme(colors.slate.900);
+  --bg-loading-bar: theme(colors.blue.700);
+  --bg-nav: theme(colors.slate.800);
+
+  --border-active: theme(colors.blue.400);
+  --border-focus: theme(colors.blue.500);
+  --border-hover: theme(colors.slate.500);
+  --border-standard: theme(colors.slate.600);
+
+  --nav-icon-bg: theme(colors.gray.600);
+  --nav-icon-fill: theme(colors.slate.700);
+  --nav-icon-fill-active: theme(colors.slate.700);
+  --nav-icon-stroke: theme(colors.slate.300);
+  --nav-icon-text: theme(colors.gray.500);
+
+  --ring-focus: theme(colors.blue.900);
+
+  --text-active: theme(colors.blue.300);
+  --text-body: theme(colors.slate.300);
+  --text-heading: theme(colors.slate.100);
+  --text-icon: theme(colors.slate.500);
+  --text-label: theme(colors.slate.400);
+  --text-link: theme(colors.blue.500);
+  --text-placeholder: theme(colors.slate.500);
 }
 
 html,
@@ -37,7 +87,7 @@ body {
   .button-icon.active svg:not(.dark *),
   .button-icon:hover svg:not(.dark *),
   .button-icon:focus svg:not(.dark *) {
-    @apply fill-white;
+    @apply nav-icon-fill-active;
   }
 
   .button-icon:not(.active):not(:hover):not(:focus) {
@@ -53,7 +103,7 @@ body {
   }
 
   [data-tooltip]::before {
-    @apply pointer-events-none absolute top-full left-1/2 z-10 mt-3 block -translate-x-1/2 scale-90 rounded-lg border py-2 px-4 opacity-0 shadow-lg outline-none transition content-[attr(data-tooltip)] bg-layer dark:border-gray-700;
+    @apply pointer-events-none absolute top-full left-1/2 z-10 mt-3 block -translate-x-1/2 scale-90 rounded-lg border py-2 px-4 opacity-0 shadow-lg outline-none transition content-[attr(data-tooltip)] bg-layer border-standard;
   }
 
   [data-tooltip="%href%"]::before {
@@ -77,9 +127,8 @@ body {
 
   .field {
     @apply rounded-lg border py-2 px-3 shadow-sm outline-0 transition bg-field border-standard;
-    @apply focus:border focus:border-blue-500 focus:ring focus:ring-blue-200;
-    @apply dark:focus:border-blue-500 dark:focus:ring-blue-900;
-    @apply placeholder:text-slate-400 dark:placeholder:text-slate-500;
+    @apply focus:border focus:ring focus:border-focus focus:ring-focus;
+    @apply placeholder:text-placeholder;
   }
 
   .field-group:where(:not(.flex:not(.flex-col)))
@@ -140,26 +189,22 @@ body {
 
   :where(a).field,
   :where(button.field):enabled {
-    @apply hover:border-gray-400 hover:bg-gray-200 hover:focus:border-blue-500;
-    @apply dark:hover:border-slate-500 dark:hover:bg-slate-700 dark:hover:focus:border-blue-500;
+    @apply hover:bg-hover hover:border-hover hover:focus:border-focus;
   }
 
   .field:where(.active) {
-    @apply border-blue-400 bg-blue-100 text-blue-600;
-    @apply dark:border-blue-400 dark:bg-blue-900 dark:text-blue-300;
+    @apply bg-active border-active text-active;
   }
 
   :where(a.field).active,
   :where(button.field.active):enabled {
-    @apply hover:border-blue-500 hover:bg-blue-200;
-    @apply dark:hover:border-blue-500 dark:hover:bg-blue-800;
+    @apply hover:bg-active-hover hover:border-focus;
   }
 
   .ring-color-initial,
   .ring-color:focus-visible,
   .ring-color:focus:not(:focus) {
-    @apply border-blue-500 ring-blue-200;
-    @apply dark:border-blue-500 dark:ring-blue-900;
+    @apply border-focus ring-focus;
   }
 
   :where(select).field {
@@ -194,21 +239,13 @@ body {
     @apply ml-1 text-red-500 content-["*"];
   }
 
-  .stats {
-    @apply text-slate-500 dark:text-slate-400;
-  }
-
-  .stats strong {
-    @apply text-slate-900 dark:text-slate-300;
-  }
-
   .link,
   .link-colorless {
     @apply underline decoration-transparent underline-offset-2 transition hover:decoration-inherit focus:decoration-inherit focus:outline-none;
   }
 
   .link {
-    @apply text-blue-600 dark:text-blue-500;
+    @apply text-link;
   }
 
   .help svg {
@@ -280,7 +317,7 @@ body {
     h4,
     h5,
     h6 {
-      @apply text-gray-500 dark:text-slate-450;
+      @apply text-label;
     }
 
     h5 {
@@ -348,7 +385,7 @@ body {
       @apply shadow-md bg-field;
 
       &:is(.ProseMirror pre) {
-        @apply bg-gray-200 shadow-none dark:bg-slate-700;
+        @apply shadow-none bg-hover;
       }
     }
 
@@ -362,7 +399,7 @@ body {
       @apply shadow-md bg-field;
 
       &:is(.ProseMirror code) {
-        @apply bg-gray-200 shadow-none dark:bg-slate-700;
+        @apply shadow-none bg-hover;
       }
 
       &:is(pre code) {
@@ -397,7 +434,7 @@ body {
       margin-bottom: 1rem;
       padding: 0 1rem;
       border-left-width: 0.25rem;
-      @apply text-gray-500 dark:text-slate-450;
+      @apply text-label;
       @apply border-standard;
 
       > :first-child {
@@ -410,7 +447,7 @@ body {
     }
 
     a:where(:not(.link)):where(:not(.link-colorless)) {
-      @apply text-blue-600 underline-offset-2 dark:text-blue-500;
+      @apply underline-offset-2 text-link;
 
       &:is(.ProseMirror a) {
         @apply underline;
@@ -441,7 +478,7 @@ body {
   }
 
   .icon-label {
-    @apply relative -top-[0.125rem] mr-1 inline h-[1em] w-[1em] text-gray-350 dark:text-slate-500;
+    @apply relative -top-[0.125rem] mr-1 inline h-[1em] w-[1em] text-icon;
   }
 
   :where(.red) .icon-label {
@@ -461,5 +498,5 @@ body {
 
 .rta .ProseMirror::after {
   content: var(--placeholder);
-  @apply relative -top-6 text-slate-400 dark:text-slate-500;
+  @apply relative -top-6 text-placeholder;
 }

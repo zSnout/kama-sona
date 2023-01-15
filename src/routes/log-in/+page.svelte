@@ -24,9 +24,7 @@
         We sent a log in link to your email, {form.email}. Click it to log in to {PUBLIC_KS_APP_NAME}.
       </p>
 
-      <p
-        class="mt-4 border-l-2 py-1 pl-4 dark:border-l-slate-500 dark:text-slate-400"
-      >
+      <p class="mt-4 border-l-2 py-1 pl-4 border-standard text-label">
         If you don't receive a link, you might not be registered on {PUBLIC_KS_APP_NAME}.
       </p>
     </div>

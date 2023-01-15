@@ -1,7 +1,6 @@
 <script lang="ts">
   import { PUBLIC_KS_APP_NAME } from "$env/static/public"
   import AccountCard from "$lib/AccountCard.svelte"
-  import CardGrid from "$lib/CardGrid.svelte"
   import type { PageData } from "./$types"
 
   export let data: PageData
@@ -38,8 +37,8 @@
 
 {#if filtered.length != 0}
   <div>
-    <CardGrid
-      class="grid-cols-[repeat(auto-fill,minmax(min(13rem,100%),1fr))] gap-2"
+    <div
+      class="grid grid-cols-[repeat(auto-fill,minmax(min(13rem,100%),1fr))] gap-2"
     >
       {#each filtered as account}
         <AccountCard
@@ -48,7 +47,7 @@
           href="/group/{data.group.id}/add-members/{account.id}"
         />
       {/each}
-    </CardGrid>
+    </div>
   </div>
 {:else}
   <p class="prefer-w-96 m-auto flex flex-1 items-center">

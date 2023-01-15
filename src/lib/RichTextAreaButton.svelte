@@ -13,9 +13,7 @@
 
 <button
   on:click={action}
-  class="h-8 w-8 rounded-md p-2 {active
-    ? 'rta-button bg-gray-300 dark:bg-slate-700'
-    : ''}"
+  class="h-8 w-8 rounded-md p-2 {active ? 'rta-button bg-filter-active' : ''}"
   type="button"
 >
   <Icon {icon} class="h-4 w-4" />

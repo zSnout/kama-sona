@@ -49,8 +49,7 @@
 
       <a
         class="ring-color relative mr-4 flex flex-col rounded-lg border border-transparent px-3 py-1 outline-none transition focus:ring"
-        class:bg-white={active}
-        class:dark:bg-slate-900={active}
+        class:bg-layer={active}
         class:sticky={active}
         class:top-14={active}
         class:bottom-0={active}

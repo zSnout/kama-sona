@@ -44,7 +44,7 @@
     }}
   >
     <input
-      class="field relative -mr-px flex-1 rounded-r-none rounded-bl-none shadow-none focus:z-10"
+      class="field relative -mr-px min-w-0 flex-1 rounded-r-none rounded-bl-none shadow-none focus:z-10"
       class:rounded-none={borderless}
       type="text"
       placeholder="Type a new item..."

@@ -79,7 +79,7 @@
 >
   {#if navState == "loading" || $navProgress != 0}
     <div
-      class="fixed top-0 h-1 bg-blue-500 transition-[width] dark:bg-blue-700"
+      class="fixed top-0 h-1 transition-[width] bg-loading-bar"
       style:width="{100 * $navProgress}%"
       out:fade={{ delay: 500 }}
     />
@@ -88,20 +88,20 @@
   <div class="mx-auto flex w-full max-w-7xl items-center px-4 sm:px-6 md:px-8">
     <NavLink
       href="/home"
-      class="bg-gray-250 icon-bg-gray dark:bg-gray-600 dark:before:text-slate-400"
+      class="nav-icon-bg nav-icon-text before:text-label"
       title="Home"
       tooltip="Home"
     >
-      <NavIcon icon={faHome} class="icon-gray" />
+      <NavIcon icon={faHome} class="nav-icon-fill nav-icon-stroke" />
     </NavLink>
 
     <NavLink
       href="/search?range=week"
-      class="bg-gray-250 icon-bg-gray ml-0 mr-auto dark:bg-gray-600 dark:before:text-slate-400"
+      class="ml-0 mr-auto nav-icon-bg nav-icon-text before:text-label"
       title="Search"
       tooltip="Search"
     >
-      <NavIcon icon={faSearch} class="icon-gray" />
+      <NavIcon icon={faSearch} class="nav-icon-fill nav-icon-stroke" />
     </NavLink>
 
     {#each pages as page}
@@ -119,7 +119,7 @@
 
     <button
       on:contextmenu|preventDefault
-      class="button-icon icon-bg-gray block dark:bg-gray-600 dark:before:text-slate-400 sm:hidden"
+      class="button-icon block nav-icon-bg nav-icon-text before:text-label sm:hidden"
       class:active={isNavIconFocused || isNavIconHovered}
       title="Open Mobile Navigation"
       on:click={() => (
@@ -130,27 +130,30 @@
       on:mouseleave={() => (isNavIconHovered = false)}
       on:focus={() => 0}
     >
-      <NavIcon icon={faNavicon} class="icon-gray" />
+      <NavIcon icon={faNavicon} class="nav-icon-fill nav-icon-stroke" />
     </button>
 
     <button
       on:contextmenu|preventDefault
-      class="button-icon icon-bg-gray ml-auto outline-none ring-current active:ring-0 focus:ring-2 dark:bg-gray-600 dark:before:text-slate-400"
+      class="button-icon ml-auto outline-none ring-current nav-icon-bg nav-icon-text before:text-label active:ring-0 focus:ring-2"
       on:click={Theme.toggle}
       title="Toggle Theme"
       data-tooltip="Theme"
     >
-      <NavIcon icon={$isDark ? faSun : faMoon} class="icon-gray" />
+      <NavIcon
+        icon={$isDark ? faSun : faMoon}
+        class="nav-icon-fill nav-icon-stroke"
+      />
     </button>
 
     <a
       on:contextmenu|preventDefault
-      class="button-icon icon-bg-gray ml-0 outline-none ring-current active:ring-0 focus:ring-2 dark:bg-gray-600 dark:before:text-slate-400 md:before:whitespace-pre"
+      class="button-icon ml-0 outline-none ring-current nav-icon-bg nav-icon-text before:text-label active:ring-0 focus:ring-2 md:before:whitespace-pre"
       title="Report a Bug"
       href="https://github.com/zSnout/kama-sona/issues"
       data-tooltip="Report a Bug"
     >
-      <NavIcon icon={faBug} class="icon-gray" />
+      <NavIcon icon={faBug} class="stroke-16 nav-icon-fill nav-icon-stroke" />
     </a>
   </div>
 

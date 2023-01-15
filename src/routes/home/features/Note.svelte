@@ -13,6 +13,7 @@
 >
   <RichTextArea
     class="resize-none"
+    fieldClass="flex-1"
     placeholder="Type a note to yourself..."
     bind:value={$note}
     on:input={(event) => notifyOtherSetters(event.detail[0])}

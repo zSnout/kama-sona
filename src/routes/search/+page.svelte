@@ -456,11 +456,9 @@
     <div class="hidden h-8 flex-1 justify-end md:flex">
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <a
-        class="ring-color relative mx-0 flex items-center rounded-full border-standard px-4 py-1 shadow transition focus:z-10 focus:outline-none focus:ring "
-        class:bg-white={!isRangeCenterToday}
-        class:bg-gray-300={isRangeCenterToday}
-        class:dark:bg-slate-700={isRangeCenterToday}
-        class:dark:bg-slate-900={!isRangeCenterToday}
+        class="ring-color relative mx-0 flex items-center rounded-full px-4 py-1 shadow transition border-standard focus:z-10 focus:outline-none focus:ring"
+        class:bg-filter={!isRangeCenterToday}
+        class:bg-filter-active={isRangeCenterToday}
         href={mergeQueryParam($page.url, "date", new Date().toDateString())}
         on:click={() => (rangeCenter = new Date())}
       >
@@ -510,7 +508,7 @@
         param={["is-manager", "true"]}
         bind:active={isManagerFilter.true}
       >
-        <Icon class="h-5 w-5 text-slate-500" icon={faGear} />
+        <Icon class="h-5 w-5 text-label" icon={faGear} />
       </Filter>
 
       <Filter
@@ -518,7 +516,7 @@
         param={["is-manager", "false"]}
         bind:active={isManagerFilter.false}
       >
-        <Icon class="h-5 w-5 text-slate-500" icon={faEye} />
+        <Icon class="h-5 w-5 text-label" icon={faEye} />
       </Filter>
     </FilterList>
   </div>
@@ -602,7 +600,7 @@
         </p>
 
         <IconLabels
-          class="prefer-w-80 col-start-2 col-end-3 row-start-2 row-end-3 text-sm font-light text-gray-500 dark:text-slate-400"
+          class="prefer-w-80 col-start-2 col-end-3 row-start-2 row-end-3 text-sm font-light text-label"
         >
           {#if !(isManagerFilter.true || isManagerFilter.false)}
             <p>

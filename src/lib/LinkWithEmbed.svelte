@@ -41,8 +41,7 @@
     />
   {:else if href.includes("docs.google.com/document")}
     <iframe
-      size="0.5"
-      class="pointer-events-none relative top-px -mx-4 mb-[calc(-100%_-_2.25rem)] mt-2 aspect-square w-[calc(200%_+_3rem_+_8px)] origin-top-left scale-50 bg-white px-8"
+      class="pointer-events-none relative top-px -mx-4 mb-[calc(-100%_-_2.25rem)] mt-2 aspect-square w-[calc(200%_+_3rem_+_8px)] origin-top-left scale-50 px-8"
       src="https://docs.google.com/document{href.match(
         /\/d\/([A-Za-z0-9\-\_]+)/
       )?.[0]}/mobilebasic?rm=minimal"

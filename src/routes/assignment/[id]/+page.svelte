@@ -98,12 +98,12 @@
   <div class="prefer-w-xl top-22 mx-auto self-start lg:sticky lg:mx-0">
     <div class="field-group mb-12">
       <div class="field flex items-center">
-        <p class="text-gray-500 dark:text-slate-400">Assignment status:</p>
+        <p class="text-label">Assignment status:</p>
 
         <!-- TODO: Add missing indicator. -->
 
         <div
-          class="relative -my-2 mr-[calc(0.75rem_-_1px)] ml-auto h-10 w-6 bg-gradient-to-r from-white before:-top-px bafter:absolute bafter:-bottom-px bafter:left-0 bafter:h-px bafter:w-full bafter:bg-gradient-to-r bafter:from-gray-300 bafter:content-['_'] dark:from-slate-850 dark:bafter:from-slate-600 {color ==
+          class="relative -my-2 mr-[calc(0.75rem_-_1px)] ml-auto h-10 w-6 bg-gradient-to-r from-bg-field before:-top-px bafter:absolute bafter:-bottom-px bafter:left-0 bafter:h-px bafter:w-full bafter:bg-gradient-to-r bafter:from-border-standard bafter:content-['_'] {color ==
           Color.Red
             ? 'to-red-200 bafter:to-red-500 dark:to-red-900 dark:bafter:to-red-500'
             : color == Color.Green
@@ -133,7 +133,7 @@
 
       {#if status.score != null}
         <div class="field flex items-center gap-1">
-          <span class="text-gray-500 dark:text-slate-400">Grade:</span>
+          <span class="text-label">Grade:</span>
           <span>{status.score} of {assignment.points}</span>
         </div>
       {/if}

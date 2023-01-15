@@ -44,14 +44,13 @@
     ? 'right-0'
     : $isSidebarOpen
     ? '-right-82'
-    : '-right-[25rem]'} hidden h-full w-96 pt-16 shadow-horiz-lg transition-all bg-field lg:flex"
+    : '-right-[25rem]'} z-40 hidden h-full w-96 pt-16 shadow-horiz-lg transition-all bg-field md:flex"
 >
   <div class="flex h-full w-14 flex-col items-center pt-2">
     {#each sidebarItems as { name, icon, open, onClick }, index (name)}
       <button
-        class="ring-color flex h-10 w-10 items-center justify-center rounded-full border border-transparent outline-none transition-all hover:bg-gray-200 focus:ring has-[+:hover]:rounded-b-none prev-[:hover]:rounded-t-none dark:hover:bg-slate-700"
-        class:bg-gray-200={open}
-        class:dark:bg-slate-700={open}
+        class="ring-color flex h-10 w-10 items-center justify-center rounded-full border border-transparent outline-none transition hover:bg-hover focus:ring"
+        class:bg-hover={open}
         on:click={onClick}
         aria-label="Toggle {name}"
       >
@@ -78,11 +77,11 @@
 </div>
 
 <button
-  class="fixed bottom-2 {isFullyOpen
+  class="fixed bottom-2 z-40 {isFullyOpen
     ? 'right-84'
     : $isSidebarOpen
     ? 'right-2'
-    : '-right-5 hover:right-0'} hidden h-10 lg:flex {$isSidebarOpen
+    : '-right-5 hover:right-0'} hidden h-10 md:flex {$isSidebarOpen
     ? 'w-10'
     : 'w-12'} items-center {$isSidebarOpen
     ? 'rounded-full'
@@ -93,8 +92,7 @@
     : 'border-standard'} bg-field {$isSidebarOpen
     ? 'pl-3'
     : 'pl-2.5'} ring-color outline-none transition-all hover:pl-3 focus:ring"
-  class:hover:bg-gray-200={$isSidebarOpen}
-  class:hover:dark:bg-slate-700={$isSidebarOpen}
+  class:hover:bg-hover={$isSidebarOpen}
   on:click={() => isSidebarOpen.update(($open) => !$open)}
 >
   <Icon

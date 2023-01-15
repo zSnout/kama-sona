@@ -7,7 +7,7 @@
   <div class="flex max-w-full flex-col items-center">
     <div class="flex items-center">
       <p
-        class="mr-8 border-r border-r-gray-300 py-4 pr-8 text-5xl font-extralight dark:border-r-slate-600"
+        class="mr-8 border-r py-4 pr-8 text-5xl font-extralight border-standard"
       >
         {$page.status}
       </p>
