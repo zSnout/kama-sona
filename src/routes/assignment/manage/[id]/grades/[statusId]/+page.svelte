@@ -1,7 +1,8 @@
 <script lang="ts">
   import { browser } from "$app/environment"
-  import { enhance, type SubmitFunction } from "$app/forms"
+  import { enhance } from "$app/forms"
   import { page } from "$app/stores"
+  import { help } from "$lib/help"
   import Icon from "$lib/Icon.svelte"
   import RichTextArea from "$lib/RichTextArea.svelte"
   import { Color, statusToColor, statusToLabel } from "$lib/statusToLabel"
@@ -226,3 +227,21 @@
 {:else}
   <Page {data} />
 {/if}
+
+<div hidden use:help>
+  <h2>Grading Students</h2>
+
+  <p>The assignment title, student work, and status are shown on the left.</p>
+
+  <p>
+    You can mark a student as missing or exempt using the buttons to the right
+    of the title.
+  </p>
+
+  <p>You may add a teacher comment using the rich text editor on the right.</p>
+
+  <p>
+    You can give a grade to the assignment using the text field at the bottom,
+    or remove a grade with the "Clear Grade" button.
+  </p>
+</div>

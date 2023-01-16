@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { help } from "$lib/help"
   import IconLabel from "$lib/IconLabel.svelte"
   import IconLabels from "$lib/IconLabels.svelte"
   import LargeTitle from "$lib/LargeTitle.svelte"
@@ -137,4 +138,25 @@
       View Submissions
     </a>
   </div>
+</div>
+
+<div hidden use:help>
+  <p>This page is the teacher overview of an assignment.</p>
+
+  <p>The left side of the screen includes the</p>
+
+  <ul>
+    <li>assignment title,</li>
+    <li>due date,</li>
+    <li>group,</li>
+    <li>point value,</li>
+    <li>description, and</li>
+    <li>attachments.</li>
+  </ul>
+
+  <p>
+    The right side of the screen lists how many assignees this assignment has.
+    It also shows what status (completed, in progress, late, etc.) students are
+    in.
+  </p>
 </div>

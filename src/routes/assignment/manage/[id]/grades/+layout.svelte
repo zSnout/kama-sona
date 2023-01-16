@@ -1,6 +1,7 @@
 <script lang="ts">
   import { browser } from "$app/environment"
   import { page } from "$app/stores"
+  import { help } from "$lib/help"
   import Icon from "$lib/Icon.svelte"
   import { Color, statusToColor, statusToLabel } from "$lib/statusToLabel"
   import { faArrowLeft, faListCheck } from "@fortawesome/free-solid-svg-icons"
@@ -96,4 +97,22 @@
   <div class="flex flex-1 flex-col pl-60 pr-3">
     <slot />
   </div>
+</div>
+
+<div hidden use:help>
+  <p>This page lets you grade students and see their work.</p>
+
+  <p>Click a student on the left to focus them.</p>
+
+  <p>To search the list of students, press Ctrl/Command and F.</p>
+
+  <p>
+    You can compact and expand the sidebar by toggling the <span
+      aria-label="status"
+      class="field mx-1 inline-flex h-10 items-center"
+      class:active={$showingStatus}
+    >
+      <Icon class="h-4 w-4" icon={faListCheck} />
+    </span> button.
+  </p>
 </div>

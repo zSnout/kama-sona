@@ -3,6 +3,7 @@
   import { page } from "$app/stores"
   import Filter from "$lib/Filter.svelte"
   import FilterList from "$lib/FilterList.svelte"
+  import { help } from "$lib/help"
   import Icon from "$lib/Icon.svelte"
   import IconLabel from "$lib/IconLabel.svelte"
   import IconLabels from "$lib/IconLabels.svelte"
@@ -10,11 +11,13 @@
   import MultiSelect from "$lib/MultiSelect.svelte"
   import { getPage, pages, type Searchable } from "$lib/pages"
   import Table from "$lib/Table.svelte"
+  import Title from "$lib/Title.svelte"
   import { toDateString, toMonthString } from "$lib/toDateString"
   import { itemToIcon } from "$lib/toIcon"
   import type { IconDefinition } from "@fortawesome/free-brands-svg-icons"
   import {
     faArrowUp,
+    faBookOpen,
     faCalendar,
     faCalendarCheck,
     faChevronLeft,
@@ -25,6 +28,8 @@
     faObjectGroup,
     faPeopleGroup,
     faPercent,
+    faTasks,
+    faUserGroup,
   } from "@fortawesome/free-solid-svg-icons"
   import type {
     Assignment,
@@ -371,6 +376,8 @@
   const showAdvancedFilters = writable("show-advanced-filters", false)
 </script>
 
+<Title mode="head-only" title="Search" />
+
 <svelte:window
   on:keydown={(event) => {
     if (event.key == "/") {
@@ -639,3 +646,167 @@
     filters.
   </p>
 {/if}
+
+<div hidden use:help>
+  <p>The search page allows you to find assignments, groups, and resources.</p>
+
+  <h2>Results</h2>
+
+  <p>
+    Each search result is labeled with a colored icon, a title, and some labels.
+  </p>
+
+  <p>
+    The colored icon indicates the type of item. For example, a group is labeled
+    with a <Icon
+      class="icon-fill-blue mr-0"
+      isLabel
+      icon={faUserGroup}
+      title="user group"
+    /> icon.
+  </p>
+
+  <p>
+    The icon on the lower left of an item <span class="whitespace-nowrap"
+      >(<Icon class="top-0 mr-0" isLabel icon={faGear} title="gear" /> or <Icon
+        class="top-0 -mr-1"
+        isLabel
+        icon={faEye}
+        title="eye"
+      />)</span
+    >
+    indicates whether you manage the item or not. A <Icon
+      class="mr-0"
+      isLabel
+      icon={faGear}
+      title="gear"
+    /> icon indicates that you manage or created the item, while an <Icon
+      class="mr-0"
+      isLabel
+      icon={faEye}
+      title="eye"
+    /> means the opposite.
+  </p>
+
+  <p>
+    Additional icons also exist. For example, groups are labeled with how many
+    members the have, while assignments are labeled with their due date.
+  </p>
+
+  <p>
+    If an item has an <Icon
+      class="top-0 mr-0"
+      isLabel
+      icon={faObjectGroup}
+      title="object group"
+    /> icon, it will indicate the category the item belongs to.
+  </p>
+
+  <p>
+    If an item has a <Icon
+      class="top-0 mr-0"
+      isLabel
+      icon={faPeopleGroup}
+      title="people group"
+    /> icon, it will indicate the group the item belongs to.
+  </p>
+
+  <h2>Date Filters</h2>
+
+  <p>
+    The topmost filter only shows item in a specified range of time. To show it,
+    make sure either "Day," "Week," or "Month" is selected in the top left.
+  </p>
+
+  <p>
+    Use the <span class="field inline-flex h-8 items-center py-0 bg-body"
+      ><Icon class="h-4 w-4" icon={faChevronLeft} title="left arrow" /></span
+    >
+    and
+    <span class="field inline-flex h-8 items-center py-0 bg-body"
+      ><Icon class="h-4 w-4" icon={faChevronRight} title="right arrow" /></span
+    > buttons to switch the time range.
+  </p>
+
+  <p>To quickly get back to the present day, press the "Today" button.</p>
+
+  <h2>Filtering by Item Type</h2>
+
+  <p>
+    The second filter allows you to filter by item type. The <span
+      class="whitespace-nowrap"
+      ><Icon
+        class="icon-fill-red -top-px -mr-1 h-4 w-4"
+        icon={faTasks}
+        isLabel
+        title="tasks"
+      />, <Icon
+        class="icon-fill-blue -top-px -mr-1 h-4 w-4"
+        icon={faUserGroup}
+        isLabel
+        title="user group"
+      />, and <Icon
+        class="icon-fill-green -top-px mr-0 h-4 w-4"
+        icon={faBookOpen}
+        isLabel
+        title="open book"
+      /></span
+    > icons correspond to the item type shown in search.
+  </p>
+
+  <p>
+    When this filter is active, the <span class="whitespace-nowrap"
+      ><Icon
+        class="icon-fill-red -top-px -mr-1 h-4 w-4"
+        icon={faTasks}
+        isLabel
+        title="tasks"
+      />, <Icon
+        class="icon-fill-blue -top-px -mr-1 h-4 w-4"
+        icon={faUserGroup}
+        isLabel
+        title="user group"
+      />, and <Icon
+        class="icon-fill-green -top-px mr-0 h-4 w-4"
+        icon={faBookOpen}
+        isLabel
+        title="open book"
+      /></span
+    > icons will disappear from search results, as they are redundant.
+  </p>
+
+  <h2>Filtering by Management</h2>
+
+  <p>
+    The third filter allows you to filter by whether you manage an item or not.
+    The <span class="whitespace-nowrap"
+      ><Icon class="-top-px mr-0 h-4 w-4" icon={faGear} isLabel title="gear" />
+      and <Icon
+        class="-top-px mr-0 h-4 w-4"
+        icon={faEye}
+        isLabel
+        title="eye"
+      /></span
+    > icons correspond to the icon shown in search.
+  </p>
+
+  <p>
+    When this filter is active, the <span class="whitespace-nowrap"
+      ><Icon class="-top-px mr-0 h-4 w-4" icon={faGear} isLabel title="gear" />
+      and <Icon
+        class="-top-px mr-0 h-4 w-4"
+        icon={faEye}
+        isLabel
+        title="eye"
+      /></span
+    > icons will disappear from search results, as they are redundant.
+  </p>
+
+  <h2>Advanced Filters</h2>
+
+  <p>
+    If you enable advanced filters, you will see two new search boxes. The left
+    one filters your results by which class they are in, while the right one
+    filters by category.
+  </p>
+</div>

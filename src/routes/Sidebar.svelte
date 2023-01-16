@@ -9,6 +9,7 @@
     faChevronRight,
     faNoteSticky,
     faPalette,
+    faQuestion,
     faTasks,
   } from "@fortawesome/free-solid-svg-icons"
   import { writable } from "svelte-local-storage-store"
@@ -17,11 +18,24 @@
   const isNotesOpen = writable("sidebar:open:notes", false)
   const isTodosOpen = writable("sidebar:open:todos", false)
   const isThemeOpen = writable("sidebar:open:theme", false)
+  const isHelpOpen = writable("sidebar:open:help", false)
 
   $: isFullyOpen =
-    $isSidebarOpen && ($isNotesOpen || $isTodosOpen || $isThemeOpen)
+    $isSidebarOpen &&
+    ($isNotesOpen || $isTodosOpen || $isThemeOpen || $isHelpOpen)
 
   $: sidebarItems = [
+    {
+      name: "Help",
+      icon: faQuestion,
+      open: $isHelpOpen,
+      onClick: () => {
+        isNotesOpen.set(false)
+        isTodosOpen.set(false)
+        isThemeOpen.set(false)
+        isHelpOpen.update(($open) => !$open)
+      },
+    },
     {
       name: "Notes",
       icon: faNoteSticky,
@@ -30,6 +44,7 @@
         isNotesOpen.update(($open) => !$open)
         isTodosOpen.set(false)
         isThemeOpen.set(false)
+        isHelpOpen.set(false)
       },
     },
     {
@@ -40,6 +55,7 @@
         isNotesOpen.set(false)
         isTodosOpen.update(($open) => !$open)
         isThemeOpen.set(false)
+        isHelpOpen.set(false)
       },
     },
     {
@@ -50,6 +66,7 @@
         isNotesOpen.set(false)
         isTodosOpen.set(false)
         isThemeOpen.update(($open) => !$open)
+        isHelpOpen.set(false)
       },
     },
   ] as const
@@ -62,6 +79,7 @@
     : $isSidebarOpen
     ? '-right-82'
     : '-right-[25rem]'} prefer-w-96 z-40 hidden h-full select-none border-l pt-16 shadow-horiz-lg transition-all sidebar-bg sidebar-border-l md:flex"
+  class:prefer-w-[30rem]={$isHelpOpen && $isSidebarOpen}
   class:prefer-w-[40rem]={$isThemeOpen && $isSidebarOpen}
 >
   <div class="flex h-full w-14 flex-col items-center pt-2">
@@ -96,11 +114,27 @@
   {:else if $isThemeOpen}
     <ThemeEditor class="flex-1 border-l border-standard" />
   {/if}
+
+  <div
+    class="flex-1 overflow-auto border-l py-3 px-4 border-standard desc-[h2]:mb-2 desc-[h2]:mt-6 desc-[p]:mt-2 desc-[ul]:ml-6 desc-[ul]:mt-2 desc-[ul]:list-disc desc-[li]:pl-1 desc-[h2]:font-semibold desc-[h2]:text-heading"
+    class:hidden={!$isHelpOpen}
+  >
+    <h2 style:margin-top="0">Help</h2>
+
+    <div id="help" />
+
+    <h2>About the Sidebar</h2>
+
+    <p>This menu will update based on the contents of the current page.</p>
+  </div>
 </div>
 
 <button
-  class="fixed bottom-2 z-40 {$isSidebarOpen && $isThemeOpen
+  class="fixed bottom-2 z-40 origin-[right,center] {$isSidebarOpen &&
+  $isThemeOpen
     ? 'right-[37rem]'
+    : $isSidebarOpen && $isHelpOpen
+    ? 'right-[27rem]'
     : isFullyOpen
     ? 'right-84'
     : $isSidebarOpen
@@ -114,6 +148,7 @@
     : 'border-r-0'} {$isSidebarOpen
     ? 'pl-3'
     : 'pl-2.5'} ring-color select-none outline-none transition-all hover:pl-3 focus:ring"
+  class:animate-new={/* replace with something once we need it */ false}
   class:bg-field={!$isSidebarOpen}
   class:border-standard={!$isSidebarOpen}
   class:border-transparent={$isSidebarOpen}

@@ -5,107 +5,209 @@
 /* Update src/lib/themeable.ts if more CSS variables are added. */
 
 html {
-  --bg-active: theme(colors.blue.100);
-  --bg-active-hover: theme(colors.blue.200);
-  --bg-body: theme(colors.gray.100);
-  --bg-field: #ffffff;
-  --bg-filter: #ffffff;
-  --bg-filter-active: theme(colors.gray.300);
-  --bg-hover: theme(colors.gray.200);
-  --bg-loading-bar: theme(colors.blue.500);
-  --bg-table-row: theme(colors.gray.200);
-  --bg-tooltip: #ffffff;
+  --light-bg-active: theme(colors.blue.100);
+  --light-bg-active-hover: theme(colors.blue.200);
+  --light-bg-body: theme(colors.gray.100);
+  --light-bg-field: #ffffff;
+  --light-bg-filter: #ffffff;
+  --light-bg-filter-active: theme(colors.gray.300);
+  --light-bg-hover: theme(colors.gray.200);
+  --light-bg-loading-bar: theme(colors.blue.500);
+  --light-bg-table-row: theme(colors.gray.200);
+  --light-bg-tooltip: #ffffff;
 
-  --big-button-bg: theme(colors.gray.200);
-  --big-button-border: theme(colors.gray.200);
-  --big-button-icon: theme(colors.slate.400);
-  --big-button-text: theme(colors.slate.600);
+  --light-big-button-bg: theme(colors.gray.200);
+  --light-big-button-border: theme(colors.gray.200);
+  --light-big-button-icon: theme(colors.slate.400);
+  --light-big-button-text: theme(colors.slate.600);
 
-  --big-button-hover-bg: theme(colors.gray.200);
-  --big-button-hover-border: theme(colors.gray.500);
-  --big-button-hover-icon: theme(colors.slate.400);
-  --big-button-hover-text: theme(colors.slate.600);
+  --light-big-button-hover-bg: theme(colors.gray.200);
+  --light-big-button-hover-border: theme(colors.gray.500);
+  --light-big-button-hover-icon: theme(colors.slate.400);
+  --light-big-button-hover-text: theme(colors.slate.600);
 
-  --border-active: theme(colors.blue.400);
-  --border-focus: theme(colors.blue.500);
-  --border-hover: theme(colors.gray.400);
-  --border-standard: theme(colors.gray.300);
+  --light-border-active: theme(colors.blue.400);
+  --light-border-focus: theme(colors.blue.500);
+  --light-border-hover: theme(colors.gray.400);
+  --light-border-standard: theme(colors.gray.300);
 
-  --nav-bg: #ffffff;
-  --nav-border: #ffffff;
-  --nav-icon-bg: theme(colors.gray.200);
-  --nav-icon-fill: theme(colors.gray.200);
-  --nav-icon-fill-active: #ffffff;
-  --nav-icon-stroke: theme(colors.gray.500);
+  --light-nav-bg: #ffffff;
+  --light-nav-border: #ffffff;
+  --light-nav-icon-bg: theme(colors.gray.200);
+  --light-nav-icon-fill: theme(colors.gray.200);
+  --light-nav-icon-fill-active: #ffffff;
+  --light-nav-icon-stroke: theme(colors.gray.500);
 
-  --ring-focus: theme(colors.blue.200);
+  --light-ring-focus: theme(colors.blue.200);
 
-  --sidebar-bg: #ffffff;
-  --sidebar-border: #ffffff;
-  --sidebar-button-color: theme(colors.gray.500);
-  --sidebar-button-hover-bg: theme(colors.gray.200);
-  --sidebar-button-hover-color: theme(colors.gray.500);
+  --light-sidebar-bg: #ffffff;
+  --light-sidebar-border: #ffffff;
+  --light-sidebar-button-color: theme(colors.gray.500);
+  --light-sidebar-button-hover-bg: theme(colors.gray.200);
+  --light-sidebar-button-hover-color: theme(colors.gray.500);
 
-  --text-active: theme(colors.blue.600);
-  --text-body: theme(colors.slate.600);
-  --text-heading: theme(colors.slate.800);
-  --text-icon: theme(colors.gray.350);
-  --text-label: theme(colors.gray.500);
-  --text-link: theme(colors.blue.600);
-  --text-placeholder: theme(colors.slate.400);
-  --text-tooltip: theme(colors.slate.600);
+  --light-text-active: theme(colors.blue.600);
+  --light-text-body: theme(colors.slate.600);
+  --light-text-heading: theme(colors.slate.800);
+  --light-text-icon: theme(colors.gray.350);
+  --light-text-label: theme(colors.gray.500);
+  --light-text-link: theme(colors.blue.600);
+  --light-text-placeholder: theme(colors.slate.400);
+  --light-text-tooltip: theme(colors.slate.600);
+}
+
+html {
+  --dark-bg-active: theme(colors.blue.900);
+  --dark-bg-active-hover: theme(colors.blue.800);
+  --dark-bg-body: theme(colors.slate.800);
+  --dark-bg-field: theme(colors.slate.850);
+  --dark-bg-filter: theme(colors.slate.900);
+  --dark-bg-filter-active: theme(colors.slate.700);
+  --dark-bg-hover: theme(colors.slate.700);
+  --dark-bg-loading-bar: theme(colors.blue.700);
+  --dark-bg-table-row: theme(colors.slate.700);
+  --dark-bg-tooltip: theme(colors.slate.900);
+
+  --dark-big-button-bg: theme(colors.slate.900);
+  --dark-big-button-border: theme(colors.slate.900);
+  --dark-big-button-icon: theme(colors.slate.500);
+  --dark-big-button-text: theme(colors.slate.300);
+
+  --dark-big-button-hover-bg: theme(colors.slate.900);
+  --dark-big-button-hover-border: theme(colors.slate.500);
+  --dark-big-button-hover-icon: theme(colors.slate.400);
+  --dark-big-button-hover-text: theme(colors.slate.300);
+
+  --dark-border-active: theme(colors.blue.400);
+  --dark-border-focus: theme(colors.blue.500);
+  --dark-border-hover: theme(colors.slate.500);
+  --dark-border-standard: theme(colors.slate.600);
+
+  --dark-nav-bg: theme(colors.slate.800);
+  --dark-nav-border: theme(colors.slate.800);
+  --dark-nav-icon-bg: theme(colors.gray.600);
+  --dark-nav-icon-fill: theme(colors.slate.700);
+  --dark-nav-icon-fill-active: theme(colors.slate.700);
+  --dark-nav-icon-stroke: theme(colors.slate.300);
+
+  --dark-ring-focus: theme(colors.blue.900);
+
+  --dark-sidebar-bg: theme(colors.slate.850);
+  --dark-sidebar-border: theme(colors.slate.850);
+  --dark-sidebar-button-color: theme(colors.slate.400);
+  --dark-sidebar-button-hover-bg: theme(colors.slate.700);
+  --dark-sidebar-button-hover-color: theme(colors.slate.400);
+
+  --dark-text-active: theme(colors.blue.300);
+  --dark-text-body: theme(colors.slate.300);
+  --dark-text-heading: theme(colors.slate.100);
+  --dark-text-icon: theme(colors.slate.500);
+  --dark-text-label: theme(colors.slate.400);
+  --dark-text-link: theme(colors.blue.500);
+  --dark-text-placeholder: theme(colors.slate.500);
+  --dark-text-tooltip: theme(colors.slate.300);
+}
+
+html {
+  --bg-active: var(--light-bg-active);
+  --bg-active-hover: var(--light-bg-active-hover);
+  --bg-body: var(--light-bg-body);
+  --bg-field: var(--light-bg-field);
+  --bg-filter: var(--light-bg-filter);
+  --bg-filter-active: var(--light-bg-filter-active);
+  --bg-hover: var(--light-bg-hover);
+  --bg-loading-bar: var(--light-bg-loading-bar);
+  --bg-table-row: var(--light-bg-table-row);
+  --bg-tooltip: var(--light-bg-tooltip);
+
+  --big-button-bg: var(--light-big-button-bg);
+  --big-button-border: var(--light-big-button-border);
+  --big-button-icon: var(--light-big-button-icon);
+  --big-button-text: var(--light-big-button-text);
+  --big-button-hover-bg: var(--light-big-button-hover-bg);
+  --big-button-hover-border: var(--light-big-button-hover-border);
+  --big-button-hover-icon: var(--light-big-button-hover-icon);
+  --big-button-hover-text: var(--light-big-button-hover-text);
+
+  --border-active: var(--light-border-active);
+  --border-focus: var(--light-border-focus);
+  --border-hover: var(--light-border-hover);
+  --border-standard: var(--light-border-standard);
+
+  --nav-bg: var(--light-nav-bg);
+  --nav-border: var(--light-nav-border);
+  --nav-icon-bg: var(--light-nav-icon-bg);
+  --nav-icon-fill: var(--light-nav-icon-fill);
+  --nav-icon-fill-active: var(--light-nav-icon-fill-active);
+  --nav-icon-stroke: var(--light-nav-icon-stroke);
+
+  --ring-focus: var(--light-ring-focus);
+
+  --sidebar-bg: var(--light-sidebar-bg);
+  --sidebar-border: var(--light-sidebar-border);
+  --sidebar-button-color: var(--light-sidebar-button-color);
+  --sidebar-button-hover-bg: var(--light-sidebar-button-hover-bg);
+  --sidebar-button-hover-color: var(--light-sidebar-button-hover-color);
+
+  --text-active: var(--light-text-active);
+  --text-body: var(--light-text-body);
+  --text-heading: var(--light-text-heading);
+  --text-icon: var(--light-text-icon);
+  --text-label: var(--light-text-label);
+  --text-link: var(--light-text-link);
+  --text-placeholder: var(--light-text-placeholder);
+  --text-tooltip: var(--light-text-tooltip);
 }
 
 html.dark {
-  --bg-active: theme(colors.blue.900);
-  --bg-active-hover: theme(colors.blue.800);
-  --bg-body: theme(colors.slate.800);
-  --bg-field: theme(colors.slate.850);
-  --bg-filter: theme(colors.slate.900);
-  --bg-filter-active: theme(colors.slate.700);
-  --bg-hover: theme(colors.slate.700);
-  --bg-loading-bar: theme(colors.blue.700);
-  --bg-table-row: theme(colors.slate.700);
-  --bg-tooltip: theme(colors.slate.900);
+  --bg-active: var(--dark-bg-active);
+  --bg-active-hover: var(--dark-bg-active-hover);
+  --bg-body: var(--dark-bg-body);
+  --bg-field: var(--dark-bg-field);
+  --bg-filter: var(--dark-bg-filter);
+  --bg-filter-active: var(--dark-bg-filter-active);
+  --bg-hover: var(--dark-bg-hover);
+  --bg-loading-bar: var(--dark-bg-loading-bar);
+  --bg-table-row: var(--dark-bg-table-row);
+  --bg-tooltip: var(--dark-bg-tooltip);
 
-  --big-button-bg: theme(colors.slate.900);
-  --big-button-border: theme(colors.slate.900);
-  --big-button-icon: theme(colors.slate.500);
-  --big-button-text: theme(colors.slate.300);
+  --big-button-bg: var(--dark-big-button-bg);
+  --big-button-border: var(--dark-big-button-border);
+  --big-button-icon: var(--dark-big-button-icon);
+  --big-button-text: var(--dark-big-button-text);
+  --big-button-hover-bg: var(--dark-big-button-hover-bg);
+  --big-button-hover-border: var(--dark-big-button-hover-border);
+  --big-button-hover-icon: var(--dark-big-button-hover-icon);
+  --big-button-hover-text: var(--dark-big-button-hover-text);
 
-  --big-button-hover-bg: theme(colors.slate.900);
-  --big-button-hover-border: theme(colors.slate.500);
-  --big-button-hover-icon: theme(colors.slate.400);
-  --big-button-hover-text: theme(colors.slate.300);
+  --border-active: var(--dark-border-active);
+  --border-focus: var(--dark-border-focus);
+  --border-hover: var(--dark-border-hover);
+  --border-standard: var(--dark-border-standard);
 
-  --border-active: theme(colors.blue.400);
-  --border-focus: theme(colors.blue.500);
-  --border-hover: theme(colors.slate.500);
-  --border-standard: theme(colors.slate.600);
+  --nav-bg: var(--dark-nav-bg);
+  --nav-border: var(--dark-nav-border);
+  --nav-icon-bg: var(--dark-nav-icon-bg);
+  --nav-icon-fill: var(--dark-nav-icon-fill);
+  --nav-icon-fill-active: var(--dark-nav-icon-fill-active);
+  --nav-icon-stroke: var(--dark-nav-icon-stroke);
 
-  --nav-bg: theme(colors.slate.800);
-  --nav-border: theme(colors.slate.800);
-  --nav-icon-bg: theme(colors.gray.600);
-  --nav-icon-fill: theme(colors.slate.700);
-  --nav-icon-fill-active: theme(colors.slate.700);
-  --nav-icon-stroke: theme(colors.slate.300);
+  --ring-focus: var(--dark-ring-focus);
 
-  --ring-focus: theme(colors.blue.900);
+  --sidebar-bg: var(--dark-sidebar-bg);
+  --sidebar-border: var(--dark-sidebar-border);
+  --sidebar-button-color: var(--dark-sidebar-button-color);
+  --sidebar-button-hover-bg: var(--dark-sidebar-button-hover-bg);
+  --sidebar-button-hover-color: var(--dark-sidebar-button-hover-color);
 
-  --sidebar-bg: theme(colors.slate.850);
-  --sidebar-border: theme(colors.slate.850);
-  --sidebar-button-color: theme(colors.slate.400);
-  --sidebar-button-hover-bg: theme(colors.slate.700);
-  --sidebar-button-hover-color: theme(colors.slate.400);
-
-  --text-active: theme(colors.blue.300);
-  --text-body: theme(colors.slate.300);
-  --text-heading: theme(colors.slate.100);
-  --text-icon: theme(colors.slate.500);
-  --text-label: theme(colors.slate.400);
-  --text-link: theme(colors.blue.500);
-  --text-placeholder: theme(colors.slate.500);
-  --text-tooltip: theme(colors.slate.300);
+  --text-active: var(--dark-text-active);
+  --text-body: var(--dark-text-body);
+  --text-heading: var(--dark-text-heading);
+  --text-icon: var(--dark-text-icon);
+  --text-label: var(--dark-text-label);
+  --text-link: var(--dark-text-link);
+  --text-placeholder: var(--dark-text-placeholder);
+  --text-tooltip: var(--dark-text-tooltip);
 }
 
 html.flat *,
@@ -133,6 +235,48 @@ html.sharp :after {
 html,
 body {
   @apply min-h-screen overscroll-none bg-body text-body;
+}
+
+@keyframes animate-new {
+  0% {
+    transform: none;
+  }
+
+  10% {
+    transform: translateX(-0.5rem) rotateZ(-20deg) scale(1.2);
+  }
+
+  12% {
+    transform: translateX(-0.5rem) rotateZ(25deg) scale(1.2);
+  }
+
+  13.5% {
+    transform: translateX(-0.5rem) rotateZ(-15deg) scale(1.2);
+  }
+
+  15% {
+    transform: translateX(-0.5rem) rotateZ(15deg) scale(1.2);
+  }
+
+  16.5% {
+    transform: translateX(-0.5rem) rotateZ(-12deg) scale(1.2);
+  }
+
+  17% {
+    transform: translateX(-0.5rem) rotateZ(0) scale(1.2);
+  }
+
+  20% {
+    transform: rotateZ(0) scale(1);
+  }
+
+  100% {
+    transform: rotateZ(0) scale(1);
+  }
+}
+
+.animate-new {
+  animation: 5s 3s infinite ease-out animate-new;
 }
 
 :where(td) {

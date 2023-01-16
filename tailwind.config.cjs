@@ -180,6 +180,7 @@ const config = {
           ".group:focus-visible &",
         ])
 
+        matchVariant("desc", (value) => `& ${value.replace(/_/g, " ")}`)
         matchVariant("has", (value) => `&:has(${value.replace(/_/g, " ")})`)
         matchVariant("prev", (value) => `${value.replace(/_/g, " ")} + &`)
       }

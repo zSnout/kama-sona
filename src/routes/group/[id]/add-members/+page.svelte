@@ -1,6 +1,7 @@
 <script lang="ts">
   import { PUBLIC_KS_APP_NAME } from "$env/static/public"
   import AccountCard from "$lib/AccountCard.svelte"
+  import { help } from "$lib/help"
   import type { PageData } from "./$types"
 
   export let data: PageData
@@ -14,6 +15,8 @@
         account.name.toLowerCase().includes(query.toLowerCase()) ||
         account.email.toLowerCase().includes(query.toLowerCase()))
   )
+
+  let added: Record<string, boolean> = {}
 </script>
 
 {#if data.accounts.length != 0}
@@ -45,6 +48,8 @@
           {account}
           isButton
           href="/group/{data.group.id}/add-members/{account.id}"
+          class="transition {added[account.id] ? 'opacity-30' : ''}"
+          on:click={() => (added[account.id] = true)}
         />
       {/each}
     </div>
@@ -55,3 +60,9 @@
     people.
   </p>
 {/if}
+
+<div hidden use:help>
+  <p>This page lets you add members to a group.</p>
+
+  <p>Click a user to add them to {data.group.title}.</p>
+</div>

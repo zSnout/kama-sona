@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { help } from "$lib/help"
   import IconLabel from "$lib/IconLabel.svelte"
   import IconLabels from "$lib/IconLabels.svelte"
   import LargeTitle from "$lib/LargeTitle.svelte"
@@ -18,7 +19,7 @@
 
 <div class="flex flex-1 flex-col gap-8 lg:flex-row">
   <div class="top-22 flex flex-1 flex-col self-start lg:sticky">
-    <div class="prose">
+    <div class="prose max-w-prose">
       <LargeTitle>{resource.title}</LargeTitle>
 
       <IconLabels class="mb-4">
@@ -61,4 +62,17 @@
       </div>
     {/if}
   </div>
+</div>
+
+<div hidden use:help>
+  <p>This page is a resource.</p>
+
+  <p>It includes a</p>
+
+  <ul>
+    <li>title,</li>
+    <li>group,</li>
+    <li>description, and</li>
+    <li>attachments.</li>
+  </ul>
 </div>

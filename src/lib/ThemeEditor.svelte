@@ -4,12 +4,14 @@
     faDownload,
     faDropletSlash,
     faFillDrip,
+    faMoon,
     faSquareFull,
+    faSun,
     faTrash,
     faUpload,
   } from "@fortawesome/free-solid-svg-icons"
   import Icon from "./Icon.svelte"
-  import { isDark } from "./theme"
+  import { isDark, toggle } from "./theme"
   import { customTheme, themeable1, themeable2 } from "./themeable"
 
   let className = ""
@@ -43,8 +45,8 @@
   let uploadEl: HTMLInputElement | undefined
 </script>
 
-<div class="{className} flex flex-col gap-2 overflow-auto px-3 py-2">
-  <div class="mt-4 -mb-1 flex w-full justify-center gap-3">
+<div class="{className} flex flex-col gap-2 overflow-auto px-3 py-6">
+  <div class="-mb-1 flex w-full justify-center gap-3">
     <button
       class="field flex items-center justify-center bg-body"
       on:click={() => {
@@ -150,103 +152,67 @@
     >
       <Icon class="h-4 w-4" icon={faSquareFull} />
     </button>
+
+    <button
+      class="field flex items-center justify-center bg-body"
+      on:click={toggle}
+      aria-label="Toggle Color Scheme"
+      data-tooltip="Theme"
+    >
+      <Icon class="h-4 w-4" icon={$isDark ? faSun : faMoon} />
+    </button>
   </div>
 
   <div class="grid grid-cols-2">
-    <div class="flex flex-col gap-1">
-      {#each themeable1 as { css, name }}
-        {#if css.startsWith("#")}
-          <h2 class="mt-4 pl-6 font-semibold">{name}</h2>
-        {:else}
-          {@const id = "theme-editor-" + css}
+    {#each [themeable1, themeable2] as themeable}
+      <div class="flex flex-col gap-1">
+        {#each themeable as { css: cssOg, name }}
+          {#if cssOg.startsWith("#")}
+            <h2 class="mt-4 pl-6 font-semibold">{name}</h2>
+          {:else}
+            {@const css = ($isDark ? "--dark-" : "--light-") + cssOg.slice(2)}
+            {@const id = "theme-editor-" + css}
 
-          <div class="group flex gap-2">
-            <button
-              class="h-full transition-all duration-500"
-              class:scale-100={$customTheme[css] != null}
-              class:scale-75={$customTheme[css] == null}
-              class:opacity-100={$customTheme[css] != null}
-              class:opacity-0={$customTheme[css] == null}
-              class:pointer-events-none={$customTheme[css] == null}
-              aria-hidden={$customTheme[css] == null}
-              type="button"
-              on:click={() => {
-                delete $customTheme[css]
-                $customTheme = $customTheme
-              }}
-            >
-              <Icon class="h-4 w-4" icon={faDropletSlash} />
-            </button>
-
-            <input
-              class="h-6 w-6 overflow-hidden rounded-sm border-0 color-swatch-wrapper:p-0 color-swatch:border-0"
-              type="color"
-              {id}
-              value={$customTheme[css] || getColor(css)}
-              on:input={(event) => {
-                const color = event.currentTarget.value
-
-                if (color) {
-                  $customTheme[css] = color
-                } else {
+            <div class="group flex gap-2">
+              <button
+                class="h-full transition-all duration-500"
+                class:scale-100={$customTheme[css] != null}
+                class:scale-75={$customTheme[css] == null}
+                class:opacity-100={$customTheme[css] != null}
+                class:opacity-0={$customTheme[css] == null}
+                class:pointer-events-none={$customTheme[css] == null}
+                aria-hidden={$customTheme[css] == null}
+                type="button"
+                on:click={() => {
                   delete $customTheme[css]
                   $customTheme = $customTheme
-                }
-              }}
-            />
+                }}
+              >
+                <Icon class="h-4 w-4" icon={faDropletSlash} />
+              </button>
 
-            <label class="ml-2 flex-1" for={id}>{name}</label>
-          </div>
-        {/if}
-      {/each}
-    </div>
+              <input
+                class="h-6 w-6 overflow-hidden rounded-sm border-0 color-swatch-wrapper:p-0 color-swatch:border-0"
+                type="color"
+                {id}
+                value={$customTheme[css] || getColor(css)}
+                on:input={(event) => {
+                  const color = event.currentTarget.value
 
-    <div class="flex flex-col gap-1">
-      {#each themeable2 as { css, name }}
-        {#if css.startsWith("#")}
-          <h2 class="mt-4 pl-6 font-semibold">{name}</h2>
-        {:else}
-          {@const id = "theme-editor-" + css}
+                  if (color) {
+                    $customTheme[css] = color
+                  } else {
+                    delete $customTheme[css]
+                    $customTheme = $customTheme
+                  }
+                }}
+              />
 
-          <div class="group flex gap-2">
-            <button
-              class="h-full transition-all duration-500"
-              class:scale-100={$customTheme[css] != null}
-              class:scale-75={$customTheme[css] == null}
-              class:opacity-100={$customTheme[css] != null}
-              class:opacity-0={$customTheme[css] == null}
-              class:pointer-events-none={$customTheme[css] == null}
-              aria-hidden={$customTheme[css] == null}
-              type="button"
-              on:click={() => {
-                delete $customTheme[css]
-                $customTheme = $customTheme
-              }}
-            >
-              <Icon class="h-4 w-4" icon={faDropletSlash} />
-            </button>
-
-            <input
-              class="h-6 w-6 overflow-hidden rounded-sm border-0 color-swatch-wrapper:p-0 color-swatch:border-0"
-              type="color"
-              {id}
-              value={$customTheme[css] || getColor(css)}
-              on:input={(event) => {
-                const color = event.currentTarget.value
-
-                if (color) {
-                  $customTheme[css] = color
-                } else {
-                  delete $customTheme[css]
-                  $customTheme = $customTheme
-                }
-              }}
-            />
-
-            <label class="ml-2 flex-1" for={id}>{name}</label>
-          </div>
-        {/if}
-      {/each}
-    </div>
+              <label class="ml-2 flex-1" for={id}>{name}</label>
+            </div>
+          {/if}
+        {/each}
+      </div>
+    {/each}
   </div>
 </div>

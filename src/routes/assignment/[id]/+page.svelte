@@ -1,6 +1,7 @@
 <script lang="ts">
   import { browser } from "$app/environment"
   import { enhance } from "$app/forms"
+  import { help } from "$lib/help"
   import IconLabel from "$lib/IconLabel.svelte"
   import IconLabels from "$lib/IconLabels.svelte"
   import LargeTitle from "$lib/LargeTitle.svelte"
@@ -163,15 +164,13 @@
 
       <div class="flex w-full justify-evenly">
         {#if status.submitted}
-          {#if new Date() < status.due}
-            <button
-              class="field prefer-w-40 rounded-t-none border-t-0 focus:-mt-px"
-              type="submit"
-              formaction="?/unsubmit"
-            >
-              Unsubmit
-            </button>
-          {/if}
+          <button
+            class="field prefer-w-40 rounded-t-none border-t-0 focus:-mt-px"
+            type="submit"
+            formaction="?/unsubmit"
+          >
+            Unsubmit
+          </button>
         {:else}
           <button
             class="field prefer-w-40 rounded-t-none border-t-0 focus:-mt-px"
@@ -192,4 +191,51 @@
       </div>
     </form>
   </div>
+</div>
+
+<div hidden use:help>
+  <p>This page is the student view of an assignment.</p>
+
+  <p>The left side of the screen includes the</p>
+
+  <ul>
+    <li>assignment title,</li>
+    <li>due date,</li>
+    <li>group,</li>
+    <li>point value,</li>
+    <li>description, and</li>
+    <li>attachments.</li>
+  </ul>
+
+  <h2>Submitting Work</h2>
+
+  <p>The right side of the screen includes your submission.</p>
+
+  <p>
+    You can save a draft of your submission. Your teacher will not see this
+    draft until you submit the assignment.
+  </p>
+
+  <p>
+    If you submit your assignment after the due date, it will be marked as
+    "Late." Your teacher can see this.
+  </p>
+
+  <p>
+    You may unsubmit your assignment and return it to a draft at any time. If
+    you unsubmit it after the deadline, however, it may be marked as "Late" or
+    "Overdue."
+  </p>
+
+  <h2>Special Statuses</h2>
+
+  <p>
+    Your teacher can mark an assignment as missing. At the moment, being marked
+    as missing does nothing. This will change in the future.
+  </p>
+
+  <p>
+    They can also mark it as exempt. This means it won't count towards your
+    grade and you don't need to submit anything.
+  </p>
 </div>

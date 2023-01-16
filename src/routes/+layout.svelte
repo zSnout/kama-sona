@@ -76,7 +76,15 @@
 
   $: if (browser) {
     for (const { css } of themeable) {
-      document.documentElement.style.setProperty(css, $customTheme[css] || null)
+      document.documentElement.style.setProperty(
+        "--light-" + css.slice(2),
+        $customTheme["--light-" + css.slice(2)] || null
+      )
+
+      document.documentElement.style.setProperty(
+        "--dark-" + css.slice(2),
+        $customTheme["--dark-" + css.slice(2)] || null
+      )
     }
 
     document.documentElement.classList.toggle(

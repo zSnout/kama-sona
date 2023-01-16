@@ -86,13 +86,6 @@ export const actions = {
       )
     }
 
-    if (new Date() > status.due) {
-      throw error(
-        409,
-        "Well aren't you sneaky, changing your assignment after it's due!"
-      )
-    }
-
     unwrapOr500(
       await AssignmentStatus.update({ id: params.id }, { submitted: null })
     )

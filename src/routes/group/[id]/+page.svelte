@@ -1,5 +1,6 @@
 <script lang="ts">
   import AccountCard from "$lib/AccountCard.svelte"
+  import { help } from "$lib/help"
   import Icon from "$lib/Icon.svelte"
   import MegaStat from "$lib/MegaStat.svelte"
   import Subheading from "$lib/Subheading.svelte"
@@ -63,4 +64,21 @@
   {#each data.group.members.filter(filterOutManagers) as member (member.id)}
     <AccountCard account={member} />
   {/each}
+</div>
+
+<div hidden use:help>
+  <p>
+    This page is a group overview. You can see the managers and members of a
+    group, as well as your status within it.
+  </p>
+
+  <p>
+    If you manage this group, you'll be able to add members by clicking the <Icon
+      class="relative -top-px m-auto inline-block h-4 w-4 text-icon"
+      icon={faUserPlus}
+      title="user plus"
+    /> icon.
+  </p>
+
+  <p>You can click a user to get more information about them.</p>
 </div>

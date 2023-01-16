@@ -3,7 +3,7 @@
   import { enhance } from "$app/forms"
   import { PUBLIC_KS_MAX_UPLOAD_SIZE } from "$env/static/public"
   import CenterOnPage from "$lib/CenterOnPage.svelte"
-  import HelpText from "$lib/HelpText.svelte"
+  import LabelHelp from "$lib/LabelHelp.svelte"
   import IconLabel from "$lib/IconLabel.svelte"
   import IconLabels from "$lib/IconLabels.svelte"
   import LinkedObject from "$lib/LinkedObject.svelte"
@@ -106,7 +106,7 @@
             <label class="label w-full">
               <p>Viewable after:</p>
 
-              <HelpText
+              <LabelHelp
                 content="Students will only see this resource on or after this date."
               />
 
@@ -181,7 +181,7 @@
               <label class="label w-full">
                 <p>Category weight:</p>
 
-                <HelpText
+                <LabelHelp
                   content="Assignments in a category with a larger weight count for a larger portion of a student's grade. While you're not creating an assignment, this is important for the future."
                 />
 
