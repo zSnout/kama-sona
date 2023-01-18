@@ -114,6 +114,7 @@
                 class="field w-full"
                 required
                 min={todayAsString}
+                max="9999-12-31"
                 bind:value={viewableAfter}
               />
             </label>

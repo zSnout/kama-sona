@@ -123,6 +123,7 @@
                 class="field w-full"
                 required
                 min={todayAsString}
+                max="9999-12-31"
                 bind:value={viewableAfter}
               />
             </label>
@@ -139,10 +140,11 @@
                 name="due"
                 class="field w-full"
                 required
-                bind:value={due}
                 min={isNaN(Date.parse(viewableAfter))
                   ? todayAsString
                   : viewableAfter}
+                max="9999-12-31"
+                bind:value={due}
               />
             </label>
 
