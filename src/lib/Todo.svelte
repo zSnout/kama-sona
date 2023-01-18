@@ -25,7 +25,9 @@
 </script>
 
 <div
-  class="{className} flex flex-col {sidebarBg ? 'sidebar-bg' : 'bg-field'}"
+  class="{className} flex flex-col {sidebarBg
+    ? 'sidebar-bg'
+    : 'bg-field text-field'}"
   {style}
 >
   <form
@@ -51,6 +53,7 @@
     <input
       class="field relative -mr-px min-w-0 flex-1 rounded-r-none rounded-bl-none shadow-none focus:z-10"
       class:sidebar-bg={sidebarBg}
+      class:sidebar-inner-border={sidebarBg}
       class:rounded-none={borderless}
       type="text"
       placeholder="Type a new item..."
@@ -61,6 +64,7 @@
     <button
       class="field relative rounded-l-none rounded-br-none shadow-none focus:z-10"
       class:sidebar-bg={sidebarBg}
+      class:sidebar-inner-border={sidebarBg}
       class:rounded-none={borderless}
       type="submit"
     >

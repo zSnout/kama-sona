@@ -11,7 +11,7 @@ export const Label = {
   ToDo: "To Do",
 } as const
 
-export type Label = typeof Label[keyof typeof Label]
+export type Label = (typeof Label)[keyof typeof Label]
 
 export function statusToLabel(
   status: AssignmentStatus,
@@ -43,7 +43,7 @@ export const Color = {
   Purple: 3,
 } as const
 
-export type Color = typeof Color[keyof typeof Color]
+export type Color = (typeof Color)[keyof typeof Color]
 
 export function statusToColor(
   status: AssignmentStatus,

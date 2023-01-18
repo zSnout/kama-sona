@@ -7,50 +7,52 @@
 html {
   --light-bg-active: theme(colors.blue.100);
   --light-bg-active-hover: theme(colors.blue.200);
-  --light-bg-body: theme(colors.gray.100);
+  --light-bg-body: theme(colors.slate.100);
   --light-bg-field: #ffffff;
   --light-bg-filter: #ffffff;
-  --light-bg-filter-active: theme(colors.gray.300);
-  --light-bg-hover: theme(colors.gray.200);
+  --light-bg-filter-active: theme(colors.slate.300);
+  --light-bg-hover: theme(colors.slate.200);
   --light-bg-loading-bar: theme(colors.blue.500);
-  --light-bg-table-row: theme(colors.gray.200);
+  --light-bg-table-row: theme(colors.slate.200);
   --light-bg-tooltip: #ffffff;
 
-  --light-big-button-bg: theme(colors.gray.200);
-  --light-big-button-border: theme(colors.gray.200);
+  --light-big-button-bg: theme(colors.slate.200);
+  --light-big-button-border: theme(colors.slate.200);
   --light-big-button-icon: theme(colors.slate.400);
   --light-big-button-text: theme(colors.slate.600);
 
-  --light-big-button-hover-bg: theme(colors.gray.200);
-  --light-big-button-hover-border: theme(colors.gray.500);
+  --light-big-button-hover-bg: theme(colors.slate.200);
+  --light-big-button-hover-border: theme(colors.slate.500);
   --light-big-button-hover-icon: theme(colors.slate.400);
   --light-big-button-hover-text: theme(colors.slate.600);
 
   --light-border-active: theme(colors.blue.400);
   --light-border-focus: theme(colors.blue.500);
-  --light-border-hover: theme(colors.gray.400);
-  --light-border-standard: theme(colors.gray.300);
+  --light-border-hover: theme(colors.slate.400);
+  --light-border-standard: theme(colors.slate.300);
 
   --light-nav-bg: #ffffff;
   --light-nav-border: #ffffff;
-  --light-nav-icon-bg: theme(colors.gray.200);
-  --light-nav-icon-fill: theme(colors.gray.200);
+  --light-nav-icon-bg: theme(colors.slate.200);
+  --light-nav-icon-fill: theme(colors.slate.200);
   --light-nav-icon-fill-active: #ffffff;
-  --light-nav-icon-stroke: theme(colors.gray.500);
+  --light-nav-icon-stroke: theme(colors.slate.500);
 
   --light-ring-focus: theme(colors.blue.200);
 
   --light-sidebar-bg: #ffffff;
-  --light-sidebar-border: #ffffff;
-  --light-sidebar-button-color: theme(colors.gray.500);
-  --light-sidebar-button-hover-bg: theme(colors.gray.200);
-  --light-sidebar-button-hover-color: theme(colors.gray.500);
+  --light-sidebar-outer-border: #ffffff;
+  --light-sidebar-inner-border: theme(colors.slate.300);
+  --light-sidebar-button-color: theme(colors.slate.500);
+  --light-sidebar-button-hover-bg: theme(colors.slate.200);
+  --light-sidebar-button-hover-color: theme(colors.slate.500);
 
   --light-text-active: theme(colors.blue.600);
   --light-text-body: theme(colors.slate.600);
+  --light-text-field: theme(colors.slate.600);
   --light-text-heading: theme(colors.slate.800);
-  --light-text-icon: theme(colors.gray.350);
-  --light-text-label: theme(colors.gray.500);
+  --light-text-icon: theme(colors.slate.400);
+  --light-text-label: theme(colors.slate.500);
   --light-text-link: theme(colors.blue.600);
   --light-text-placeholder: theme(colors.slate.400);
   --light-text-tooltip: theme(colors.slate.600);
@@ -60,7 +62,7 @@ html {
   --dark-bg-active: theme(colors.blue.900);
   --dark-bg-active-hover: theme(colors.blue.800);
   --dark-bg-body: theme(colors.slate.800);
-  --dark-bg-field: theme(colors.slate.850);
+  --dark-bg-field: theme(colors.slate.900);
   --dark-bg-filter: theme(colors.slate.900);
   --dark-bg-filter-active: theme(colors.slate.700);
   --dark-bg-hover: theme(colors.slate.700);
@@ -75,7 +77,7 @@ html {
 
   --dark-big-button-hover-bg: theme(colors.slate.900);
   --dark-big-button-hover-border: theme(colors.slate.500);
-  --dark-big-button-hover-icon: theme(colors.slate.400);
+  --dark-big-button-hover-icon: theme(colors.slate.500);
   --dark-big-button-hover-text: theme(colors.slate.300);
 
   --dark-border-active: theme(colors.blue.400);
@@ -85,21 +87,23 @@ html {
 
   --dark-nav-bg: theme(colors.slate.800);
   --dark-nav-border: theme(colors.slate.800);
-  --dark-nav-icon-bg: theme(colors.gray.600);
+  --dark-nav-icon-bg: theme(colors.slate.600);
   --dark-nav-icon-fill: theme(colors.slate.700);
   --dark-nav-icon-fill-active: theme(colors.slate.700);
   --dark-nav-icon-stroke: theme(colors.slate.300);
 
   --dark-ring-focus: theme(colors.blue.900);
 
-  --dark-sidebar-bg: theme(colors.slate.850);
-  --dark-sidebar-border: theme(colors.slate.850);
+  --dark-sidebar-bg: theme(colors.slate.900);
+  --dark-sidebar-outer-border: theme(colors.slate.900);
+  --dark-sidebar-inner-border: theme(colors.slate.600);
   --dark-sidebar-button-color: theme(colors.slate.400);
   --dark-sidebar-button-hover-bg: theme(colors.slate.700);
   --dark-sidebar-button-hover-color: theme(colors.slate.400);
 
   --dark-text-active: theme(colors.blue.300);
   --dark-text-body: theme(colors.slate.300);
+  --dark-text-field: theme(colors.slate.300);
   --dark-text-heading: theme(colors.slate.100);
   --dark-text-icon: theme(colors.slate.500);
   --dark-text-label: theme(colors.slate.400);
@@ -144,13 +148,15 @@ html {
   --ring-focus: var(--light-ring-focus);
 
   --sidebar-bg: var(--light-sidebar-bg);
-  --sidebar-border: var(--light-sidebar-border);
+  --sidebar-outer-border: var(--light-sidebar-outer-border);
+  --sidebar-inner-border: var(--light-sidebar-inner-border);
   --sidebar-button-color: var(--light-sidebar-button-color);
   --sidebar-button-hover-bg: var(--light-sidebar-button-hover-bg);
   --sidebar-button-hover-color: var(--light-sidebar-button-hover-color);
 
   --text-active: var(--light-text-active);
   --text-body: var(--light-text-body);
+  --text-field: var(--light-text-field);
   --text-heading: var(--light-text-heading);
   --text-icon: var(--light-text-icon);
   --text-label: var(--light-text-label);
@@ -195,13 +201,15 @@ html.dark {
   --ring-focus: var(--dark-ring-focus);
 
   --sidebar-bg: var(--dark-sidebar-bg);
-  --sidebar-border: var(--dark-sidebar-border);
+  --sidebar-outer-border: var(--dark-sidebar-outer-border);
+  --sidebar-inner-border: var(--dark-sidebar-inner-border);
   --sidebar-button-color: var(--dark-sidebar-button-color);
   --sidebar-button-hover-bg: var(--dark-sidebar-button-hover-bg);
   --sidebar-button-hover-color: var(--dark-sidebar-button-hover-color);
 
   --text-active: var(--dark-text-active);
   --text-body: var(--dark-text-body);
+  --text-field: var(--dark-text-field);
   --text-heading: var(--dark-text-heading);
   --text-icon: var(--dark-text-icon);
   --text-label: var(--dark-text-label);
@@ -213,8 +221,7 @@ html.dark {
 html.flat *,
 html.flat :before,
 html.flat :after {
-  box-shadow: none !important;
-  drop-shadow: none !important;
+  --tw-shadow: 0 0 0 0 transparent !important;
 }
 
 html.instant *,
@@ -306,8 +313,13 @@ body {
     @apply relative;
   }
 
+  .tooltip,
   [data-tooltip]::before {
-    @apply pointer-events-none absolute top-full left-1/2 z-10 mt-3 block -translate-x-1/2 scale-90 rounded-lg border py-2 px-4 opacity-0 shadow-lg outline-none transition content-[attr(data-tooltip)] bg-tooltip border-standard text-tooltip;
+    @apply pointer-events-none z-10 mt-3 block rounded-lg border py-2 px-4 shadow-lg outline-none transition bg-tooltip border-standard text-tooltip;
+  }
+
+  [data-tooltip]::before {
+    @apply absolute top-full left-1/2 -translate-x-1/2 scale-90 opacity-0 content-[attr(data-tooltip)];
   }
 
   [data-tooltip="%href%"]::before {
@@ -330,7 +342,7 @@ body {
   }
 
   .field {
-    @apply rounded-lg border py-2 px-3 shadow-sm outline-0 transition bg-field border-standard;
+    @apply rounded-lg border py-2 px-3 shadow-sm outline-0 transition bg-field border-standard text-field;
     @apply focus:border focus:ring focus:border-focus focus:ring-focus;
     @apply placeholder:text-placeholder;
   }
@@ -586,7 +598,7 @@ body {
       overflow: auto;
       line-height: 1.45;
       border-radius: 0.375rem;
-      @apply shadow-md bg-field;
+      @apply shadow-md bg-field text-field;
 
       &:is(.ProseMirror pre) {
         @apply shadow-none bg-hover;
@@ -600,7 +612,7 @@ body {
       font-family: ui-monospace, "SFMono-Regular", "SF Mono", "Menlo",
         "Consolas", "Liberation Mono", monospace;
       border-radius: 0.375rem;
-      @apply shadow-md bg-field;
+      @apply shadow-md bg-field text-field;
 
       &:is(.ProseMirror code) {
         @apply shadow-none bg-hover;

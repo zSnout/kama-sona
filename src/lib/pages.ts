@@ -1,25 +1,39 @@
 import {
   faBookOpen,
-  faComments,
   faTasks,
   faUserGroup,
   type IconDefinition,
 } from "@fortawesome/free-solid-svg-icons"
 
-export type Creatable = "assignment" | "discussion" | "group" | "resource"
+export type Creatable =
+  | "assignment"
+  | "card-deck"
+  | "discussion"
+  | "group"
+  | "resource"
 
 export interface CreateInfo {
   readonly type: Creatable
   readonly singular: string
 }
 
-export type Searchable = "assignment" | "discussion" | "group" | "resource"
+export type Searchable =
+  | "assignment"
+  | "card-deck"
+  | "discussion"
+  | "group"
+  | "resource"
 
 export interface SearchInfo {
   readonly type: Searchable
 }
 
-export type PageType = "assignment" | "discussion" | "group" | "resource"
+export type PageType =
+  | "assignment"
+  | "card-deck"
+  | "discussion"
+  | "group"
+  | "resource"
 
 export interface Page {
   readonly create?: CreateInfo
@@ -38,8 +52,8 @@ export const pages: readonly Page[] = [
     href: "/search?range=week&type=assignment",
     icon: faTasks,
     title: "Assignments",
-    search: { type: "assignment" },
     type: "assignment",
+    search: { type: "assignment" },
   },
   {
     create: { singular: "Group", type: "group" },
@@ -47,8 +61,8 @@ export const pages: readonly Page[] = [
     href: "/search?range=week&type=group",
     icon: faUserGroup,
     title: "Groups",
-    search: { type: "group" },
     type: "group",
+    search: { type: "group" },
   },
   // Progress
   {
@@ -57,9 +71,18 @@ export const pages: readonly Page[] = [
     href: "/search?range=week&type=resource",
     icon: faBookOpen,
     title: "Resources",
-    search: { type: "resource" },
     type: "resource",
+    search: { type: "resource" },
   },
+  // {
+  //   create: { singular: "Card Deck", type: "card-deck" },
+  //   color: "orange",
+  //   href: "/search?range=week&type=card-deck",
+  //   icon: faLayerGroup,
+  //   title: "Card Decks",
+  //   type: "card-deck",
+  //   search: { type: "card-deck" },
+  // },
   // {
   //   create: { singular: "Discussion", type: "discussion" },
   //   color: "purple",

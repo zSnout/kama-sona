@@ -24,7 +24,7 @@ checkboxes.
 
 ### Components
 
-`.field` uses a border style of `border-gray-300 dark:border-slate-600`, which
+`.field` uses a border style of `border-slate-300 dark:border-slate-600`, which
 is aliased to `border-standard` for convenience. These borders are dark enough
 to show up when needed, but aren't intrusive to the user experience. To match
 the border and ring styles of `.field` when an element is focused, add

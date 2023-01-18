@@ -85,7 +85,7 @@
 >
   {#if mappedItems.length >= minSearchableItems}
     <div
-      class="sticky -top-2 -mx-3 -mt-2 mb-2 flex w-[calc(100%_+_1.5rem)] items-center border-b transition bg-field border-standard focus:border-focus"
+      class="sticky -top-2 -mx-3 -mt-2 mb-2 flex w-[calc(100%_+_1.5rem)] items-center border-b transition bg-field border-standard text-field focus:border-focus"
     >
       <input
         class="flex-1 border-0 bg-transparent transition border-standard focus:ring-0 focus:border-focus"

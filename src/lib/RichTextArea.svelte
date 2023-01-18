@@ -188,7 +188,7 @@
       <!-- #region buttons -->
 
       <div
-        class="sticky -top-2 z-20 -mx-3 -mt-2 -mb-1 flex overflow-x-auto border-b p-1 transition bg-field border-standard scrollbar:hidden {buttonsClass}"
+        class="sticky -top-2 z-20 -mx-3 -mt-2 -mb-1 flex overflow-x-auto border-b p-1 transition bg-field border-standard text-field scrollbar:hidden {buttonsClass}"
       >
         <RichTextAreaButton
           action={({ detail }) =>

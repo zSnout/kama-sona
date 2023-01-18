@@ -278,6 +278,7 @@
 
   let itemTypeFilter: Record<Searchable, boolean> = {
     assignment: type.includes("assignment"),
+    "card-deck": type.includes("card-deck"),
     discussion: type.includes("discussion"),
     group: type.includes("group"),
     resource: type.includes("resource"),
@@ -745,34 +746,18 @@
         icon={faUserGroup}
         isLabel
         title="user group"
-      />, and <Icon
+      />, <Icon
         class="icon-fill-green -top-px mr-0 h-4 w-4"
         icon={faBookOpen}
         isLabel
         title="open book"
-      /></span
+      />, and other colored</span
     > icons correspond to the item type shown in search.
   </p>
 
   <p>
-    When this filter is active, the <span class="whitespace-nowrap"
-      ><Icon
-        class="icon-fill-red -top-px -mr-1 h-4 w-4"
-        icon={faTasks}
-        isLabel
-        title="tasks"
-      />, <Icon
-        class="icon-fill-blue -top-px -mr-1 h-4 w-4"
-        icon={faUserGroup}
-        isLabel
-        title="user group"
-      />, and <Icon
-        class="icon-fill-green -top-px mr-0 h-4 w-4"
-        icon={faBookOpen}
-        isLabel
-        title="open book"
-      /></span
-    > icons will disappear from search results, as they are redundant.
+    When this filter is active, the colored icons will disappear from search
+    results, as they are redundant.
   </p>
 
   <h2>Filtering by Management</h2>

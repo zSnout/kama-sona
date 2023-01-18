@@ -19,3 +19,7 @@ declare namespace svelte.JSX {
     "onfilter-disable"?: (event: Event) => void
   }
 }
+
+declare interface String {
+  startsWith<T extends string>(text: T): this is `${T}${string}`
+}

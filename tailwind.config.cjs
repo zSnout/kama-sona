@@ -9,26 +9,25 @@ const config = {
   darkMode: "class",
   safelist: [
     {
-      pattern:
-        /^icon-(?:bg-|fill-|text-)?(?:red|green|blue|purple|gray|slate)$/,
+      pattern: /^icon-(?:bg-|fill-|text-)?(?:red|orange|green|blue|purple)$/,
     },
-    { pattern: /^bg-(?:red|green|blue|purple|gray|slate)-200$/ },
+    { pattern: /^bg-(?:red|orange|green|blue|purple)-200$/ },
     {
-      pattern: /^bg-(?:red|green|blue|purple|gray|slate)-900$/,
+      pattern: /^bg-(?:red|orange|green|blue|purple)-900$/,
       variants: ["dark"],
     },
-    { pattern: /^shadow-(?:red|green|blue|purple|gray|slate)-100$/ },
+    { pattern: /^shadow-(?:red|orange|green|blue|purple)-100$/ },
     {
-      pattern: /^border-(?:red|green|blue|purple|gray|slate)-500$/,
+      pattern: /^border-(?:red|orange|green|blue|purple)-500$/,
       variants: ["hover"],
     },
-    { pattern: /^text-(?:red|green|blue|purple|gray|slate)-500$/ },
-    { pattern: /^text-(?:red|green|blue|purple|gray|slate)-700$/ },
+    { pattern: /^text-(?:red|orange|green|blue|purple)-500$/ },
+    { pattern: /^text-(?:red|orange|green|blue|purple)-700$/ },
     {
-      pattern: /^text-(?:red|green|blue|purple|gray|slate)-300$/,
+      pattern: /^text-(?:red|orange|green|blue|purple)-300$/,
       variants: ["dark"],
     },
-    { pattern: /^ring-(?:red|green|blue|purple|gray|slate)-500$/ },
+    { pattern: /^ring-(?:red|orange|green|blue|purple)-500$/ },
     { pattern: /^border-standard$/, variants: ["focus-within"] },
   ],
   plugins: [
@@ -75,7 +74,12 @@ const config = {
         ".ring-focus": { "--tw-ring-color": "var(--ring-focus)" },
 
         ".sidebar-bg": { "background-color": "var(--sidebar-bg)" },
-        ".sidebar-border-l": { "border-left-color": "var(--sidebar-border)" },
+        ".sidebar-outer-border": {
+          "border-color": "var(--sidebar-outer-border)",
+        },
+        ".sidebar-inner-border": {
+          "border-color": "var(--sidebar-inner-border)",
+        },
         ".sidebar-button-color": {
           color: "var(--sidebar-button-color)",
         },
@@ -94,6 +98,7 @@ const config = {
 
         ".text-active": { color: "var(--text-active)" },
         ".text-body": { color: "var(--text-body)" },
+        ".text-field": { color: "var(--text-field)" },
         ".text-heading": { color: "var(--text-heading)" },
         ".text-icon": { color: "var(--text-icon)" },
         ".text-label": { color: "var(--text-label)" },
@@ -188,25 +193,6 @@ const config = {
   ],
   theme: {
     extend: {
-      colors: {
-        slate: {
-          // 400: 148 163 184
-          // 500: 100 116 139
-          // 450: 124 139 162
-          450: "#7c8ba2",
-
-          // 900: 15 23 42
-          // 800: 30 41 59
-          // 850: 22 32 50
-          850: "#162032",
-        },
-        gray: {
-          // 300: 209 213 219
-          // 400: 156 163 175
-          // 350: 182 188 197)
-          350: "#b6bcc5",
-        },
-      },
       boxShadow: {
         "horiz-lg":
           "-10px 0 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",

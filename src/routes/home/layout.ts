@@ -2,7 +2,7 @@ import { writable } from "svelte-local-storage-store"
 
 export const featureNames = ["Clock", "Note", "QuickActions", "Todo"] as const
 
-export type FeatureName = typeof featureNames[number]
+export type FeatureName = (typeof featureNames)[number]
 
 export type Feature = {
   readonly name: FeatureName

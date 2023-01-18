@@ -27,6 +27,7 @@ model Account {
   magicLink                MagicLink?         @relation("MagicLink")
   managedAssignments       Assignment[]       @relation("AssignmentManager", fields: [managedAssignmentIds], references: [id])
   managedAssignmentIds     String[]           @db.ObjectId
+  managedCardDecks         CardDeck[]         @relation("CardDeckManager")
   managedDiscussions       Discussion[]       @relation("DiscussionManager", fields: [managedDiscussionIds], references: [id])
   managedDiscussionIds     String[]           @db.ObjectId
   commentableDiscussions   Discussion[]       @relation("DiscussionViewer", fields: [commentableDiscussionIds], references: [id])
@@ -35,7 +36,6 @@ model Account {
   managerOfIds             String[]           @db.ObjectId
   memberOf                 Group[]            @relation("GroupMembers", fields: [memberOfIds], references: [id])
   memberOfIds              String[]           @db.ObjectId
-  // Relations:
   sentMessages             Message[]          @relation("MessageSender")
   session                  Session?           @relation("AccountSession")
   managedResources         Resource[]         @relation("ResourceManager", fields: [managedResourceIds], references: [id])
@@ -238,7 +238,28 @@ type TimeBlock {
 }
 
 model Upload {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  blob Bytes
-  name String
+  blob    Bytes
+  created DateTime @default(now())
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  name    String
+  updated DateTime @updatedAt
+}
+
+type Card {
+  id           String
+  question     String
+  answer       String
+  alternatives String[]
+}
+
+model CardDeck {
+  cards     Card[]
+  creation  DateTime @default(now())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  public    Boolean  @default(false)
+  title     String
+  updated   DateTime @default(now()) @updatedAt
+  // Relations:
+  manager   Account  @relation("CardDeckManager", fields: [managerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  managerId String   @db.ObjectId
 }

@@ -21,6 +21,7 @@ import {
   faFileText,
   faFont,
   faImage,
+  faLayerGroup,
   faLink,
   faMapLocationDot,
   faMicrophone,
@@ -31,6 +32,7 @@ import {
   faVideo,
   faZ,
 } from "@fortawesome/free-solid-svg-icons"
+import type { Searchable } from "./pages"
 
 /** Converts a link to its corresponding Font Awesome icon. */
 export function linkToIcon(href: string | URL): IconDefinition {
@@ -115,9 +117,7 @@ export function fileToIcon(type: string): IconDefinition {
 }
 
 /** Converts a search item type to its corresponding Font Awesome icon. */
-export function itemToIcon(
-  type: "assignment" | "resource" | "discussion" | "group"
-) {
+export function itemToIcon(type: Searchable) {
   return type == "assignment"
     ? faTasks
     : type == "resource"
@@ -126,5 +126,7 @@ export function itemToIcon(
     ? faComments
     : type == "group"
     ? faUserGroup
+    : type == "card-deck"
+    ? faLayerGroup
     : faLink
 }

@@ -14,7 +14,7 @@
   } from "@fortawesome/free-solid-svg-icons"
   import { writable } from "svelte-local-storage-store"
 
-  const isSidebarOpen = writable("sidebar:open", false)
+  const isSidebarOpen = writable("sidebar:open", true)
   const isNotesOpen = writable("sidebar:open:notes", false)
   const isTodosOpen = writable("sidebar:open:todos", false)
   const isThemeOpen = writable("sidebar:open:theme", false)
@@ -78,7 +78,7 @@
     ? 'right-0'
     : $isSidebarOpen
     ? '-right-82'
-    : '-right-[25rem]'} prefer-w-96 z-40 hidden h-full select-none border-l pt-16 shadow-horiz-lg transition-all sidebar-bg sidebar-border-l md:flex"
+    : '-right-[25rem]'} prefer-w-96 z-40 hidden h-full select-none border-l pt-16 shadow-horiz-lg transition-all sidebar-bg sidebar-outer-border md:flex"
   class:prefer-w-[30rem]={$isHelpOpen && $isSidebarOpen}
   class:prefer-w-[40rem]={$isThemeOpen && $isSidebarOpen}
 >
@@ -101,8 +101,8 @@
   {#if $isNotesOpen}
     <RichTextArea
       class="resize-none"
-      fieldClass="sidebar-bg rounded-none border-0 border-l focus-within:border-0 focus-within:border-l focus-within:border-standard focus-within:ring-0"
-      buttonsClass="sidebar-bg"
+      fieldClass="sidebar-bg rounded-none border-0 border-l focus-within:border-0 focus-within:border-l focus-within:sidebar-inner-border sidebar-inner-border focus-within:ring-0"
+      buttonsClass="sidebar-bg sidebar-inner-border"
       placeholder="Type a note to yourself..."
       bind:value={$note}
       on:input={(event) => notifyOtherSetters(event.detail[0])}
@@ -110,13 +110,13 @@
       on:remove-value-setter={(event) => setters.delete(event.detail)}
     />
   {:else if $isTodosOpen}
-    <Todo borderless sidebarBg class="flex-1 border-l border-standard" />
+    <Todo borderless sidebarBg class="flex-1 border-l sidebar-inner-border" />
   {:else if $isThemeOpen}
-    <ThemeEditor class="flex-1 border-l border-standard" />
+    <ThemeEditor class="flex-1 border-l sidebar-inner-border" />
   {/if}
 
   <div
-    class="flex-1 overflow-auto border-l py-3 px-4 border-standard desc-[h2]:mb-2 desc-[h2]:mt-6 desc-[p]:mt-2 desc-[ul]:ml-6 desc-[ul]:mt-2 desc-[ul]:list-disc desc-[li]:pl-1 desc-[h2]:font-semibold desc-[h2]:text-heading"
+    class="flex-1 overflow-auto border-l py-3 px-4 sidebar-inner-border desc-[h2]:mb-2 desc-[h2]:mt-6 desc-[p]:mt-2 desc-[ul]:ml-6 desc-[ul]:mt-2 desc-[ul]:list-disc desc-[li]:pl-1 desc-[h2]:font-semibold desc-[h2]:text-heading"
     class:hidden={!$isHelpOpen}
   >
     <h2 style:margin-top="0">Help</h2>
@@ -153,6 +153,7 @@
   class:border-standard={!$isSidebarOpen}
   class:border-transparent={$isSidebarOpen}
   class:sidebar-button-color={$isSidebarOpen}
+  class:text-field={!$isSidebarOpen}
   class:hover:sidebar-button-hover-bg={$isSidebarOpen}
   class:hover:sidebar-button-hover-color={$isSidebarOpen}
   on:click={() => isSidebarOpen.update(($open) => !$open)}

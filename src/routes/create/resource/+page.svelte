@@ -11,9 +11,7 @@
   import MultiSelect, { type SelectItem } from "$lib/MultiSelect.svelte"
   import RichTextArea from "$lib/RichTextArea.svelte"
   import Title from "$lib/Title.svelte"
-  import {
-    faUserGroup
-  } from "@fortawesome/free-solid-svg-icons"
+  import { faUserGroup } from "@fortawesome/free-solid-svg-icons"
   import type { Editor } from "@tiptap/core"
   import type { PageData } from "./$types"
 

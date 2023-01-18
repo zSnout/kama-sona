@@ -19,11 +19,13 @@
   {href}
 >
   <Icon
-    class="h-8 w-8 big-button-icon group-hover:big-button-hover-icon"
+    class="h-8 w-8 transition big-button-icon group-hover:big-button-hover-icon"
     {icon}
   />
 
-  <p class="font-semibold big-button-text group-hover:big-button-hover-text">
+  <p
+    class="font-semibold transition big-button-text group-hover:big-button-hover-text"
+  >
     {label}
   </p>
 </a>

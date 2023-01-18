@@ -20,7 +20,7 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <svelte:element
   this={isButton ? "button" : "a"}
-  class="{className} flex flex-col rounded-lg py-4 px-6 text-left shadow-md bg-field before:whitespace-nowrap"
+  class="{className} flex flex-col rounded-lg py-4 px-6 text-left shadow-md bg-field text-field before:whitespace-nowrap"
   form="x-{id}"
   formaction={isButton ? href : undefined}
   formmethod={isButton ? "post" : undefined}

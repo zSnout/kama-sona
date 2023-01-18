@@ -2,7 +2,6 @@
   import {
     faClock,
     faDownload,
-    faDropletSlash,
     faFillDrip,
     faMoon,
     faSquareFull,
@@ -12,22 +11,12 @@
   } from "@fortawesome/free-solid-svg-icons"
   import Icon from "./Icon.svelte"
   import { isDark, toggle } from "./theme"
-  import { customTheme, themeable1, themeable2 } from "./themeable"
+  import { customTheme } from "./themeable"
+  import ThemeEditorCustomColors from "./ThemeEditorCustomColors.svelte"
+  import ThemeEditorRepaint from "./ThemeEditorRepaint.svelte"
 
   let className = ""
   export { className as class }
-
-  function getColor(css: string) {
-    const color = getComputedStyle(document.documentElement)
-      .getPropertyValue(css)
-      .trim()
-
-    if (color === "#fff" || color === "white") {
-      return "#ffffff"
-    }
-
-    return color
-  }
 
   $: {
     $isDark
@@ -43,10 +32,17 @@
   }
 
   let uploadEl: HTMLInputElement | undefined
+  let selectedButton = ""
 </script>
 
-<div class="{className} flex flex-col gap-2 overflow-auto px-3 py-6">
-  <div class="-mb-1 flex w-full justify-center gap-3">
+<div
+  class="{className} flex flex-col overflow-auto px-3 py-6"
+  on:scroll={() => (selectedButton = "")}
+  on:contextmenu|preventDefault
+>
+  <h1 class="sr-only">Theme Editor</h1>
+
+  <div class="mb-6 flex w-full justify-center gap-3">
     <button
       class="field flex items-center justify-center bg-body"
       on:click={() => {
@@ -163,56 +159,7 @@
     </button>
   </div>
 
-  <div class="grid grid-cols-2">
-    {#each [themeable1, themeable2] as themeable}
-      <div class="flex flex-col gap-1">
-        {#each themeable as { css: cssOg, name }}
-          {#if cssOg.startsWith("#")}
-            <h2 class="mt-4 pl-6 font-semibold">{name}</h2>
-          {:else}
-            {@const css = ($isDark ? "--dark-" : "--light-") + cssOg.slice(2)}
-            {@const id = "theme-editor-" + css}
+  <ThemeEditorRepaint />
 
-            <div class="group flex gap-2">
-              <button
-                class="h-full transition-all duration-500"
-                class:scale-100={$customTheme[css] != null}
-                class:scale-75={$customTheme[css] == null}
-                class:opacity-100={$customTheme[css] != null}
-                class:opacity-0={$customTheme[css] == null}
-                class:pointer-events-none={$customTheme[css] == null}
-                aria-hidden={$customTheme[css] == null}
-                type="button"
-                on:click={() => {
-                  delete $customTheme[css]
-                  $customTheme = $customTheme
-                }}
-              >
-                <Icon class="h-4 w-4" icon={faDropletSlash} />
-              </button>
-
-              <input
-                class="h-6 w-6 overflow-hidden rounded-sm border-0 color-swatch-wrapper:p-0 color-swatch:border-0"
-                type="color"
-                {id}
-                value={$customTheme[css] || getColor(css)}
-                on:input={(event) => {
-                  const color = event.currentTarget.value
-
-                  if (color) {
-                    $customTheme[css] = color
-                  } else {
-                    delete $customTheme[css]
-                    $customTheme = $customTheme
-                  }
-                }}
-              />
-
-              <label class="ml-2 flex-1" for={id}>{name}</label>
-            </div>
-          {/if}
-        {/each}
-      </div>
-    {/each}
-  </div>
+  <ThemeEditorCustomColors />
 </div>
