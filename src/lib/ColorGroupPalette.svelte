@@ -132,7 +132,11 @@
           selected)}
           <Icon
             icon={faCheck}
-            class="absolute left-1/2 top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 text-black"
+            class="absolute left-1/2 top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 {brightness(
+              colors[5]
+            ) > 128
+              ? 'text-black'
+              : 'text-white'}"
           />
         {/if}
       </button>

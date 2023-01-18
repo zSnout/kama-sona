@@ -46,8 +46,18 @@
     <button
       class="field flex items-center justify-center bg-body"
       on:click={() => {
-        if (confirm("Are you sure you want to reset your theme?")) {
-          customTheme.set({})
+        const style = $isDark ? "dark" : "light"
+
+        if (confirm(`Are you sure you want to reset your ${style} theme?`)) {
+          customTheme.update(($customTheme) => {
+            for (const key in $customTheme) {
+              if (key.startsWith(`--${style}-`)) {
+                delete $customTheme[key]
+              }
+            }
+
+            return $customTheme
+          })
         }
       }}
       aria-label="Reset Theme"

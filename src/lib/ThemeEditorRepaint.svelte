@@ -131,7 +131,7 @@
       type = "active"
     }}
   >
-    Borders
+    Active
   </button>
 </div>
 
@@ -139,7 +139,13 @@
   <ColorGroupPalette
     allowCustomColor={false}
     class="fixed left-[calc(100%_-_18.25rem)] z-10 -translate-x-1/2 overflow-hidden rounded-md shadow-md transition-all"
-    selected="#ffffff"
+    selected={type == "active"
+      ? $customTheme[getCssName("--border-focus")] || getColor("--border-focus")
+      : type == "bg"
+      ? $customTheme[getCssName("--bg-body")] || getColor("--bg-body")
+      : type == "text"
+      ? $customTheme[getCssName("--text-body")] || getColor("--text-body")
+      : "#ffffff"}
     style="top:{y + 16}px"
     on:inputGroup={(event) => {
       colors = event.detail
