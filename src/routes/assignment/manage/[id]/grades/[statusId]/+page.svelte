@@ -194,7 +194,8 @@
             <input
               class="field w-full"
               min="0"
-              max={data.assignment.points * 2}
+              max={1e12}
+              step="0.01"
               name="score"
               type="number"
               value={status.score}
