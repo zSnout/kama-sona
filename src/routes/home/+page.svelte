@@ -2,15 +2,17 @@
   import { PUBLIC_KS_APP_NAME } from "$env/static/public"
   import { help } from "$lib/help"
   import Icon from "$lib/Icon.svelte"
+  import Title from "$lib/Title.svelte"
   import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
   import Clock from "./features/Clock.svelte"
   import Note from "./features/Note.svelte"
+  import OtherApps from "./features/OtherApps.svelte"
   import QuickActions from "./features/QuickActions.svelte"
   import Todo from "./features/Todo.svelte"
   import { layout } from "./layout"
-
-  // export let data: PageData
 </script>
+
+<Title title={PUBLIC_KS_APP_NAME} mode="head-only" />
 
 <div
   class="flex min-h-[max(100vh_-_7rem,544px_+_4rem)] grid-cols-3 flex-col gap-4 md:grid md:max-h-[max(100vh_-_7rem,544px_+_4rem)] md:flex-1"
@@ -22,6 +24,8 @@
         ? Clock
         : feature.name == "Note"
         ? Note
+        : feature.name == "OtherApps"
+        ? OtherApps
         : feature.name == "QuickActions"
         ? QuickActions
         : feature.name == "Todo"

@@ -1,5 +1,7 @@
 import {
+  faBarsProgress,
   faBookOpen,
+  faSearch,
   faTasks,
   faUserGroup,
   type IconDefinition,
@@ -33,6 +35,7 @@ export type PageType =
   | "card-deck"
   | "discussion"
   | "group"
+  | "progress"
   | "resource"
 
 export interface Page {
@@ -46,6 +49,13 @@ export interface Page {
 }
 
 export const pages: readonly Page[] = [
+  {
+    color: "yellow",
+    href: "/progress",
+    icon: faBarsProgress,
+    title: "Progress",
+    type: "progress",
+  },
   {
     create: { singular: "Assignment", type: "assignment" },
     color: "red",
@@ -64,7 +74,6 @@ export const pages: readonly Page[] = [
     type: "group",
     search: { type: "group" },
   },
-  // Progress
   {
     create: { singular: "Resource", type: "resource" },
     color: "green",

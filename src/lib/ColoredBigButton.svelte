@@ -2,6 +2,7 @@
   import type { IconDefinition } from "@fortawesome/free-solid-svg-icons"
   import Icon from "./Icon.svelte"
 
+  export let color: "red" | "orange" | "yellow" | "green" | "blue" | "purple"
   export let href: string
   export let icon: IconDefinition
   export let label: string
@@ -11,7 +12,11 @@
 </script>
 
 <a
-  class="{className} group prefer-w-32 flex h-32 flex-col items-center justify-center gap-4 rounded-lg border outline-none transition-all big-button-bg big-button-border hover:big-button-hover-bg hover:big-button-hover-border focus:ring"
+  class="{className} {className.includes('w-')
+    ? ''
+    : 'prefer-w-36'} {className.includes('h-')
+    ? ''
+    : 'h-36'} group flex flex-col items-center justify-center gap-4 rounded-lg border outline-none transition-all focus:ring bg-{color}-200 dark:bg-{color}-900 shadow-{color}-100 ring-{color}-500 hover:border-{color}-500"
   {href}
 >
   <Icon

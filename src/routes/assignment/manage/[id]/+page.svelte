@@ -23,7 +23,7 @@
   $: ({ assignment } = data)
   $: files = assignment.attachments.filter((e) => e.type == "File")
   $: links = assignment.attachments.filter((e) => e.type == "Link")
-  $: groups = assignment.groups.map((group) => group.title)
+  $: groups = assignment.groups
 
   $: labels = Object.entries(
     assignment.statuses
@@ -57,11 +57,14 @@
           title="Due date:"
         />
 
-        <IconLabel
-          content={groups.length == 1 ? groups[0] : `${groups.length} groups`}
-          icon={faUserGroup}
-          title="Published in group:"
-        />
+        {#each groups as group}
+          <IconLabel
+            content={group.title}
+            href="/group/{group.id}"
+            icon={faUserGroup}
+            title="Published in group:"
+          />
+        {/each}
 
         {#if assignment.points != 0}
           <IconLabel

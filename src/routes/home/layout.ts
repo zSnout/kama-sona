@@ -1,6 +1,12 @@
 import { writable } from "svelte-local-storage-store"
 
-export const featureNames = ["Clock", "Note", "QuickActions", "Todo"] as const
+export const featureNames = [
+  "Clock",
+  "Note",
+  "OtherApps",
+  "QuickActions",
+  "Todo",
+] as const
 
 export type FeatureName = (typeof featureNames)[number]
 
@@ -28,6 +34,13 @@ const defaultLayout: Layout = [
     endX: 2,
     startY: 3,
     endY: 3,
+  },
+  {
+    name: "OtherApps",
+    startX: 2,
+    endX: 2,
+    startY: 4,
+    endY: 4,
   },
   {
     name: "Note",

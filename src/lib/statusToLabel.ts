@@ -14,8 +14,11 @@ export const Label = {
 export type Label = (typeof Label)[keyof typeof Label]
 
 export function statusToLabel(
-  status: AssignmentStatus,
-  assignment: Assignment
+  status: Pick<
+    AssignmentStatus,
+    "attachments" | "body" | "due" | "exempt" | "score" | "submitted"
+  >,
+  assignment: Pick<Assignment, "points">
 ) {
   return status.exempt
     ? Label.Exempt
@@ -46,18 +49,20 @@ export const Color = {
 export type Color = (typeof Color)[keyof typeof Color]
 
 export function statusToColor(
-  status: AssignmentStatus,
-  assignment: Assignment
+  status: Pick<AssignmentStatus, "due" | "exempt" | "score" | "submitted">,
+  assignment: Pick<Assignment, "points">
 ) {
-  const label = statusToLabel(status, assignment)
-
-  return label == Label.Overdue
+  return status.exempt
+    ? Color.Green
+    : status.submitted
+    ? status.score != null && assignment.points != 0
+      ? Color.Green
+      : status.due < status.submitted
+      ? Color.Yellow
+      : Color.Green
+    : new Date() > status.due
     ? Color.Red
-    : label == Label.ToDo
-    ? Color.Purple
-    : label == Label.InProgress || label == Label.Late
-    ? Color.Yellow
-    : Color.Green
+    : Color.Purple
 }
 
 /**

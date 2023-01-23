@@ -9,25 +9,30 @@ const config = {
   darkMode: "class",
   safelist: [
     {
-      pattern: /^icon-(?:bg-|fill-|text-)?(?:red|orange|green|blue|purple)$/,
+      pattern:
+        /^icon-(?:bg-|fill-|text-)?(?:red|orange|yellow|green|blue|purple)$/,
     },
-    { pattern: /^bg-(?:red|orange|green|blue|purple)-200$/ },
+    { pattern: /^bg-(?:red|orange|yellow|green|blue|purple)-200$/ },
     {
-      pattern: /^bg-(?:red|orange|green|blue|purple)-900$/,
+      pattern: /^bg-(?:red|orange|yellow|green|blue|purple)-900$/,
       variants: ["dark"],
     },
-    { pattern: /^shadow-(?:red|orange|green|blue|purple)-100$/ },
+    { pattern: /^shadow-(?:red|orange|yellow|green|blue|purple)-100$/ },
     {
-      pattern: /^border-(?:red|orange|green|blue|purple)-500$/,
+      pattern: /^border-(?:red|orange|yellow|green|blue|purple)-500$/,
       variants: ["hover"],
     },
-    { pattern: /^text-(?:red|orange|green|blue|purple)-500$/ },
-    { pattern: /^text-(?:red|orange|green|blue|purple)-700$/ },
+    { pattern: /^text-(?:red|orange|yellow|green|blue|purple)-500$/ },
+    { pattern: /^text-(?:red|orange|yellow|green|blue|purple)-700$/ },
     {
-      pattern: /^text-(?:red|orange|green|blue|purple)-300$/,
+      pattern: /^text-(?:red|orange|yellow|green|blue|purple)-400$/,
       variants: ["dark"],
     },
-    { pattern: /^ring-(?:red|orange|green|blue|purple)-500$/ },
+    {
+      pattern: /^text-(?:red|orange|yellow|green|blue|purple)-200$/,
+      variants: ["dark"],
+    },
+    { pattern: /^ring-(?:red|orange|yellow|green|blue|purple)-500$/ },
     { pattern: /^border-standard$/, variants: ["focus-within"] },
   ],
   plugins: [
@@ -37,6 +42,8 @@ const config = {
         ".bg-active": { "background-color": "var(--bg-active)" },
         ".bg-active-hover": { "background-color": "var(--bg-active-hover)" },
         ".bg-body": { "background-color": "var(--bg-body)" },
+        ".bg-chart": { "background-color": "var(--bg-chart)" },
+        ".bg-chart-active": { "background-color": "var(--bg-chart-active)" },
         ".bg-field": { "background-color": "var(--bg-field)" },
         ".bg-filter": { "background-color": "var(--bg-filter)" },
         ".bg-filter-active": { "background-color": "var(--bg-filter-active)" },
@@ -60,6 +67,9 @@ const config = {
         ".big-button-hover-text": { color: "var(--big-button-hover-text)" },
 
         ".border-active": { "border-color": "var(--border-active)" },
+        ".border-bg-chart": { "border-color": "var(--bg-chart)" },
+        ".border-bg-chart-active": { "border-color": "var(--bg-chart-active)" },
+        ".border-bg-field": { "border-color": "var(--bg-field)" },
         ".border-focus": { "border-color": "var(--border-focus)" },
         ".border-hover": { "border-color": "var(--border-hover)" },
         ".border-standard": { "border-color": "var(--border-standard)" },
@@ -98,6 +108,7 @@ const config = {
 
         ".text-active": { color: "var(--text-active)" },
         ".text-body": { color: "var(--text-body)" },
+        ".text-chart-active": { color: "var(--text-chart-active)" },
         ".text-field": { color: "var(--text-field)" },
         ".text-heading": { color: "var(--text-heading)" },
         ".text-icon": { color: "var(--text-icon)" },

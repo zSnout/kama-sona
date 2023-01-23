@@ -14,6 +14,9 @@
   /** A query param to set when this filter is clicked. Useful when JS is disabled client-side. */
   export let param: [key: string, value: string] | undefined = undefined
 
+  /** Whether this filter should force all other filters to be disabled. */
+  export let forceSingle = !param
+
   /** A tooltip to display when this filter is hovered. */
   export let tooltip: string | undefined = undefined
 
@@ -58,10 +61,10 @@
 
     setTimeout(() => (active = !active))
 
-    if (param || !(event.ctrlKey || event.metaKey)) {
+    if (forceSingle || !(event.ctrlKey || event.metaKey)) {
       event.currentTarget.parentElement?.childNodes.forEach(
         (
-          // @ts-expect-error See the previous comment.
+          // @ts-ignore See the previous comment.
           node
         ) => {
           if (node != event.currentTarget) {

@@ -189,6 +189,13 @@
           </button>
         {/if}
       </div>
+
+      {#if status.teacherComment}
+        <div class="prose mt-4 w-full">
+          <p>Your teacher said:</p>
+          {@html status.teacherComment}
+        </div>
+      {/if}
     </form>
   </div>
 </div>

@@ -1,6 +1,6 @@
 <script>
   import CenterOnPage from "$lib/CenterOnPage.svelte"
-  import IconColorAndText from "$lib/IconColorAndText.svelte"
+  import BigButtonColored from "$lib/BigButtonColored.svelte"
   import { pages } from "$lib/pages"
   import Title from "$lib/Title.svelte"
 </script>
@@ -11,7 +11,7 @@
   <div class="grid max-w-full grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
     {#each pages as page}
       {#if page.create}
-        <IconColorAndText
+        <BigButtonColored
           color={page.color}
           href="/create/{page.create.type}"
           icon={page.icon}

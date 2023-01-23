@@ -8,6 +8,8 @@ html {
   --light-bg-active: theme(colors.blue.100);
   --light-bg-active-hover: theme(colors.blue.200);
   --light-bg-body: theme(colors.slate.100);
+  --light-bg-chart: theme(colors.blue.100);
+  --light-bg-chart-active: theme(colors.blue.500);
   --light-bg-field: #ffffff;
   --light-bg-filter: #ffffff;
   --light-bg-filter-active: theme(colors.slate.300);
@@ -49,6 +51,7 @@ html {
 
   --light-text-active: theme(colors.blue.600);
   --light-text-body: theme(colors.slate.600);
+  --light-text-chart-active: theme(colors.white);
   --light-text-field: theme(colors.slate.600);
   --light-text-heading: theme(colors.slate.800);
   --light-text-icon: theme(colors.slate.400);
@@ -62,6 +65,8 @@ html {
   --dark-bg-active: theme(colors.blue.900);
   --dark-bg-active-hover: theme(colors.blue.800);
   --dark-bg-body: theme(colors.slate.800);
+  --dark-bg-chart: theme(colors.blue.900);
+  --dark-bg-chart-active: theme(colors.blue.600);
   --dark-bg-field: theme(colors.slate.900);
   --dark-bg-filter: theme(colors.slate.900);
   --dark-bg-filter-active: theme(colors.slate.700);
@@ -103,6 +108,7 @@ html {
 
   --dark-text-active: theme(colors.blue.300);
   --dark-text-body: theme(colors.slate.300);
+  --dark-text-chart-active: theme(colors.slate.300);
   --dark-text-field: theme(colors.slate.300);
   --dark-text-heading: theme(colors.slate.100);
   --dark-text-icon: theme(colors.slate.500);
@@ -116,6 +122,8 @@ html {
   --bg-active: var(--light-bg-active);
   --bg-active-hover: var(--light-bg-active-hover);
   --bg-body: var(--light-bg-body);
+  --bg-chart: var(--light-bg-chart);
+  --bg-chart-active: var(--light-bg-chart-active);
   --bg-field: var(--light-bg-field);
   --bg-filter: var(--light-bg-filter);
   --bg-filter-active: var(--light-bg-filter-active);
@@ -156,6 +164,7 @@ html {
 
   --text-active: var(--light-text-active);
   --text-body: var(--light-text-body);
+  --text-chart-active: var(--light-text-chart-active);
   --text-field: var(--light-text-field);
   --text-heading: var(--light-text-heading);
   --text-icon: var(--light-text-icon);
@@ -169,6 +178,8 @@ html.dark {
   --bg-active: var(--dark-bg-active);
   --bg-active-hover: var(--dark-bg-active-hover);
   --bg-body: var(--dark-bg-body);
+  --bg-chart: var(--dark-bg-chart);
+  --bg-chart-active: var(--dark-bg-chart-active);
   --bg-field: var(--dark-bg-field);
   --bg-filter: var(--dark-bg-filter);
   --bg-filter-active: var(--dark-bg-filter-active);
@@ -209,6 +220,7 @@ html.dark {
 
   --text-active: var(--dark-text-active);
   --text-body: var(--dark-text-body);
+  --text-chart-active: var(--dark-text-chart-active);
   --text-field: var(--dark-text-field);
   --text-heading: var(--dark-text-heading);
   --text-icon: var(--dark-text-icon);
@@ -318,7 +330,8 @@ body {
     @apply pointer-events-none z-10 mt-3 block rounded-lg border py-2 px-4 shadow-lg outline-none transition bg-tooltip border-standard text-tooltip;
   }
 
-  [data-tooltip]::before {
+  [data-tooltip]::before,
+  .html-tooltip {
     @apply absolute top-full left-1/2 -translate-x-1/2 scale-90 opacity-0 content-[attr(data-tooltip)];
   }
 
@@ -327,7 +340,9 @@ body {
   }
 
   [data-tooltip]:hover:where(:not(:disabled))::before,
-  [data-tooltip]:focus::before {
+  [data-tooltip]:focus::before,
+  :where(.group:hover)
+    [data-tooltip].group-tooltip:where(:not(:disabled))::before {
     @apply scale-100 opacity-100;
   }
 

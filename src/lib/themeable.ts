@@ -35,10 +35,13 @@ export const themeable1: readonly (Themeable | Header)[] = [
   { css: "--bg-loading-bar", name: "Loading bar", type: "active" },
   { css: "--bg-table-row", name: "Table row", type: "bg" },
   { css: "--bg-tooltip", name: "Tooltip", type: "bg" },
+  { css: "--bg-chart", name: "Chart bar", type: "bg" },
+  { css: "--bg-chart-active", name: "Active chart bar", type: "active" },
 
   { css: "#text", name: "Text colors" },
   { css: "--text-active", name: "Active button", type: "active" },
   { css: "--text-body", name: "Primary text", type: "text" },
+  { css: "--text-chart-active", name: "Active chart label", type: "text" },
   { css: "--text-field", name: "Field", type: "text" },
   { css: "--text-heading", name: "Heading", type: "text" },
   { css: "--text-icon", name: "Icon", type: "text" },

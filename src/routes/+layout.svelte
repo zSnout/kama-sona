@@ -129,35 +129,6 @@
       <NavIcon icon={faSearch} class="nav-icon-fill nav-icon-stroke" />
     </NavLink>
 
-    {#each pages as page}
-      {#if !page.search}
-        <NavLink
-          href={page.href}
-          class="icon-bg-{page.color}"
-          title={page.title}
-          tooltip={page.title}
-        >
-          <NavIcon icon={page.icon} class="icon-{page.color}" />
-        </NavLink>
-      {/if}
-    {/each}
-
-    <button
-      on:contextmenu|preventDefault
-      class="button-icon block nav-icon-bg sm:hidden"
-      class:active={isNavIconFocused || isNavIconHovered}
-      title="Open Mobile Navigation"
-      on:click={() => (
-        (isNavIconFocused = !isNavIconFocused),
-        isNavIconFocused ? 0 : (isNavIconHovered = false)
-      )}
-      on:mouseover={() => (isNavIconHovered = true)}
-      on:mouseleave={() => (isNavIconHovered = false)}
-      on:focus={() => 0}
-    >
-      <NavIcon icon={faNavicon} class="nav-icon-fill nav-icon-stroke" />
-    </button>
-
     <button
       on:contextmenu|preventDefault
       class="button-icon ml-auto outline-none ring-current nav-icon-bg active:ring-0 focus:ring-2 md:before:whitespace-pre"
