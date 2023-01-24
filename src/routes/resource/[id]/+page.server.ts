@@ -1,14 +1,35 @@
 import { unwrapOr500 } from "$lib/result"
-import * as Resource from "$lib/server/resource"
+import { Resource } from "$lib/server/resource"
 import { error } from "@sveltejs/kit"
 import type { PageServerLoad } from "./$types"
 
 export const load = (async ({ locals: { account }, params }) => {
-  const resource = unwrapOr500(await Resource.get({ id: params.id }))
+  const myId = unwrapOr500(await account.id())
 
-  if (!resource.viewerIds.includes(account.id)) {
+  const resource = new Resource({ id: params.id })
+
+  const data = unwrapOr500(
+    await resource.select({
+      attachments: true,
+      description: true,
+      groups: {
+        select: {
+          id: true,
+          title: true,
+        },
+        orderBy: { title: "asc" },
+        where: {
+          memberIds: { has: myId },
+        },
+      },
+      title: true,
+      viewerIds: true,
+    })
+  )
+
+  if (!data.viewerIds.includes(myId)) {
     throw error(503, "Sorry, you can't see somebody else's resource.")
   }
 
-  return { resource }
+  return { resource: data }
 }) satisfies PageServerLoad
