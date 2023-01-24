@@ -32,12 +32,10 @@
   }
 
   let uploadEl: HTMLInputElement | undefined
-  let selectedButton = ""
 </script>
 
 <div
   class="{className} flex flex-col overflow-auto px-3 py-6"
-  on:scroll={() => (selectedButton = "")}
   on:contextmenu|preventDefault
 >
   <h1 class="sr-only">Theme Editor</h1>

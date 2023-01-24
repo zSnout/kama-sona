@@ -1,7 +1,6 @@
 import {
   faBarsProgress,
   faBookOpen,
-  faSearch,
   faTasks,
   faUserGroup,
   type IconDefinition,
