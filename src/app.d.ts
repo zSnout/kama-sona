@@ -10,7 +10,7 @@ declare namespace App {
   }
 
   interface Locals {
-    readonly account: import("@prisma/client").Account
+    readonly account: import("$lib/server/account").Account
   }
 }
 

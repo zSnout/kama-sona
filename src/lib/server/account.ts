@@ -1,99 +1,304 @@
-import type { Account, Prisma } from "@prisma/client"
-import type { Cookies } from "@sveltejs/kit"
-import { error, or, type Result } from "../result"
-import { query } from "./database"
-import * as UnverifiedAccount from "./unverified-account"
-
-/** Counts the number of accounts matching a given filter. */
-export async function count(
-  filter?: Prisma.AccountWhereInput
-): Promise<Result<number>> {
-  return await query((database) => database.account.count({ where: filter }))
-}
-
-/** Creates an account. */
-export async function create(
-  info: Omit<Prisma.AccountCreateInput, "session">
-): Promise<Result<Account>> {
-  await UnverifiedAccount.deleteOld({ email: info.email })
-
-  const accountsWithSameEmail = await count({ email: info.email })
-
-  if (!accountsWithSameEmail.ok) {
-    return accountsWithSameEmail
-  }
-
-  if (accountsWithSameEmail.value > 0) {
-    return error("An account already exists with the provided email address.")
-  }
-
-  return await query((database) =>
-    database.account.create({
-      data: {
-        email: info.email,
-        isAdmin: info.isAdmin,
-        name: info.name,
-        session: { create: {} },
-      },
-    })
-  )
-}
+import { error, ok, type Result } from "$lib/result"
+import type { Prisma } from "@prisma/client"
+import { query, transaction } from "./database"
+import { GroupList } from "./group"
+import { MagicLink } from "./magic-link"
+import { ResourceList } from "./resource"
+import { Session } from "./session"
+import { UnverifiedAccountList } from "./unverified-account"
 
 /** A {@link Result} to return when no accounts match a given filter. */
 export const errorNoAccountExists = error(
   "No account exists that matches the given information."
 )
 
-/** Gets information about an account. */
-export async function get(
-  filter: Prisma.AccountWhereUniqueInput
-): Promise<Result<Account>> {
-  const result = await query(
-    (database) =>
-      database.account.findUnique({
-        where: filter,
-      }),
-    errorNoAccountExists
-  )
+export const permissions = Object.freeze([
+  "admin",
+  "create:account",
+  "create:assignment",
+  "create:card-deck",
+  "create:discussion",
+  "create:group",
+  "create:resource",
+] as const)
 
-  if (!result.ok) {
-    return result
+export type PermissionName = (typeof permissions)[number]
+
+export class Account {
+  static async create(
+    data: Pick<Prisma.AccountCreateInput, "email" | "name" | "permissions">
+  ) {
+    {
+      const result = await new UnverifiedAccountList({
+        email: data.email,
+      }).delete()
+
+      if (!result.ok) {
+        return result
+      }
+    }
+
+    {
+      const result = await new AccountList({ email: data.email }).count()
+
+      if (!result.ok) {
+        return result
+      }
+
+      if (result.value > 0) {
+        return error(
+          "An account already exists with the provided email address."
+        )
+      }
+    }
+
+    const account = await query((database) =>
+      database.account.create({
+        data: {
+          email: data.email,
+          name: data.name,
+          permissions: data.permissions,
+          session: { create: {} },
+        },
+      })
+    )
+
+    if (!account.ok) {
+      return account
+    }
+
+    return ok(new Account({ id: account.value.id }))
   }
 
-  return result
-}
+  constructor(readonly filter: Prisma.AccountWhereUniqueInput) {}
 
-/** Gets all accounts with an optional filter and sort function. */
-export async function getAll(
-  filter?: Prisma.AccountWhereInput,
-  orderBy?: Prisma.Enumerable<Prisma.AccountOrderByWithRelationInput>
-): Promise<Result<readonly Account[]>> {
-  return await query((database) =>
-    database.account.findMany({
-      where: filter,
-      orderBy,
+  select<T extends Prisma.AccountSelect>(select: T) {
+    return query(
+      (database) =>
+        database.account.findUniqueOrThrow({ where: this.filter, select }),
+      errorNoAccountExists
+    )
+  }
+
+  update<
+    T extends Prisma.AccountUpdateInput,
+    U extends Prisma.AccountSelect = {}
+  >(data: T, select?: U) {
+    return query(
+      (database) =>
+        database.account.update({ where: this.filter, data, select }),
+      errorNoAccountExists
+    )
+  }
+
+  async magicLink() {
+    const result = await this.select({ magicLink: { select: { id: true } } })
+
+    if (!result.ok) {
+      return result
+    }
+
+    if (!result.value.magicLink) {
+      return ok<MagicLink | undefined>(undefined)
+    }
+
+    return ok<MagicLink | undefined>(
+      new MagicLink({ id: result.value.magicLink.id })
+    )
+  }
+
+  async magicLinkForce() {
+    const result = await this.select({ magicLink: { select: { id: true } } })
+
+    if (!result.ok) {
+      return result
+    }
+
+    if (!result.value.magicLink) {
+      return await MagicLink.create({ for: { connect: this.filter } })
+    }
+
+    return ok(new MagicLink({ id: result.value.magicLink.id }))
+  }
+
+  async session() {
+    const result = await this.select({ session: { select: { id: true } } })
+
+    if (!result.ok) {
+      return result
+    }
+
+    if (!result.value.session) {
+      return await Session.create({ for: { connect: this.filter } })
+    }
+
+    return ok<Session>(new Session({ id: result.value.session.id }))
+  }
+
+  permissions(): Permission {
+    return new Permission(this)
+  }
+
+  groups() {
+    return new GroupList({
+      members: { some: this.filter },
     })
-  )
-}
-
-/** Gets an account based on the session key stored in a user's cookies. */
-export async function getFromCookies(
-  cookies: Cookies
-): Promise<Result<Account>> {
-  const session = cookies.get("session")
-
-  if (!session) {
-    return error("Whoops! Looks like you aren't logged in.")
   }
 
-  return or(
-    await query((database) =>
-      database.session
-        .findUnique({
-          where: { code: session },
-        })
-        .for()
-    ),
-    error("It appears that your session has expired.")
-  )
+  managedGroups() {
+    return new GroupList({
+      managers: { some: this.filter },
+    })
+  }
+
+  resources() {
+    return new ResourceList({
+      viewers: { some: this.filter },
+    })
+  }
+
+  managedResources() {
+    return new ResourceList({
+      managers: { some: this.filter },
+    })
+  }
+
+  async id() {
+    if (this.filter.id && !this.filter.email) {
+      return ok(this.filter.id)
+    }
+
+    const result = await this.select({ id: true })
+
+    if (!result.ok) {
+      return result
+    }
+
+    return ok(result.value.id)
+  }
+}
+
+class Permission {
+  constructor(readonly account: Account) {}
+
+  grant(
+    value:
+      | "create:account"
+      | "create:assignment"
+      | "create:card-deck"
+      | "create:discussion"
+      | "create:group"
+      | "create:resource"
+  ) {
+    return transaction(async (tx) => {
+      const { permissions } = await tx.account.findUniqueOrThrow({
+        where: this.account.filter,
+        select: { permissions: true },
+      })
+
+      await tx.account.update({
+        where: this.account.filter,
+        data: {
+          permissions: permissions
+            .filter((permission) => permission != value)
+            .concat(value),
+        },
+      })
+    })
+  }
+
+  clear() {
+    return this.account.update({ permissions: [] })
+  }
+
+  revoke(
+    value:
+      | "create:account"
+      | "create:assignment"
+      | "create:card-deck"
+      | "create:discussion"
+      | "create:group"
+      | "create:resource"
+  ) {
+    return transaction(async (tx) => {
+      const { permissions } = await tx.account.findUniqueOrThrow({
+        where: this.account.filter,
+        select: { permissions: true },
+      })
+
+      await tx.account.update({
+        where: this.account.filter,
+        data: {
+          permissions: permissions.filter((permission) => permission != value),
+        },
+      })
+
+      return {}
+    })
+  }
+
+  async has(
+    value:
+      | "create:account"
+      | "create:assignment"
+      | "create:card-deck"
+      | "create:discussion"
+      | "create:group"
+      | "create:resource"
+  ): Promise<Result<boolean>> {
+    const result = await this.account.select({ permissions: true })
+
+    if (!result.ok) {
+      return result
+    }
+
+    return ok(result.value.permissions.includes(value))
+  }
+}
+
+export class AccountList {
+  constructor(readonly filter: Prisma.AccountWhereInput) {}
+
+  count() {
+    return query((database) => database.account.count({ where: this.filter }))
+  }
+
+  async first() {
+    const result = await this.select({ id: true })
+
+    if (!result.ok) {
+      return result
+    }
+
+    const first = result.value[0]
+
+    if (!first) {
+      return errorNoAccountExists
+    }
+
+    return ok(new Account(first))
+  }
+
+  select<T extends Prisma.AccountSelect>(select: T) {
+    return query((database) =>
+      database.account.findMany({
+        select,
+        orderBy: { name: "asc" },
+        where: this.filter,
+      })
+    )
+  }
+
+  update<T extends Prisma.AccountUpdateInput>(data: T) {
+    return query((database) =>
+      database.account.updateMany({ data, where: this.filter })
+    )
+  }
+
+  not(filter: Prisma.AccountWhereInput) {
+    return new AccountList({
+      ...this.filter,
+      NOT: filter,
+    })
+  }
 }

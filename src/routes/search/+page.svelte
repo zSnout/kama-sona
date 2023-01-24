@@ -31,13 +31,6 @@
     faTasks,
     faUserGroup,
   } from "@fortawesome/free-solid-svg-icons"
-  import type {
-    Assignment,
-    AssignmentStatus,
-    Category,
-    Group,
-    Resource,
-  } from "@prisma/client"
   import { search } from "fast-fuzzy"
   import { writable } from "svelte-local-storage-store"
   import type { PageData } from "./$types"
@@ -63,16 +56,22 @@
 
   // #region map database contents to `allItems`
 
-  function findGroupThatUserIsMemberOf(groups: Group[]): Group | undefined {
+  function findGroupThatUserIsMemberOf<T extends { id: string }>(
+    groups: T[]
+  ): T | undefined {
     return groups.find((group) => data.account.memberOfIds.includes(group.id))
   }
 
-  function managedAssignmentToItem(
-    assignment: Assignment & {
-      category: Category
-      groups: Group[]
-    }
-  ): Item {
+  function managedAssignmentToItem(assignment: {
+    category: { title: string }
+    creation: Date
+    due: Date
+    id: string
+    groups: { id: string; title: string }[]
+    title: string
+    viewableAfter: Date
+    points: number
+  }): Item {
     return {
       type: "assignment",
       isManager: true,
@@ -109,14 +108,18 @@
     }
   }
 
-  function assignmentStatusToItem(
-    status: AssignmentStatus & {
-      assignment: Assignment & {
-        category: Category
-        groups: Group[]
-      }
+  function assignmentStatusToItem(status: {
+    assignment: {
+      category: { title: string }
+      due: Date
+      groups: { id: string; title: string }[]
+      points: number
+      title: string
+      viewableAfter: Date
     }
-  ): Item {
+    due: Date
+    id: string
+  }): Item {
     return {
       type: "assignment",
       isManager: false,
@@ -146,12 +149,15 @@
     }
   }
 
-  function resourceToItem(
-    resource: Resource & {
-      category: Category
-      groups: Group[]
-    }
-  ): Item {
+  function resourceToItem(resource: {
+    category: { title: string }
+    creation: Date
+    groups: { id: string; title: string }[]
+    id: string
+    managerIds: string[]
+    title: string
+    viewableAfter: Date
+  }): Item {
     return {
       type: "resource",
       isManager: resource.managerIds.includes(data.account.id),
@@ -170,7 +176,12 @@
     }
   }
 
-  function groupToItem(group: Group): Item {
+  function groupToItem(group: {
+    id: string
+    managerIds: string[]
+    memberIds: string[]
+    title: string
+  }): Item {
     const isManager = group.managerIds.includes(data.account.id)
 
     return {

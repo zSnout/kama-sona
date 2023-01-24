@@ -1,70 +1,78 @@
-import { ok } from "$lib/result"
+import { error, type Result } from "$lib/result"
 import type { Prisma } from "@prisma/client"
-import { errorNoAccountExists } from "./account"
-import { errorNoAssignmentExists } from "./assignment"
-import { query, transaction } from "./database"
+import { Assignment } from "./assignment"
+import { query } from "./database"
 
-/** Gets a specific assignment status. */
-export async function get(assignment: Prisma.AssignmentStatusWhereUniqueInput) {
-  return await transaction(async (tx, check) => {
-    const status = check(
-      await tx.assignmentStatus.findUnique({
-        where: assignment,
-        include: { assignee: true },
-      })
+/** A {@link Result} to return when no assignment statuses match a given filter. */
+export const errorNoAssignmentStatusExists = error(
+  "No assignment status exists that matches the given information."
+)
+
+export class AssignmentStatus {
+  constructor(readonly filter: Prisma.AssignmentStatusWhereUniqueInput) {}
+
+  select<T extends Prisma.AssignmentStatusSelect>(select: T) {
+    return query(
+      (database) =>
+        database.assignmentStatus.findUniqueOrThrow({
+          where: this.filter,
+          select,
+        }),
+      errorNoAssignmentStatusExists
     )
-
-    return tx.assignmentStatus.findUnique({
-      where: { id: status.id },
-      include: {
-        assignment: {
-          include: {
-            groups: {
-              where: {
-                id: { in: status.assignee.memberOfIds },
-              },
-            },
-          },
-        },
-      },
-    })
-  }, errorNoAssignmentExists)
-}
-
-/** Gets all assignment statuses with a specific assignee. */
-export async function getAllWithAssignee(
-  assignee: Prisma.AccountWhereUniqueInput
-) {
-  const result = await query(
-    (database) =>
-      database.account.findUnique({ where: assignee }).assignedTo({
-        include: {
-          assignment: {
-            include: { category: true, groups: true },
-          },
-        },
-        orderBy: { assignment: { title: "asc" } },
-      }),
-    errorNoAccountExists
-  )
-
-  if (!result.ok) {
-    return result
   }
 
-  return ok(
-    result.value.filter(
-      (result) => result.assignment.viewableAfter < new Date()
+  update<
+    T extends Prisma.AssignmentStatusUpdateInput,
+    U extends Prisma.AssignmentStatusSelect = {}
+  >(data: T, select?: U) {
+    return query(
+      (database) =>
+        database.assignmentStatus.update({ where: this.filter, data, select }),
+      errorNoAssignmentStatusExists
     )
-  )
+  }
+
+  async assignment() {
+    const result = await this.select({ assignmentId: true })
+
+    if (!result.ok) {
+      return result
+    }
+
+    return new Assignment({ id: result.value.assignmentId })
+  }
 }
 
-/** Updates an assignment status. */
-export async function update(
-  status: Prisma.AssignmentStatusWhereUniqueInput,
-  data: Omit<Prisma.AssignmentStatusUpdateInput, "assignee" | "assignment">
-) {
-  return await query((database) =>
-    database.assignmentStatus.update({ where: status, data })
-  )
+export class AssignmentStatusList {
+  constructor(readonly filter: Prisma.AssignmentStatusWhereInput) {}
+
+  count() {
+    return query((database) =>
+      database.assignmentStatus.count({ where: this.filter })
+    )
+  }
+
+  select<T extends Prisma.AssignmentStatusSelect>(select: T) {
+    return query((database) =>
+      database.assignmentStatus.findMany({
+        select,
+        orderBy: { assignee: { name: "asc" } },
+        where: this.filter,
+      })
+    )
+  }
+
+  update<T extends Prisma.AssignmentStatusUpdateInput>(data: T) {
+    return query((database) =>
+      database.assignmentStatus.updateMany({ data, where: this.filter })
+    )
+  }
+
+  not(filter: Prisma.AssignmentStatusWhereInput) {
+    return new AssignmentStatusList({
+      ...this.filter,
+      NOT: filter,
+    })
+  }
 }

@@ -1,12 +1,12 @@
 import { unwrapOr500 } from "$lib/result"
-import * as MagicLink from "$lib/server/magic-link"
-import * as Session from "$lib/server/session"
+import { MagicLink } from "$lib/server/magic-link"
 import { redirect } from "@sveltejs/kit"
 import type { PageServerLoad } from "./$types"
 
 export const load = (async ({ cookies, params }) => {
-  const account = unwrapOr500(await MagicLink.verify(params))
-  const { code } = unwrapOr500(await Session.get({ forId: account.id }))
+  const account = unwrapOr500(await MagicLink.verify(params.code))
+  const session = unwrapOr500(await account.session())
+  const { code } = unwrapOr500(await session.select({ code: true }))
 
   cookies.set("session", code, {
     path: "/",

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import BigButton from "$lib/BigButton.svelte"
   import BigButtonColored from "$lib/BigButtonColored.svelte"
   import { faBarsProgress } from "@fortawesome/free-solid-svg-icons"
   import type { Feature } from "../layout"

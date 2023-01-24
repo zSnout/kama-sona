@@ -1,11 +1,11 @@
 import { error, ok, type Error, type Result } from "$lib/result"
 import { faker } from "@faker-js/faker"
-import * as Account from "./account"
-import * as Assignment from "./assignment"
-import * as Resource from "./resource"
-import * as Category from "./category"
+import { Account, AccountList } from "./account"
+import { Assignment } from "./assignment"
+import { Category, CategoryList } from "./category"
 import { query } from "./database"
-import * as Group from "./group"
+import { Group, GroupList } from "./group"
+import { Resource } from "./resource"
 
 function syncRepeat(count: number, fn: () => unknown) {
   for (let index = 0; index < count; index++) {
@@ -77,7 +77,7 @@ export function createAccounts(count: number) {
     const name = faker.name.fullName({ firstName: first, lastName: last, sex })
     const email = faker.helpers.unique(faker.internet.email, [first, last])
 
-    return Account.create({ email, name, isAdmin: false })
+    return Account.create({ email, name })
   })
 }
 
@@ -113,12 +113,11 @@ function createGroupTitle() {
 export function createGroups(count: number) {
   return run(async () => {
     const accounts = unwrap(
-      await Account.getAll(undefined, {
-        memberOf: {
-          _count: "asc",
-        },
+      await new AccountList({}).select({
+        id: true,
+        memberOfIds: true,
       })
-    )
+    ).sort((a, b) => a.memberOfIds.length - b.memberOfIds.length)
 
     if (accounts.length < 105) {
       unwrap(
@@ -163,9 +162,13 @@ export function createGroups(count: number) {
       const title = createGroupTitle()
 
       const result = await Group.create({
-        group: { title },
-        manager: members.slice(0, managerCount).map(({ id }) => ({ id })),
-        members: members.map(({ id }) => ({ id })),
+        title,
+        managers: {
+          connect: members.slice(0, managerCount).map(({ id }) => ({ id })),
+        },
+        members: {
+          connect: members.map(({ id }) => ({ id })),
+        },
       })
 
       if (!result.ok) {
@@ -182,12 +185,11 @@ export function createGroupsForUnpopular(count: number) {
   return run(async () => {
     for (let index = 0; index < count; index++) {
       const accounts = unwrap(
-        await Account.getAll(undefined, {
-          memberOf: {
-            _count: "asc",
-          },
+        await new AccountList({}).select({
+          id: true,
+          memberOfIds: true,
         })
-      )
+      ).sort((a, b) => a.memberOfIds.length - b.memberOfIds.length)
 
       if (accounts.length < 105) {
         unwrap(
@@ -227,9 +229,13 @@ export function createGroupsForUnpopular(count: number) {
       const title = createGroupTitle()
 
       const result = await Group.create({
-        group: { title },
-        manager: members.slice(0, managerCount).map(({ id }) => ({ id })),
-        members: members.map(({ id }) => ({ id })),
+        title,
+        managers: {
+          connect: members.slice(0, managerCount).map(({ id }) => ({ id })),
+        },
+        members: {
+          connect: members.map(({ id }) => ({ id })),
+        },
       })
 
       if (!result.ok) {
@@ -253,8 +259,12 @@ export function createMinimumRequiredCategories() {
     while (true) {
       iter++
 
-      const groups = unwrap(await Group.getAll()).filter(
-        (group) => group.categoryIds.length == 0
+      const groups = unwrap(
+        await new GroupList({
+          categoryIds: { isEmpty: true },
+        }).select({
+          id: true,
+        })
       )
 
       if (groups.length == 0) {
@@ -275,12 +285,14 @@ export function createMinimumRequiredCategories() {
 
       const title = createCategoryTitle()
 
-      const result = await Category.create(
-        { title },
-        faker.helpers
-          .arrayElements(groups, numberOfGroupsWithThisCategory)
-          .map(({ id }) => ({ id }))
-      )
+      const result = await Category.create({
+        title,
+        groups: {
+          connect: faker.helpers
+            .arrayElements(groups, numberOfGroupsWithThisCategory)
+            .map(({ id }) => ({ id })),
+        },
+      })
 
       if (!result.ok) {
         unwrap(result)
@@ -295,7 +307,11 @@ export function createMinimumRequiredCategories() {
 export function createExtraCategories(count: number) {
   return run(async () => {
     for (let index = 0; index < count; index++) {
-      const groups = unwrap(await Group.getAll())
+      const groups = unwrap(
+        await new GroupList({}).select({
+          id: true,
+        })
+      )
 
       const numberOfGroupsWithThisCategory = faker.helpers.arrayElement([
         between(5, 10), // classes with a huge number of sections
@@ -311,12 +327,14 @@ export function createExtraCategories(count: number) {
 
       const title = createCategoryTitle()
 
-      const result = await Category.create(
-        { title },
-        faker.helpers
-          .arrayElements(groups, numberOfGroupsWithThisCategory)
-          .map(({ id }) => ({ id }))
-      )
+      const result = await Category.create({
+        title,
+        groups: {
+          connect: faker.helpers
+            .arrayElements(groups, numberOfGroupsWithThisCategory)
+            .map(({ id }) => ({ id })),
+        },
+      })
 
       if (!result.ok) {
         unwrap(result)
@@ -479,7 +497,12 @@ const day = 24 * 60 * 60 * 1000
 
 export function createAssignments(count: number) {
   return run(async () => {
-    const categories = unwrap(await Category.getAll())
+    const categories = unwrap(
+      await new CategoryList({}).select({
+        groupIds: true,
+        id: true,
+      })
+    )
 
     console.log("got category list")
 
@@ -508,7 +531,7 @@ export function createAssignments(count: number) {
             ])
         ),
         files: [],
-        groups: category.groupIds.map((id) => ({ id })),
+        groupIds: category.groupIds,
         links: faker.helpers.arrayElements(
           [createLink(), createLink(), createLink(), createLink()],
           faker.helpers.arrayElement([0, 0, 0, 0, 1, 2, 2, 3, 3, 4])
@@ -534,7 +557,12 @@ export function createAssignments(count: number) {
 
 export function createResources(count: number) {
   return run(async () => {
-    const categories = unwrap(await Category.getAll())
+    const categories = unwrap(
+      await new CategoryList({}).select({
+        groupIds: true,
+        id: true,
+      })
+    )
 
     console.log("got category list")
 
@@ -545,7 +573,7 @@ export function createResources(count: number) {
         category: { id: category.id },
         description: createDescription(),
         files: [],
-        groups: category.groupIds.map((id) => ({ id })),
+        groupIds: category.groupIds,
         links: faker.helpers.arrayElements(
           [createLink(), createLink(), createLink(), createLink()],
           faker.helpers.arrayElement([0, 0, 0, 0, 1, 2, 2, 3, 3, 4])

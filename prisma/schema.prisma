@@ -9,19 +9,19 @@ datasource db {
 
 model UnverifiedAccount {
   creation DateTime @default(now())
-  id       String   @id @default(auto()) @map("_id") @db.ObjectId
   email    String   @unique
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
   name     String
   updated  DateTime @default(now()) @updatedAt
 }
 
 model Account {
   creation                 DateTime           @default(now())
-  id                       String             @id @default(auto()) @map("_id") @db.ObjectId
-  isAdmin                  Boolean
   email                    String             @unique
+  id                       String             @id @default(auto()) @map("_id") @db.ObjectId
   name                     String
   updated                  DateTime           @default(now()) @updatedAt
+  permissions              String[]
   // Relations:
   assignedTo               AssignmentStatus[] @relation("AssignmentAssignee")
   magicLink                MagicLink?         @relation("MagicLink")
@@ -47,16 +47,18 @@ model Account {
 model Session {
   code     String   @unique @default(uuid())
   creation DateTime @default(now())
-  for      Account? @relation("AccountSession", fields: [forId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  forId    String   @unique @db.ObjectId
   id       String   @id @default(auto()) @map("_id") @db.ObjectId
   updated  DateTime @default(now()) @updatedAt
+  // Relations:
+  for      Account? @relation("AccountSession", fields: [forId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  forId    String   @unique @db.ObjectId
 }
 
 model MagicLink {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
   code       String   @unique
   expiration DateTime
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  // Relations:
   for        Account  @relation("MagicLink", fields: [forId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   forId      String   @unique @db.ObjectId
 }

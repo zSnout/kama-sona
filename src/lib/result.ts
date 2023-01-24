@@ -104,10 +104,7 @@ export function unwrapOr500<T>(result: Result<T>) {
   }
 }
 
-/**
- * Calls a function and rewraps any errors thrown by {@link unwrapOr500} in a
- * {@link Error}.
- */
+/** Checks if a value is an error throw by {@link unwrapOr500}. */
 export function isUnwrap500Error(
   error: unknown
 ): error is HttpError & { body: { result: Error } } {
@@ -145,4 +142,12 @@ export function coroutine<T, A extends readonly unknown[]>(
       return error(err instanceof Error ? err.message : String(err))
     }
   }
+}
+
+export function voidify(result: Result<unknown>): Result<void> {
+  if (!result.ok) {
+    return result
+  }
+
+  return ok()
 }

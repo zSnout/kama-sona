@@ -15,7 +15,6 @@
     faPercent,
     faUserGroup,
   } from "@fortawesome/free-solid-svg-icons"
-  import { assign } from "svelte/internal"
   import type { PageData } from "./$types"
 
   export let data: PageData

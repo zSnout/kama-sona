@@ -1,16 +1,30 @@
 import { PUBLIC_KS_MAX_UPLOAD_SIZE } from "$env/static/public"
 import { unwrapOr500 } from "$lib/result"
-import * as Category from "$lib/server/category"
+import { Category } from "$lib/server/category"
 import * as Extract from "$lib/server/extract"
-import * as Resource from "$lib/server/resource"
+import { Resource } from "$lib/server/resource"
 import { sanitize } from "$lib/server/sanitize"
 import { error, redirect } from "@sveltejs/kit"
 import type { Actions, PageServerLoad } from "./$types"
 
 export const load = (async ({ locals: { account } }) => {
+  const managedGroups = account.managedGroups()
+
   return {
     groups: unwrapOr500(
-      await Category.getAllForGroupWithManager({ id: account.id })
+      await managedGroups.select({
+        id: true,
+        title: true,
+        categories: {
+          select: {
+            id: true,
+            title: true,
+          },
+          orderBy: {
+            title: "asc",
+          },
+        },
+      })
     ),
   }
 }) satisfies PageServerLoad
@@ -42,25 +56,20 @@ export const actions = {
       throw error(400, "Your files are too large.")
     }
 
+    const accountData = unwrapOr500(
+      await account.select({ managerOfIds: true })
+    )
+
     // A user should only be able to create a resource if they are a manager
     // of all the groups they want to create the resource in.
 
     for (const groupId of data.groups) {
-      if (!account.managerOfIds.includes(groupId)) {
+      if (!accountData.managerOfIds.includes(groupId)) {
         throw error(
           503,
           "You cannot publish a resource in a group that you don't own."
         )
       }
-    }
-
-    if (!data.willCreateCategory) {
-      unwrapOr500(
-        await Category.linkToGroups(
-          { id: data.category },
-          data.groups.map((id) => ({ id }))
-        )
-      )
     }
 
     if (data.willCreateCategory) {
@@ -84,6 +93,12 @@ export const actions = {
           "If 'willCreateCategory' is false, 'category' must be passed."
         )
       }
+
+      unwrapOr500(
+        await new Category({ id: data.category }).update({
+          groups: { connect: data.groups.map((id) => ({ id })) },
+        })
+      )
     }
 
     const resource = unwrapOr500(
@@ -96,7 +111,7 @@ export const actions = {
           : { id: data.category! },
         description: sanitize(data.description),
         files: data.files,
-        groups: data.groups.map((id) => ({ id })),
+        groupIds: data.groups,
         links:
           data.links
             ?.split("\n")
@@ -115,6 +130,6 @@ export const actions = {
       })
     )
 
-    throw redirect(302, `/resource/${resource.id}`)
+    throw redirect(302, `/resource/${unwrapOr500(await resource.id())}`)
   },
 } satisfies Actions

@@ -2,7 +2,7 @@
   import type { Account } from "@prisma/client"
 
   /** Only pass `account={undefined}` if you also pass an `override` slot. */
-  export let account: Account | undefined
+  export let account: Pick<Account, "email" | "id" | "name"> | undefined
   export let href = `/directory/${account?.id}`
   export let isButton = false
   export let title: string | undefined = undefined

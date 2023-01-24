@@ -5,10 +5,7 @@ const prisma = new PrismaClient()
 prisma.$connect()
 
 /** The type of Prisma Client exposed to queries. */
-export type PartialPrismaClient = Omit<
-  PrismaClient,
-  "$connect" | "$disconnect" | "$on" | "$runCommandRaw" | "$use"
->
+export type PartialPrismaClient = Omit<PrismaClient, `$${string}`>
 
 /**
  * Calls a database query safely. If the query returns `null` or `undefined`, a

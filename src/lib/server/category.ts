@@ -1,60 +1,78 @@
+import { error, ok, type Result } from "$lib/result"
 import type { Prisma } from "@prisma/client"
-import { errorNoAccountExists } from "./account"
 import { query } from "./database"
 
-/** Gets all groups that match a optional filter. */
-export async function getAll(filter?: Prisma.CategoryWhereInput) {
-  return await query((database) =>
-    database.category.findMany({
-      where: filter,
-    })
-  )
+/** A {@link Result} to return when no categories match a given filter. */
+export const errorNoCategoryExists = error(
+  "No category exists that matches the given information."
+)
+
+export class Category {
+  static async create(
+    data: Pick<Prisma.CategoryCreateInput, "groups" | "title" | "weight">
+  ) {
+    const category = await query((database) =>
+      database.category.create({
+        data,
+      })
+    )
+
+    if (!category.ok) {
+      return category
+    }
+
+    return ok(new Category({ id: category.value.id }))
+  }
+
+  constructor(readonly filter: Prisma.CategoryWhereUniqueInput) {}
+
+  select<T extends Prisma.CategorySelect>(select: T) {
+    return query(
+      (database) =>
+        database.category.findUniqueOrThrow({ where: this.filter, select }),
+      errorNoCategoryExists
+    )
+  }
+
+  update<
+    T extends Prisma.CategoryUpdateInput,
+    U extends Prisma.CategorySelect = {}
+  >(data: T, select?: U) {
+    return query(
+      (database) =>
+        database.category.update({ where: this.filter, data, select }),
+      errorNoCategoryExists
+    )
+  }
 }
 
-/** Gets all categories that belong to groups with a specific manager. */
-export function getAllForGroupWithManager(
-  manager: Prisma.AccountWhereUniqueInput
-) {
-  return query(
-    (database) =>
-      database.account.findUnique({ where: manager }).managerOf({
-        include: {
-          categories: {
-            orderBy: { title: "asc" },
-          },
-        },
+export class CategoryList {
+  constructor(readonly filter: Prisma.CategoryWhereInput) {}
+
+  count() {
+    return query((database) => database.category.count({ where: this.filter }))
+  }
+
+  select<T extends Prisma.CategorySelect>(select: T) {
+    return query((database) =>
+      database.category.findMany({
+        select,
         orderBy: { title: "asc" },
-      }),
-    errorNoAccountExists
-  )
-}
+        where: this.filter,
+      })
+    )
+  }
 
-/** Links a category to a list of groups. */
-export function linkToGroups(
-  category: Prisma.CategoryWhereUniqueInput,
-  groups: Prisma.Enumerable<Prisma.GroupWhereUniqueInput>
-) {
-  return query((database) =>
-    database.category.update({
-      where: category,
-      data: {
-        groups: { connect: groups },
-      },
-    })
-  )
-}
+  update<T extends Prisma.CategoryUpdateInput>(data: T) {
+    return query((database) =>
+      database.category.updateMany({ data, where: this.filter })
+    )
+  }
 
-/** Creates a category and links it to some groups. */
-export function create(
-  category: Prisma.CategoryCreateWithoutGroupsInput,
-  groups: Prisma.Enumerable<Prisma.GroupWhereUniqueInput>
-) {
-  return query((database) =>
-    database.category.create({
-      data: {
-        ...category,
-        groups: { connect: groups },
-      },
+  not(filter: Prisma.CategoryWhereInput) {
+    return new CategoryList({
+      ...this.filter,
+      NOT: filter,
     })
-  )
+  }
 }

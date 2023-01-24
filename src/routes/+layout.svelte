@@ -9,7 +9,6 @@
     faBug,
     faHome,
     faMoon,
-    faNavicon,
     faSearch,
     faSun,
   } from "@fortawesome/free-solid-svg-icons"
