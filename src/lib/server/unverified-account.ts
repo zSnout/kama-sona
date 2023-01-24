@@ -1,136 +1,109 @@
-import { PUBLIC_KS_APP_BASE, PUBLIC_KS_APP_NAME } from "$env/static/public"
-import { error, ok, type Result } from "$lib/result"
-import type {
-  Account as PrismaAccount,
-  Prisma,
-  UnverifiedAccount,
-} from "@prisma/client"
-import * as Account from "./account"
+import { error } from "$lib/result"
+import type { Prisma } from "@prisma/client"
+import { AccountList } from "./account"
 import { query } from "./database"
-import { send } from "./email"
 
-/** Counts the number of unverified accounts matching a given filter. */
-export async function count(
-  filter?: Prisma.UnverifiedAccountWhereInput
-): Promise<Result<number>> {
-  return await query((database) =>
-    database.unverifiedAccount.count({ where: filter })
-  )
-}
+/** A {@link Result} to return when no accounts match a given filter. */
+export const errorNoUnverifiedAccountExists = error(
+  "No unverified account exists that matches the given information."
+)
 
-/** Deletes old unverified accounts. */
-export async function deleteOld(
-  filter?: Prisma.UnverifiedAccountWhereUniqueInput
-): Promise<Result<void>> {
-  const result = await query((database) =>
-    database.unverifiedAccount.deleteMany({ where: filter })
-  )
-
-  if (!result.ok) {
-    return result
-  }
-
-  return ok()
-}
-
-/** Creates an unverified account. */
-export async function create(
-  info: Prisma.UnverifiedAccountCreateInput
-): Promise<Result<UnverifiedAccount>> {
-  const unverifiedAccountsWithSameEmail = await count({ email: info.email })
-  const accountsWithSameEmail = await Account.count({ email: info.email })
-
-  if (!unverifiedAccountsWithSameEmail.ok) {
-    return unverifiedAccountsWithSameEmail
-  }
-
-  if (!accountsWithSameEmail.ok) {
-    return accountsWithSameEmail
-  }
-
-  if (
-    unverifiedAccountsWithSameEmail.value > 0 ||
-    accountsWithSameEmail.value > 0
+export class UnverifiedAccount {
+  static async create(
+    data: Pick<Prisma.UnverifiedAccountCreateInput, "email" | "name">
   ) {
-    return error("An account already exists with the provided email address.")
+    const unverifiedAccountsWithSameEmail = await new UnverifiedAccountList({
+      email: data.email,
+    }).count()
+
+    const accountsWithSameEmail = await new AccountList({
+      email: data.email,
+    }).count()
+
+    if (!unverifiedAccountsWithSameEmail.ok) {
+      return unverifiedAccountsWithSameEmail
+    }
+
+    if (!accountsWithSameEmail.ok) {
+      return accountsWithSameEmail
+    }
+
+    if (
+      unverifiedAccountsWithSameEmail.value > 0 ||
+      accountsWithSameEmail.value > 0
+    ) {
+      return error("An account already exists with the provided email address.")
+    }
+
+    return await query((database) =>
+      database.unverifiedAccount.create({
+        data: {
+          email: data.email,
+          name: data.name,
+        },
+      })
+    )
   }
 
-  return await query((database) =>
-    database.unverifiedAccount.create({
-      data: {
-        email: info.email,
-        name: info.name,
-      },
-    })
-  )
-}
+  constructor(readonly filter: Prisma.UnverifiedAccountWhereUniqueInput) {}
 
-/** Gets an unverified account. */
-export async function get(
-  filter: Prisma.UnverifiedAccountWhereUniqueInput
-): Promise<Result<UnverifiedAccount>> {
-  return query(
-    (database) => database.unverifiedAccount.findUnique({ where: filter }),
-    Account.errorNoAccountExists
-  )
-}
-
-/** Sends a link to verify an unverified account to the account's email. */
-export async function sendVerification(
-  account: UnverifiedAccount
-): Promise<Result<void>> {
-  return await send({
-    subject: "Verify your account on " + PUBLIC_KS_APP_NAME,
-    text: `Hey ${account.name},
-
-You can now verify your account on ${PUBLIC_KS_APP_NAME}! Just click this link:
-${PUBLIC_KS_APP_BASE}/sign-up/${account.id}
-
-If you didn't sign up, ignore this email and we'll take care of the rest.`,
-    to: {
-      address: account.email,
-      name: account.name,
-    },
-  })
-}
-
-/** Deletes an unverified account. */
-async function remove(
-  filter: Prisma.UnverifiedAccountWhereUniqueInput
-): Promise<Result<void>> {
-  const result = await query((database) =>
-    database.unverifiedAccount.deleteMany({ where: filter })
-  )
-
-  if (!result.ok) {
-    return result
+  select<T extends Prisma.UnverifiedAccountSelect>(select: T) {
+    return query(
+      (database) =>
+        database.unverifiedAccount.findUniqueOrThrow({
+          select,
+          where: this.filter,
+        }),
+      errorNoUnverifiedAccountExists
+    )
   }
 
-  return ok()
+  update<
+    T extends Prisma.UnverifiedAccountUpdateInput,
+    U extends Prisma.UnverifiedAccountSelect = {}
+  >(data: T, select?: U) {
+    return query(
+      (database) =>
+        database.unverifiedAccount.update({ data, select, where: this.filter }),
+      errorNoUnverifiedAccountExists
+    )
+  }
+
+  delete() {
+    return query((database) =>
+      database.unverifiedAccount.delete({ where: this.filter })
+    )
+  }
 }
 
-export { remove as delete }
+export class UnverifiedAccountList {
+  constructor(readonly filter: Prisma.UnverifiedAccountWhereInput) {}
 
-/** Verifies an unverified account and makes it an official account. */
-export async function verify(id: string): Promise<Result<PrismaAccount>> {
-  const account = await get({ id })
-
-  if (!account.ok) {
-    return account
+  count() {
+    return query((database) =>
+      database.unverifiedAccount.count({ where: this.filter })
+    )
   }
 
-  const removed = await remove({ id: account.value.id })
-
-  if (!removed.ok) {
-    return removed
+  select<T extends Prisma.UnverifiedAccountSelect>(select: T) {
+    return query((database) =>
+      database.unverifiedAccount.findMany({
+        select,
+        orderBy: { name: "asc" },
+        where: this.filter,
+      })
+    )
   }
 
-  const next = await Account.create({
-    creation: account.value.creation,
-    email: account.value.email,
-    isAdmin: false,
-    name: account.value.name,
-  })
+  update<T extends Prisma.UnverifiedAccountUpdateInput>(data: T) {
+    return query((database) =>
+      database.unverifiedAccount.updateMany({ data, where: this.filter })
+    )
+  }
 
-  return next
+  delete() {
+    return query((database) =>
+      database.unverifiedAccount.deleteMany({ where: this.filter })
+    )
+  }
 }

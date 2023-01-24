@@ -1,83 +1,63 @@
-import { error, isUnwrap500Error, unwrapOr500, type Result } from "$lib/result"
-import { AttachmentType, type Assignment, type Prisma } from "@prisma/client"
-import sanitize from "sanitize-html"
-import * as Account from "./account"
+import {
+  error,
+  isUnwrap500Error,
+  ok,
+  unwrapOr500,
+  type Result,
+} from "$lib/result"
+import { exclude, intersect, union } from "$lib/set"
+import type { Prisma } from "@prisma/client"
 import { query } from "./database"
-import { getGroupMembers } from "./group"
+import { GroupList } from "./group"
+import { sanitize } from "./sanitize"
 import { upload } from "./upload"
 
-export interface AssignmentCreateOptions {
-  readonly category:
-    | { readonly name: string; readonly weight: number }
-    | { readonly id: string }
-  readonly description: string
-  readonly due: Date
-  readonly files: readonly File[]
-  readonly groups: readonly {
-    readonly id: string
-  }[]
-  readonly links: readonly {
-    readonly href: string
-    readonly title: string
-  }[]
-  readonly points: number
-  readonly title: string
-  readonly viewableAfter: Date
+/** A {@link Result} to return when no assignments match a given filter. */
+export const errorNoAssignmentExists = error(
+  "No assignment exists that matches the given information."
+)
+
+export interface AssignmentCreateInput {
+  category: { name: string; weight: number } | { id: string }
+  description: string
+  due: Date
+  files: File[]
+  groupIds: string[]
+  links: { href: string; title: string }[]
+  points: number
+  title: string
+  viewableAfter: Date
 }
 
-/** Creates an assignment. */
-export async function create(
-  data: AssignmentCreateOptions
-): Promise<Result<Assignment>> {
-  const description = sanitize(data.description)
-
-  try {
-    // I know that using `var` is like a stab in the back by a friend you trust
-    // most, but I'd rather use it than have a separate `let` and assignment,
-    // even though it would be completely valid according to TSC.
-
-    var attachments: Prisma.AttachmentCreateInput[] = await Promise.all(
-      data.files.map(async (file) => ({
-        type: AttachmentType.File,
-        content: unwrapOr500(await upload(file)).id,
-        label: file.name,
-      }))
-    )
-  } catch (err) {
-    if (isUnwrap500Error(err)) {
-      return err.body.result
-    } else {
-      throw err
+export class Assignment {
+  static async create(data: AssignmentCreateInput) {
+    try {
+      var attachments: Prisma.AttachmentCreateInput[] = await Promise.all(
+        data.files.map(async (file) => ({
+          type: "File",
+          content: unwrapOr500(await upload(file)).id,
+          label: file.name,
+        }))
+      )
+    } catch (err) {
+      if (isUnwrap500Error(err)) {
+        return err.body.result
+      } else {
+        throw err
+      }
     }
-  }
 
-  data.links.forEach(({ href, title }) => {
-    attachments.push({
-      type: AttachmentType.Link,
-      content: href,
-      label: title,
+    data.links.forEach(({ href, title }) => {
+      attachments.push({
+        type: "Link",
+        content: href,
+        label: title,
+      })
     })
-  })
 
-  const groupIds = data.groups.map((group) => group.id)
-  const groupFilters = groupIds.map((id) => ({ id }))
+    const groupFilters = data.groupIds.map((id) => ({ id }))
 
-  const groupMemberResult = await getGroupMembers(groupIds)
-
-  if (!groupMemberResult.ok) {
-    return groupMemberResult
-  }
-
-  const {
-    managersOf: { all: managers },
-    not,
-  } = groupMemberResult.value
-
-  const assignees = not(managers)
-
-  return await rawCreate({
-    attachments,
-    category: {
+    const category: Prisma.CategoryCreateNestedOneWithoutAssignmentsInput = {
       connect:
         "id" in data.category
           ? {
@@ -92,69 +72,110 @@ export async function create(
               weight: data.category.weight,
               groups: { connect: groupFilters },
             },
-    },
-    description,
-    due: data.due,
-    groups: { connect: groupFilters },
-    managers: managers.length
-      ? { connect: managers.map((id) => ({ id })) }
-      : undefined,
-    points: data.points,
-    statuses: assignees.length
-      ? {
-          createMany: {
-            data: assignees.map((assigneeId) => ({
-              assigneeId,
-              due: data.due,
-              exempt: false,
-              missing: false,
-            })),
-          },
-        }
-      : undefined,
-    title: data.title.slice(0, 100),
-    viewableAfter: data.viewableAfter,
-  })
-}
+    }
 
-/** Creates an assignment from raw database information. */
-export async function rawCreate(data: Prisma.AssignmentCreateInput) {
-  return await query((database) => database.assignment.create({ data }))
-}
+    const description = sanitize(data.description)
 
-export const errorNoAssignmentExists = error(
-  "No assignment exists that matches the given information."
-)
+    const ids = await new GroupList({ id: { in: data.groupIds } }).select({
+      managerIds: true,
+      memberIds: true,
+    })
 
-/** Gets a specific assignment. */
-export async function get(assignment: Prisma.AssignmentWhereUniqueInput) {
-  return await query(
-    (database) =>
-      database.assignment.findUnique({
-        where: assignment,
-        include: {
-          category: true,
-          groups: true,
+    if (!ids.ok) {
+      return ids
+    }
+
+    const managerIds = intersect(ids.value.map((e) => e.managerIds))
+
+    const assigneeIds = exclude(
+      union(ids.value.map((e) => e.memberIds)),
+      managerIds
+    )
+
+    const assignment = await query((database) =>
+      database.assignment.create({
+        data: {
+          attachments,
+          category,
+          description,
+          due: data.due,
+          groupIds: data.groupIds,
+          managerIds,
+          points: data.points,
           statuses: {
-            include: { assignee: true },
-            orderBy: { assignee: { name: "asc" } },
+            createMany: {
+              data: assigneeIds.map((assigneeId) => ({
+                assigneeId,
+                due: data.due,
+                exempt: false,
+                missing: false,
+              })),
+            },
           },
+          title: data.title.slice(0, 100),
+          viewableAfter: data.viewableAfter,
         },
-      }),
-    errorNoAssignmentExists
-  )
+      })
+    )
+
+    if (!assignment.ok) {
+      return assignment
+    }
+
+    return ok(new Assignment({ id: assignment.value.id }))
+  }
+
+  constructor(readonly filter: Prisma.AssignmentWhereUniqueInput) {}
+
+  select<T extends Prisma.AssignmentSelect>(select: T) {
+    return query(
+      (database) =>
+        database.assignment.findUniqueOrThrow({ where: this.filter, select }),
+      errorNoAssignmentExists
+    )
+  }
+
+  update<
+    T extends Prisma.AssignmentUpdateInput,
+    U extends Prisma.AssignmentSelect = {}
+  >(data: T, select?: U) {
+    return query(
+      (database) =>
+        database.assignment.update({ where: this.filter, data, select }),
+      errorNoAssignmentExists
+    )
+  }
 }
 
-/** Gets all assignments that have a specific manager. */
-export async function getAllWithManager(
-  manager: Prisma.AccountWhereUniqueInput
-) {
-  return await query(
-    (database) =>
-      database.account.findUnique({ where: manager }).managedAssignments({
+export class AssignmentList {
+  constructor(readonly filter: Prisma.AssignmentWhereInput) {}
+
+  count() {
+    return query((database) =>
+      database.assignment.count({ where: this.filter })
+    )
+  }
+
+  select<T extends Prisma.AssignmentSelect>(select: T) {
+    return query((database) =>
+      database.assignment.findMany({
+        select,
         orderBy: { title: "asc" },
-        include: { category: true, groups: true },
-      }),
-    Account.errorNoAccountExists
-  )
+        where: this.filter,
+      })
+    )
+  }
+
+  update<T extends Prisma.AssignmentUpdateInput>(data: T) {
+    return query((database) =>
+      database.assignment.updateMany({ data, where: this.filter })
+    )
+  }
+
+  not(filter: Prisma.AssignmentWhereInput) {
+    return new AssignmentList({
+      ...this.filter,
+      NOT: filter,
+    })
+  }
 }

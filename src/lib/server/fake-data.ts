@@ -1,11 +1,11 @@
 import { error, ok, type Error, type Result } from "$lib/result"
 import { faker } from "@faker-js/faker"
-import * as Account from "./account"
-import * as Assignment from "./assignment"
-import * as Resource from "./resource"
-import * as Category from "./category"
+import { Account } from "./account"
+import { Assignment } from "./assignment"
+import { Resource } from "./resource"
+import { Category } from "./category"
 import { query } from "./database"
-import * as Group from "./group"
+import { Group } from "./group"
 
 function syncRepeat(count: number, fn: () => unknown) {
   for (let index = 0; index < count; index++) {
@@ -77,7 +77,7 @@ export function createAccounts(count: number) {
     const name = faker.name.fullName({ firstName: first, lastName: last, sex })
     const email = faker.helpers.unique(faker.internet.email, [first, last])
 
-    return Account.create({ email, name, isAdmin: false })
+    return Account.create({ email, name })
   })
 }
 

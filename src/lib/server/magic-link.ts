@@ -1,208 +1,145 @@
 import { PUBLIC_KS_APP_BASE, PUBLIC_KS_APP_NAME } from "$env/static/public"
-import type { Account, Prisma } from "@prisma/client"
-import { error, ok, type Result } from "../result"
-import { errorNoAccountExists } from "./account"
+import { error, ok, type Result } from "$lib/result"
+import type { Prisma } from "@prisma/client"
+import { Account, AccountList } from "./account"
 import { query } from "./database"
-import { send as sendEmail } from "./email"
+import { send } from "./email"
 
-/** Information about a magic link. The code may not be present. */
-export interface MagicLinkInfo {
-  /** The code of this magic link. */
-  readonly code: string | null
-
-  /** The expiration date of this magic link. */
-  readonly expiration: Date
-}
-
-/** Information about a magic link with a definite code. */
-export interface MagicLinkInfoWithCode extends MagicLinkInfo {
-  /** The code of this magic link. */
-  readonly code: string
-}
-
-/** Creates a magic link for the given account and returns it. */
-export async function create(
-  account: Prisma.AccountWhereUniqueInput
-): Promise<Result<MagicLinkInfoWithCode>> {
-  const expiration = new Date(Date.now() + 1000 * 60 * 15)
-  const code = crypto.randomUUID()
-
-  const result = await query(
-    (database) =>
-      database.account.update({
-        data: {
-          magicLink: {
-            upsert: {
-              create: { code, expiration },
-              update: { code, expiration },
-            },
-          },
-        },
-        where: account,
-      }),
-    errorNoAccountExists
-  )
-
-  if (!result.ok) {
-    return result
-  }
-
-  return ok({ expiration, code })
-}
-
-/** Destroys a magic link for the given account. */
-export async function destroyByAccount(
-  account: Prisma.AccountWhereUniqueInput
-): Promise<Result<void>> {
-  const next = {
-    code: crypto.randomUUID(),
-    expiration: new Date(),
-  }
-
-  const result = await query(
-    (database) =>
-      database.account.update({
-        data: {
-          magicLink: {
-            upsert: {
-              create: next,
-              update: next,
-            },
-          },
-        },
-        where: account,
-      }),
-    errorNoAccountExists
-  )
-
-  if (!result.ok) {
-    return result
-  }
-
-  return ok()
-}
-
-/** Destroys the given magic link. */
-export async function destroyByLink(
-  link: Prisma.MagicLinkWhereUniqueInput
-): Promise<Result<void>> {
-  const result = await query(
-    (database) => database.magicLink.delete({ where: link }),
-    error("The provided magic link doesn't exist. It might've expired by now.")
-  )
-
-  if (!result.ok) {
-    return result
-  }
-
-  return ok()
-}
-
-/** Gets the magic link code and expiration date of a given account. */
-export async function get(
-  account: Prisma.AccountWhereUniqueInput
-): Promise<Result<MagicLinkInfo>> {
-  const result = await query(
-    async (database) =>
-      (await database.account
-        .findUnique({
-          where: account,
-        })
-        .magicLink()) ?? ("none" as const),
-    errorNoAccountExists
-  )
-
-  if (!result.ok) {
-    return result
-  }
-
-  return ok(
-    result.value == "none"
-      ? { code: null, expiration: new Date() }
-      : result.value
-  )
-}
-
-/** Sends the current magic link code to an account. */
-export async function send(
-  account: Prisma.AccountWhereUniqueInput
-): Promise<Result<void>> {
-  const result = await query(
-    (database) =>
-      database.account.findUnique({
-        select: {
-          email: true,
-          name: true,
-          magicLink: true,
-        },
-        where: account,
-      }),
-    errorNoAccountExists
-  )
-
-  if (!result.ok) {
-    return result
-  }
-
-  if (!result.value.magicLink) {
-    return error("Your magic link expired. Try creating another.")
-  }
-
-  const expiration = result.value.magicLink?.expiration
-
-  if (expiration < new Date()) {
-    return error("Your magic link expired. Try creating another.")
-  }
-
-  return await sendEmail({
-    subject: `Log In to ${PUBLIC_KS_APP_NAME}`,
-    text: `Hey ${result.value.name},
-
-It looks like you're trying to log in to your account. You can do this by going
-to ${PUBLIC_KS_APP_BASE}/log-in/${result.value.magicLink.code}. Hurry
-up, as your link will expire in 15 minutes.`,
-    to: {
-      address: result.value.email,
-      name: result.value.name,
-    },
-  })
-}
-
-/** A {@link Result} to result when an account's magic link changed unexpectedly. */
-export const errorMagicLinkChanged = error(
-  "Your magic link has changed. You might've requested another log in link and clicked this one by accident."
+/** A {@link Result} to return when no magicLinks match a given filter. */
+export const errorNoMagicLinkExists = error(
+  "No magic link exists that matches the given information."
 )
 
-/** Verifies a magic link, destroys it, and returns the account it corresponds to. */
-export async function verify(options: {
-  code: string
-}): Promise<Result<Account>> {
-  const link = await query(
-    (database) =>
-      database.magicLink.findUnique({
-        include: { for: true },
-        where: { code: options.code },
-      }),
-    errorMagicLinkChanged
-  )
+export class MagicLink {
+  static async create(data: Pick<Prisma.MagicLinkCreateInput, "for">) {
+    const code = crypto.randomUUID()
+    const expiration = new Date(Date.now() + 1000 * 60 * 15)
 
-  if (!link.ok) {
-    return link
+    const magicLink = await query((database) =>
+      database.magicLink.create({
+        data: {
+          code,
+          expiration,
+          for: data.for,
+        },
+      })
+    )
+
+    if (!magicLink.ok) {
+      return magicLink
+    }
+
+    return ok(new MagicLink({ id: magicLink.value.id }))
   }
 
-  if (!link.value.for) {
-    return errorMagicLinkChanged
+  static async verify(code: string) {
+    const link = new MagicLink({ code })
+
+    {
+      const result = await link.isExpired()
+
+      if (!result.ok) {
+        return result
+      }
+
+      if (!result.value) {
+        return error("Your magic link expired. You can always request another.")
+      }
+    }
+
+    const account = await link.select({ for: { select: { id: true } } })
+
+    if (!account.ok) {
+      return account
+    }
+
+    {
+      const result = await link.delete()
+
+      if (!result.ok) {
+        return result
+      }
+    }
+
+    return ok(new Account({ id: account.value.for.id }))
   }
 
-  if (link.value.expiration < new Date()) {
-    return error("Your magic link expired. You can always request another.")
+  constructor(readonly filter: Prisma.MagicLinkWhereUniqueInput) {}
+
+  delete() {
+    return query(
+      (database) => database.magicLink.delete({ where: this.filter }),
+      errorNoMagicLinkExists
+    )
   }
 
-  const destroyed = await destroyByLink(options)
+  async isExpired() {
+    const result = await this.select({ expiration: true })
 
-  if (!destroyed.ok) {
-    return destroyed
+    if (!result.ok) {
+      return result
+    }
+
+    return ok(result.value.expiration < new Date())
   }
 
-  return ok(link.value.for)
+  select<T extends Prisma.MagicLinkSelect>(select: T) {
+    return query(
+      (database) =>
+        database.magicLink.findUniqueOrThrow({ where: this.filter, select }),
+      errorNoMagicLinkExists
+    )
+  }
+
+  update<
+    T extends Prisma.MagicLinkUpdateInput,
+    U extends Prisma.MagicLinkSelect = {}
+  >(data: T, select?: U) {
+    return query(
+      (database) =>
+        database.magicLink.update({ where: this.filter, data, select }),
+      errorNoMagicLinkExists
+    )
+  }
+
+  account() {
+    return new AccountList({ magicLink: this.filter }).first()
+  }
+
+  async sendVerificationEmail() {
+    const result = await this.select({
+      code: true,
+      expiration: true,
+      for: { select: { email: true, name: true } },
+    })
+
+    if (!result.ok) {
+      return result
+    }
+
+    const {
+      value: {
+        code,
+        expiration,
+        for: { email, name },
+      },
+    } = result
+
+    if (expiration < new Date()) {
+      return error("Your magic link expired. Try creating another.")
+    }
+
+    return await send({
+      subject: `Log In to ${PUBLIC_KS_APP_NAME}`,
+      text: `Hey ${name},
+
+  It looks like you're trying to log in to your account. You can do this by going
+  to ${PUBLIC_KS_APP_BASE}/log-in/${code}. Hurry
+  up, as your link will expire in 15 minutes.`,
+      to: {
+        address: email,
+        name: name,
+      },
+    })
+  }
 }
