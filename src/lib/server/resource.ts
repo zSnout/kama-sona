@@ -128,6 +128,20 @@ export class Resource {
       errorNoResourceExists
     )
   }
+
+  async id() {
+    if (this.filter.id) {
+      return ok(this.filter.id)
+    }
+
+    const result = await this.select({ id: true })
+
+    if (!result.ok) {
+      return result
+    }
+
+    return ok(result.value.id)
+  }
 }
 
 export class ResourceList {
