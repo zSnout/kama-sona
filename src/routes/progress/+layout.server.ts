@@ -3,50 +3,50 @@ import { query } from "$lib/server/database"
 import type { LayoutServerLoad } from "./$types"
 
 export const load = (async ({ locals: { account } }) => {
+  const myId = unwrapOr500(await account.id())
+
   const rawGroups = unwrapOr500(
     await query((database) =>
-      database.account
-        .findUniqueOrThrow({ where: { id: account.id } })
-        .memberOf({
-          select: {
-            id: true,
-            title: true,
-            assignments: {
-              select: {
-                id: true,
-                points: true,
-                title: true,
-                category: {
-                  select: {
-                    id: true,
-                    title: true,
-                    weight: true,
-                  },
-                },
-                statuses: {
-                  where: { assigneeId: account.id },
-                  select: {
-                    attachments: true,
-                    body: true,
-                    due: true,
-                    exempt: true,
-                    id: true,
-                    missing: true,
-                    score: true,
-                    submitted: true,
-                    teacherComment: true,
-                  },
+      database.account.findUniqueOrThrow({ where: { id: myId } }).memberOf({
+        select: {
+          id: true,
+          title: true,
+          assignments: {
+            select: {
+              id: true,
+              points: true,
+              title: true,
+              category: {
+                select: {
+                  id: true,
+                  title: true,
+                  weight: true,
                 },
               },
-              orderBy: {
-                viewableAfter: "asc",
+              statuses: {
+                where: { assigneeId: myId },
+                select: {
+                  attachments: true,
+                  body: true,
+                  due: true,
+                  exempt: true,
+                  id: true,
+                  missing: true,
+                  score: true,
+                  submitted: true,
+                  teacherComment: true,
+                },
               },
             },
+            orderBy: {
+              viewableAfter: "asc",
+            },
           },
-          orderBy: {
-            title: "asc",
-          },
-        })
+        },
+        orderBy: {
+          title: "asc",
+        },
+      })
     )
   )
 

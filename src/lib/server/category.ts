@@ -9,7 +9,7 @@ export const errorNoCategoryExists = error(
 
 export class Category {
   static async create(
-    data: Pick<Prisma.CategoryCreateInput, "title" | "weight">
+    data: Pick<Prisma.CategoryCreateInput, "groups" | "title" | "weight">
   ) {
     const category = await query((database) =>
       database.category.create({
