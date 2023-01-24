@@ -1,5 +1,6 @@
 import { PUBLIC_KS_ADMIN_MODE } from "$env/static/public"
-import * as Account from "$lib/server/account"
+import { unwrapOr500 } from "$lib/result"
+import { Session } from "$lib/server/session"
 import { error, redirect, type Handle } from "@sveltejs/kit"
 
 function throwOnAccess(): never {
@@ -28,16 +29,16 @@ export const handle: Handle = async ({ event, resolve }) => {
     return await resolve(event)
   }
 
-  const account = await Account.getFromCookies(event.cookies)
+  const session = Session.fromCookies(event.cookies)
 
-  if (!account.ok) {
+  if (!session.ok) {
     event.cookies.delete("session", { path: "/" })
     throw redirect(303, "/log-in")
   }
 
   Object.defineProperty(event.locals, "account", {
     configurable: true,
-    value: account.value,
+    value: unwrapOr500(await session.value.account()),
   })
 
   return await resolve(event)
