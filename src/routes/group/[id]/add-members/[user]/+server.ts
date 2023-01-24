@@ -1,22 +1,32 @@
 import { unwrapOr500 } from "$lib/result"
-import * as Group from "$lib/server/group"
+import { Group } from "$lib/server/group"
 import { error, redirect } from "@sveltejs/kit"
 import type { RequestHandler } from "./$types"
 
 export const POST = (async ({ locals: { account }, params: { id, user } }) => {
-  const group = unwrapOr500(await Group.getWithMembers({ id }))
+  const group = new Group({ id })
 
-  const isManager = group.managerIds.includes(account.id)
+  const data = unwrapOr500(
+    await group.select({ managerIds: true, title: true })
+  )
+
+  const myId = unwrapOr500(await account.id())
+
+  const isManager = data.managerIds.includes(myId)
 
   if (!isManager) {
     throw error(
       503,
-      `Trying to sneak your friend into ${group.title}? Well, you'll have to become a manager first.`
+      `Trying to sneak your friend into ${data.title}? Well, you'll have to become a manager first.`
     )
   }
 
   unwrapOr500(
-    await Group.update({ id: id }, { members: { connect: { id: user } } })
+    await group.update({
+      members: {
+        connect: { id: user },
+      },
+    })
   )
 
   throw redirect(302, `/group/${id}/add-members`)

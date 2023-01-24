@@ -1,5 +1,5 @@
 import { unwrapOr500 } from "$lib/result"
-import * as Account from "$lib/server/account"
+import { AccountList } from "$lib/server/account"
 import { error } from "@sveltejs/kit"
 import type { PageServerLoad } from "./$types"
 
@@ -10,8 +10,16 @@ export const load = (async ({ parent }) => {
     throw error(503, "You must be a group manager to add members.")
   }
 
+  const accounts = new AccountList({})
+
   return {
-    accounts: unwrapOr500(await Account.getAll()),
+    accounts: unwrapOr500(
+      await accounts.select({
+        id: true,
+        name: true,
+        email: true,
+      })
+    ),
     isManager: true as const,
   }
 }) satisfies PageServerLoad

@@ -6,13 +6,12 @@
   import Subheading from "$lib/Subheading.svelte"
   import Title from "$lib/Title.svelte"
   import { faUserPlus } from "@fortawesome/free-solid-svg-icons"
-  import type { Account } from "@prisma/client"
   import type { PageData } from "./$types"
 
   export let data: PageData
 
-  const filterOutManagers = (member: Account) =>
-    !data.group.managers.some((manager) => manager.id == member.id)
+  const isNotManager = (member: { id: string }) =>
+    !data.group.managerIds.includes(member.id)
 </script>
 
 <Title title={data.group.title} />
@@ -27,7 +26,7 @@
   </MegaStat>
 </div>
 
-<Subheading>Manager{data.group.managers.length == 1 ? "" : "s"}</Subheading>
+<Subheading>Manager{data.group.managerIds.length == 1 ? "" : "s"}</Subheading>
 
 <div
   class="grid grid-cols-[repeat(auto-fill,minmax(min(13rem,100%),1fr))] gap-2"
@@ -61,7 +60,7 @@
     </AccountCard>
   {/if}
 
-  {#each data.group.members.filter(filterOutManagers) as member (member.id)}
+  {#each data.group.members.filter(isNotManager) as member (member.id)}
     <AccountCard account={member} />
   {/each}
 </div>
