@@ -3,11 +3,16 @@
 An enterprise-class, open source, and free platform for managing groups,
 resources, and assignments.
 
+> **Note** We use
+> [a Google Doc](https://docs.google.com/document/d/1ekZaoOcr6nrLGeR6PFVRed5BuH1-jsKsvyCgS0tYdRU/edit)
+> to take notes and plan quickly. It's publicly viewable if you want to take a
+> look.
+
 ## Developing
 
 > **Note** If you want to develop for kama sona, _please_ first look at the
-> [documentation](docs). It's very useful and will save you a lot of time and
-> confusion.
+> [developer documentation](docs). It's very useful and will save you a lot of
+> time and confusion.
 
 To work on kama sona, first download the repository from GitHub.
 
