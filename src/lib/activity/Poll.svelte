@@ -50,7 +50,7 @@
       </div>
     {:else}
       <button
-        class="ml-auto w-fit text-right text-sm italic underline decoration-transparent underline-offset-2 transition text-label hover:decoration-current"
+        class="ml-auto w-fit text-right text-sm underline decoration-transparent underline-offset-2 transition text-label hover:decoration-current"
         on:click={() => emit("post", { type: "Archive:retrieve" })}
         aria-label="Question for {toDateString(
           new Date(data.creation)
@@ -173,6 +173,8 @@
 
 <div class="h-4 w-full" />
 
-<div class="mt-auto mb-4 flex flex-col text-center text-sm italic text-label">
-  <p>Your vote will be shown in your comment.</p>
-</div>
+{#if data.options.length}
+  <div class="mt-auto mb-4 flex flex-col text-center text-sm italic text-label">
+    <p>Your vote will be shown in your comment.</p>
+  </div>
+{/if}
