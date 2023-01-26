@@ -49,16 +49,14 @@
         </label>
 
         <label class="label w-full">
-          <p>Click to send a magic link to your email:</p>
+          <p>
+            Click to {PUBLIC_KS_BYPASS_LOGIN == "true"
+              ? "log in:"
+              : "send a magic link to your email:"}
+          </p>
 
           <button class="field w-full" type="submit" {disabled}>Log In</button>
         </label>
-
-        {#if PUBLIC_KS_BYPASS_LOGIN == "true"}
-          <p class="mt-4 text-center">
-            {PUBLIC_KS_APP_NAME} doesn't require verification to log in.
-          </p>
-        {/if}
 
         {#if PUBLIC_KS_ENABLE_SIGN_UP == "true"}
           <p class="mt-4 text-center">
