@@ -6,7 +6,7 @@
   import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
   import Clock from "./features/Clock.svelte"
   import Note from "./features/Note.svelte"
-  import OtherApps from "./features/OtherApps.svelte"
+  import OtherApps from "./features/Apps.svelte"
   import QuickActions from "./features/QuickActions.svelte"
   import Todo from "./features/Todo.svelte"
   import { layout } from "./layout"
@@ -20,12 +20,12 @@
 >
   {#each $layout as feature}
     <svelte:component
-      this={feature.name == "Clock"
+      this={feature.name == "Apps"
+        ? OtherApps
+        : feature.name == "Clock"
         ? Clock
         : feature.name == "Note"
         ? Note
-        : feature.name == "OtherApps"
-        ? OtherApps
         : feature.name == "QuickActions"
         ? QuickActions
         : feature.name == "Todo"

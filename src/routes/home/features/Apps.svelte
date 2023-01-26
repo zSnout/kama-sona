@@ -1,6 +1,6 @@
 <script lang="ts">
   import BigButtonColored from "$lib/BigButtonColored.svelte"
-  import { faBarsProgress } from "@fortawesome/free-solid-svg-icons"
+  import { pages } from "$lib/pages"
   import type { Feature } from "../layout"
 
   export let feature: Feature
@@ -11,10 +11,12 @@
   style:grid-area="{feature.startY} / {feature.startX} / {feature.endY + 1} / {feature.endX +
     1}"
 >
-  <BigButtonColored
-    color="yellow"
-    href="/progress"
-    icon={faBarsProgress}
-    label="Progress"
-  />
+  {#each pages as page}
+    <BigButtonColored
+      color={page.color}
+      href={page.href}
+      icon={page.icon}
+      label={page.title}
+    />
+  {/each}
 </div>

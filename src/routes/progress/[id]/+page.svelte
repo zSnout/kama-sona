@@ -92,6 +92,7 @@
     <HeaderItemLike
       active={$showFeedback}
       on:click={() => ($showFeedback = !$showFeedback)}
+      tooltip="Show feedback"
     >
       <Icon class="ml-0.5 h-4 w-4" icon={faComment} />
     </HeaderItemLike>

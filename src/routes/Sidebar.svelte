@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Activity from "$lib/activity/Activity.svelte"
   import Icon from "$lib/Icon.svelte"
   import { note, notifyOtherSetters, setters } from "$lib/noteStore"
   import RichTextArea from "$lib/RichTextArea.svelte"
@@ -9,20 +10,26 @@
     faChevronRight,
     faNoteSticky,
     faPalette,
+    faPuzzlePiece,
     faQuestion,
     faTasks,
   } from "@fortawesome/free-solid-svg-icons"
   import { writable } from "svelte-local-storage-store"
 
   const isSidebarOpen = writable("sidebar:open", true)
+  const isHelpOpen = writable("sidebar:open:help", false)
   const isNotesOpen = writable("sidebar:open:notes", false)
   const isTodosOpen = writable("sidebar:open:todos", false)
   const isThemeOpen = writable("sidebar:open:theme", false)
-  const isHelpOpen = writable("sidebar:open:help", false)
+  const isActivityOpen = writable("sidebar:open:activity", false)
 
   $: isFullyOpen =
     $isSidebarOpen &&
-    ($isNotesOpen || $isTodosOpen || $isThemeOpen || $isHelpOpen)
+    ($isHelpOpen ||
+      $isNotesOpen ||
+      $isTodosOpen ||
+      $isThemeOpen ||
+      $isActivityOpen)
 
   $: sidebarItems = [
     {
@@ -30,10 +37,11 @@
       icon: faQuestion,
       open: $isHelpOpen,
       onClick: () => {
+        isHelpOpen.update(($open) => !$open)
         isNotesOpen.set(false)
         isTodosOpen.set(false)
         isThemeOpen.set(false)
-        isHelpOpen.update(($open) => !$open)
+        isActivityOpen.set(false)
       },
     },
     {
@@ -41,10 +49,11 @@
       icon: faNoteSticky,
       open: $isNotesOpen,
       onClick: () => {
+        isHelpOpen.set(false)
         isNotesOpen.update(($open) => !$open)
         isTodosOpen.set(false)
         isThemeOpen.set(false)
-        isHelpOpen.set(false)
+        isActivityOpen.set(false)
       },
     },
     {
@@ -52,10 +61,11 @@
       icon: faTasks,
       open: $isTodosOpen,
       onClick: () => {
+        isHelpOpen.set(false)
         isNotesOpen.set(false)
         isTodosOpen.update(($open) => !$open)
         isThemeOpen.set(false)
-        isHelpOpen.set(false)
+        isActivityOpen.set(false)
       },
     },
     {
@@ -63,10 +73,23 @@
       icon: faPalette,
       open: $isThemeOpen,
       onClick: () => {
+        isHelpOpen.set(false)
         isNotesOpen.set(false)
         isTodosOpen.set(false)
         isThemeOpen.update(($open) => !$open)
+        isActivityOpen.set(false)
+      },
+    },
+    {
+      name: "Daily Activity",
+      icon: faPuzzlePiece,
+      open: $isActivityOpen,
+      onClick: () => {
         isHelpOpen.set(false)
+        isNotesOpen.set(false)
+        isTodosOpen.set(false)
+        isThemeOpen.set(false)
+        isActivityOpen.update(($open) => !$open)
       },
     },
   ] as const
@@ -79,7 +102,7 @@
     : $isSidebarOpen
     ? '-right-82'
     : '-right-[25rem]'} prefer-w-96 z-40 hidden h-full select-none border-l pt-16 shadow-horiz-lg transition-all sidebar-bg sidebar-outer-border md:flex"
-  class:prefer-w-[30rem]={$isHelpOpen && $isSidebarOpen}
+  class:prefer-w-[30rem]={($isHelpOpen || $isActivityOpen) && $isSidebarOpen}
   class:prefer-w-[40rem]={$isThemeOpen && $isSidebarOpen}
 >
   <div class="flex h-full w-14 flex-col items-center pt-2">
@@ -113,6 +136,8 @@
     <Todo borderless sidebarBg class="flex-1 border-l sidebar-inner-border" />
   {:else if $isThemeOpen}
     <ThemeEditor class="flex-1 border-l sidebar-inner-border" />
+  {:else if $isActivityOpen}
+    <Activity class="flex-1 border-l sidebar-inner-border" />
   {/if}
 
   <div
@@ -133,7 +158,7 @@
   class="fixed bottom-2 z-40 origin-[right,center] {$isSidebarOpen &&
   $isThemeOpen
     ? 'right-[37rem]'
-    : $isSidebarOpen && $isHelpOpen
+    : $isSidebarOpen && ($isHelpOpen || $isActivityOpen)
     ? 'right-[27rem]'
     : isFullyOpen
     ? 'right-84'

@@ -180,6 +180,7 @@ const config = {
         addVariant("color-swatch-wrapper", ["&::-webkit-color-swatch-wrapper"])
         addVariant("color-swatch", ["&::-webkit-color-swatch"])
         addVariant("sharp", [":where(html.sharp) &"])
+        addVariant("plain-focus", ["&:focus"])
 
         addVariant("focus", [
           "&:focus-within:where(:not(:focus))",

@@ -1,7 +1,7 @@
 import { PUBLIC_KS_ADMIN_MODE } from "$env/static/public"
 import { unwrapOr500 } from "$lib/result"
 import { Session } from "$lib/server/session"
-import { error, redirect, type Handle } from "@sveltejs/kit"
+import { error, json, redirect, type Handle } from "@sveltejs/kit"
 
 function throwOnAccess(): never {
   throw error(
@@ -32,6 +32,10 @@ export const handle: Handle = async ({ event, resolve }) => {
   const session = Session.fromCookies(event.cookies)
 
   if (!session.ok) {
+    if (event.url.pathname == "/activity") {
+      return json({ type: "NotSignedIn" })
+    }
+
     event.cookies.delete("session", { path: "/" })
     throw redirect(303, "/log-in")
   }

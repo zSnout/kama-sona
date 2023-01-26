@@ -42,6 +42,7 @@ model Account {
   managedResourceIds       String[]           @db.ObjectId
   viewedResources          Resource[]         @relation("ResourceViewer", fields: [viewedResourceIds], references: [id])
   viewedResourceIds        String[]           @db.ObjectId
+  activityComments         ActivityComment[]  @relation("ActivityCommentAuthor")
 }
 
 model Session {
@@ -264,4 +265,38 @@ model CardDeck {
   // Relations:
   manager   Account  @relation("CardDeckManager", fields: [managerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   managerId String   @db.ObjectId
+}
+
+model ActivityComment {
+  body       String
+  creation   DateTime @default(now())
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  updated    DateTime @default(now()) @updatedAt
+  // Relations:
+  activity   Activity @relation("ActivityComments", fields: [activityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  activityId String   @db.ObjectId
+  author     Account  @relation("ActivityCommentAuthor", fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  authorId   String   @db.ObjectId
+}
+
+model Activity {
+  comments ActivityComment[] @relation("ActivityComments")
+  creation DateTime          @default(now())
+  id       String            @id @default(auto()) @map("_id") @db.ObjectId
+  title    String
+  type     ActivityType
+  updated  DateTime          @default(now()) @updatedAt
+
+  // Poll
+  options ActivityPollOption[]
+}
+
+enum ActivityType {
+  Poll
+}
+
+type ActivityPollOption {
+  title String
+  /// User IDs:
+  votes String[]
 }

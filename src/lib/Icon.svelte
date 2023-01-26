@@ -8,12 +8,15 @@
 
   let className = ""
   export { className as class }
+
+  export let style = ""
 </script>
 
 {#if definition && typeof definition[4] == "string"}
   <svg
     class="overflow-visible {className}"
     class:icon-label={isLabel}
+    {style}
     viewBox="0 0 {definition[0]} {definition[1]}"
     aria-hidden="true"
     role="img"
