@@ -1,10 +1,6 @@
 import type { ActivityData, ActivityPost } from "$lib/activity/Activity.svelte"
 import { unwrapOr500 } from "$lib/result"
-import {
-  Activity,
-  ActivityList,
-  errorNoActivityExists,
-} from "$lib/server/activity"
+import { Activity, ActivityList } from "$lib/server/activity"
 import { transaction } from "$lib/server/database"
 import { json as rawJson } from "@sveltejs/kit"
 import type { RequestHandler } from "./$types"
@@ -14,7 +10,7 @@ const json: (data: ActivityData) => Response = rawJson
 export const GET = (async ({
   locals: { account },
   myId: _myId,
-  activity,
+  activity: _activity,
 }: {
   locals: App.Locals
   myId?: string
@@ -22,15 +18,7 @@ export const GET = (async ({
 }) => {
   const myId = _myId || unwrapOr500(await account.id())
 
-  if (!activity) {
-    const activityData = await Activity.today()
-
-    if (activityData.error == "No items were found in the database.") {
-      return json({ type: "NoActivity" })
-    }
-
-    activity = unwrapOr500(activityData)
-  }
+  const activity = _activity || unwrapOr500(await Activity.today())
 
   const data = unwrapOr500(
     await activity.select({

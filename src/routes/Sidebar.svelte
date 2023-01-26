@@ -108,11 +108,12 @@
   <div class="flex h-full w-14 flex-col items-center pt-2">
     {#each sidebarItems as { name, icon, open, onClick }}
       <button
-        class="ring-color flex h-10 w-10 items-center justify-center rounded-full border border-transparent outline-none transition sidebar-button-color hover:sidebar-button-hover-bg hover:sidebar-button-hover-color focus:ring"
+        class="ring-color flex h-10 w-10 items-center justify-center rounded-full border border-transparent outline-none transition sidebar-button-color before:z-50 before:whitespace-nowrap hover:sidebar-button-hover-bg hover:sidebar-button-hover-color focus:ring"
         class:sidebar-button-hover-bg={open}
         class:sidebar-button-hover-color={open}
-        on:click={onClick}
         aria-label="Toggle {name}"
+        data-tooltip={name}
+        on:click={onClick}
       >
         <Icon class="h-5 w-5" {icon} />
       </button>

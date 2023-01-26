@@ -24,7 +24,7 @@
 </script>
 
 <div
-  class="sticky top-0 z-50 -ml-px flex w-full flex-col self-start border-l py-3 px-4 sidebar-bg sidebar-inner-border"
+  class="sticky top-0 z-40 -ml-px flex w-full flex-col self-start border-l py-3 px-4 sidebar-bg sidebar-inner-border"
   bind:offsetHeight={headerHeight}
 >
   <div class="z-40 flex w-full flex-col">

@@ -1,5 +1,6 @@
 import { error, ok, type Result } from "$lib/result"
 import type { Prisma } from "@prisma/client"
+import { activityList } from "./activity-list"
 import { query } from "./database"
 
 /** A {@link Result} to return when no activities match a given filter. */
@@ -7,13 +8,22 @@ export const errorNoActivityExists = error(
   "No activity exists that matches the given information."
 )
 
+export type ActivityCreateInput = Pick<
+  Prisma.ActivityCreateInput,
+  "creation" | "title" | "type"
+> & { options?: readonly string[] }
+
 export class Activity {
-  static async create(
-    data: Pick<Prisma.ActivityCreateInput, "options" | "title" | "type">
-  ) {
+  static async create(data: ActivityCreateInput) {
     const activity = await query((database) =>
       database.activity.create({
-        data,
+        data: {
+          ...data,
+          creation: data.creation
+            ? new Date(data.creation + "T12:00:00")
+            : undefined,
+          options: data.options?.map((title) => ({ title, votes: [] })),
+        },
       })
     )
 
@@ -28,11 +38,17 @@ export class Activity {
     const lastMidnight = new Date()
     lastMidnight.setHours(0, 0, 0, 0)
 
+    const middle = new Date(lastMidnight)
+    middle.setHours(12, 0, 0, 0)
+
     const nextMidnight = new Date(lastMidnight)
     nextMidnight.setHours(24)
 
-    const activity = await query((database) =>
-      database.activity.findFirst({
+    const activity = await query(async (database) => {
+      const existing = await database.activity.findFirst({
+        select: {
+          id: true,
+        },
         where: {
           creation: {
             gte: lastMidnight,
@@ -40,10 +56,21 @@ export class Activity {
           },
         },
       })
-    )
+
+      if (existing) {
+        return existing
+      }
+
+      const created = await Activity.create(getActivityInput(middle))
+      return created.value
+    })
 
     if (!activity.ok) {
       return activity
+    }
+
+    if (activity.value instanceof Activity) {
+      return ok(activity.value)
     }
 
     return ok(new Activity({ id: activity.value.id }))
@@ -113,5 +140,31 @@ export class ActivityList {
       ...this.filter,
       NOT: filter,
     })
+  }
+}
+
+export function getActivityInput(date: Date): ActivityCreateInput {
+  const dateString =
+    date.getFullYear() +
+    "-" +
+    (date.getMonth() + 1).toString().padStart(2, "0") +
+    "-" +
+    date.getDate().toString().padStart(2, "0")
+
+  const activity = activityList.find(
+    (activity) => activity.creation == dateString
+  )
+
+  if (activity) {
+    return activity
+  }
+
+  return {
+    creation: date,
+    title:
+      "No activity was planned for " +
+      date.toLocaleDateString(undefined, { month: "long", day: "numeric" }) +
+      ". Discuss whatever topic you like!",
+    type: "Poll",
   }
 }
