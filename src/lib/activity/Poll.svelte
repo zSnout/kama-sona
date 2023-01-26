@@ -154,7 +154,7 @@
 </form>
 
 {#each data.comments as { author, body, vote }}
-  <div class="mt-4 px-4 last:mb-4">
+  <div class="mt-4 px-4">
     <div class="flex items-baseline font-semibold">
       <p>{author}:</p>
 
@@ -170,3 +170,10 @@
     {/each}
   </div>
 {/each}
+
+<div class="h-4 w-full" />
+
+<div class="mt-auto mb-4 flex flex-col text-center text-sm italic text-label">
+  <p>Your vote will be shown in your comment.</p>
+  <p>Click today's date to show past activities.</p>
+</div>
