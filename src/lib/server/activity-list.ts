@@ -3,7 +3,7 @@ import type { ActivityCreateInput } from "./activity"
 export const activityList: readonly Readonly<ActivityCreateInput>[] = [
   {
     creation: "2023-01-25",
-    title: "Which is the best ice cream flavor?",
+    title: "Do you like chocolate or vanilla ice cream more?",
     options: ["Chocolate", "Vanilla"],
     type: "Poll",
   },
