@@ -16,7 +16,7 @@
   >
     <p class="text-left">{activity.title}</p>
 
-    <p class="text-right text-sm italic text-label">
+    <p class="text-right text-sm text-label">
       {toDateString(new Date(activity.creation))}
     </p>
   </button>
