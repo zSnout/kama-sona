@@ -1,16 +1,55 @@
 <script lang="ts">
+  import { browser } from "$app/environment"
   import { enhance } from "$app/forms"
+  import { goto } from "$app/navigation"
   import {
     PUBLIC_KS_APP_NAME,
     PUBLIC_KS_BYPASS_LOGIN,
     PUBLIC_KS_ENABLE_SIGN_UP,
   } from "$env/static/public"
   import CenterOnPage from "$lib/CenterOnPage.svelte"
+  import type { Result } from "$lib/result"
+  import { startAuthentication } from "@simplewebauthn/browser"
+  import type { PublicKeyCredentialCreationOptionsJSON } from "@simplewebauthn/typescript-types"
   import type { ActionData } from "./$types"
 
   export let form: ActionData
 
   let disabled = false
+
+  if (browser) {
+    setTimeout(showPasskeyConditionalUI)
+  }
+
+  let passkeyError = ""
+
+  async function showPasskeyConditionalUI() {
+    const data: PublicKeyCredentialCreationOptionsJSON = await fetch(
+      "/log-in/passkey",
+      { method: "GET" }
+    ).then((response) => response.json())
+
+    const response = await startAuthentication(data, true)
+
+    const didVerify: Result<void> | { message: string; result?: Result<void> } =
+      await fetch("/log-in/passkey", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(response),
+      }).then((response) => response.json())
+
+    if ("message" in didVerify) {
+      if (didVerify.result?.ok) {
+        goto("/")
+      } else {
+        passkeyError = didVerify.message
+      }
+    } else if (didVerify.ok) {
+      goto("/")
+    } else {
+      passkeyError = didVerify.error
+    }
+  }
 </script>
 
 <svelte:head>
@@ -40,11 +79,12 @@
           <p>Email address:</p>
 
           <input
-            type="email"
+            autocomplete="username webauthn"
+            class="field w-full"
             name="email"
             placeholder="john@example.com"
-            class="field w-full"
             required
+            type="email"
           />
         </label>
 
@@ -61,6 +101,12 @@
         {#if PUBLIC_KS_ENABLE_SIGN_UP == "true"}
           <p class="mt-4 text-center">
             Or <a class="link" href="/sign-up">sign up</a> for a new account.
+          </p>
+        {/if}
+
+        {#if passkeyError}
+          <p class="mt-4 text-center">
+            An error occurred: {passkeyError}
           </p>
         {/if}
       </form>

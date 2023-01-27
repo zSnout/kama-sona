@@ -14,6 +14,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^7.6.0",
+    "@simplewebauthn/typescript-types": "^7.0.0",
     "@sveltejs/adapter-auto": "next",
     "@sveltejs/kit": "^1.0.1",
     "@tailwindcss/forms": "^0.5.2",
@@ -40,6 +41,8 @@
     "@fortawesome/free-brands-svg-icons": "^6.2.1",
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@prisma/client": "^4.9.0",
+    "@simplewebauthn/browser": "^7.0.0",
+    "@simplewebauthn/server": "^7.0.0",
     "@tiptap/core": "^2.0.0-beta.207",
     "@tiptap/extension-highlight": "^2.0.0-beta.207",
     "@tiptap/extension-link": "^2.0.0-beta.207",
@@ -50,6 +53,7 @@
     "htmlparser2": "^8.0.1",
     "nodemailer": "^6.8.0",
     "sanitize-html": "^2.8.0",
-    "svelte-local-storage-store": "^0.3.1"
+    "svelte-local-storage-store": "^0.3.1",
+    "zod": "^3.20.2"
   }
 }

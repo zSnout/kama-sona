@@ -4,6 +4,7 @@ export const featureNames = [
   "Apps",
   "Clock",
   "Note",
+  "PasskeyManager",
   "QuickActions",
   "Todo",
 ] as const
@@ -55,6 +56,13 @@ const defaultLayout: Layout = [
     endX: 3,
     startY: 2,
     endY: 3,
+  },
+  {
+    name: "PasskeyManager",
+    startX: 1,
+    endX: 3,
+    startY: 1,
+    endY: 1,
   },
 ]
 

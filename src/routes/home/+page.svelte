@@ -10,6 +10,7 @@
   import QuickActions from "./features/QuickActions.svelte"
   import Todo from "./features/Todo.svelte"
   import { layout } from "./layout"
+  import PasskeyManager from "./features/PasskeyManager.svelte"
 </script>
 
 <Title title={PUBLIC_KS_APP_NAME} mode="head-only" />
@@ -26,6 +27,8 @@
         ? Clock
         : feature.name == "Note"
         ? Note
+        : feature.name == "PasskeyManager"
+        ? PasskeyManager
         : feature.name == "QuickActions"
         ? QuickActions
         : feature.name == "Todo"

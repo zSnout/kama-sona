@@ -3,6 +3,7 @@ import type { Prisma } from "@prisma/client"
 import { query, transaction } from "./database"
 import { GroupList } from "./group"
 import { MagicLink } from "./magic-link"
+import { PasskeyList } from "./passkey"
 import { ResourceList } from "./resource"
 import { Session } from "./session"
 import { UnverifiedAccountList } from "./unverified-account"
@@ -161,6 +162,10 @@ export class Account {
     return new ResourceList({
       managers: { some: this.filter },
     })
+  }
+
+  passkeys() {
+    return new PasskeyList({ account: this.filter })
   }
 
   async id() {

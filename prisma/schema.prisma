@@ -17,12 +17,14 @@ model UnverifiedAccount {
 
 model Account {
   creation                 DateTime           @default(now())
+  currentChallenge         String?
   email                    String             @unique
   id                       String             @id @default(auto()) @map("_id") @db.ObjectId
   name                     String
   updated                  DateTime           @default(now()) @updatedAt
   permissions              String[]
   // Relations:
+  activityComments         ActivityComment[]  @relation("ActivityCommentAuthor")
   assignedTo               AssignmentStatus[] @relation("AssignmentAssignee")
   magicLink                MagicLink?         @relation("MagicLink")
   managedAssignments       Assignment[]       @relation("AssignmentManager", fields: [managedAssignmentIds], references: [id])
@@ -42,7 +44,7 @@ model Account {
   managedResourceIds       String[]           @db.ObjectId
   viewedResources          Resource[]         @relation("ResourceViewer", fields: [viewedResourceIds], references: [id])
   viewedResourceIds        String[]           @db.ObjectId
-  activityComments         ActivityComment[]  @relation("ActivityCommentAuthor")
+  passkeys                 Passkey[]
 }
 
 model Session {
@@ -299,4 +301,35 @@ type ActivityPollOption {
   title String
   /// User IDs:
   votes String[]
+}
+
+model Passkey {
+  counter              BigInt
+  creation             DateTime    @default(now())
+  credentialBackedUp   Boolean
+  credentialDeviceType String
+  credentialId         String      @unique
+  credentialPublicKey  Bytes
+  id                   String      @id @default(auto()) @map("_id") @db.ObjectId
+  updated              DateTime    @default(now()) @updatedAt
+  transports           Transport[]
+  // Relations:
+  account              Account     @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accountId            String      @db.ObjectId
+}
+
+enum Transport {
+  ble
+  internal
+  nfc
+  usb
+  cable
+  hybrid
+}
+
+model PasskeyChallenge {
+  challenge String
+  creation  DateTime @default(now())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  updated   DateTime @default(now()) @updatedAt
 }
