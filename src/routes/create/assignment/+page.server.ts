@@ -8,6 +8,14 @@ import { error, redirect } from "@sveltejs/kit"
 import type { Actions, PageServerLoad } from "./$types"
 
 export const load = (async ({ locals: { account } }) => {
+  const isAllowed = unwrapOr500(
+    await account.permissions().has("create:assignment")
+  )
+
+  if (!isAllowed) {
+    throw error(503, "You don't have permission to create assignments.")
+  }
+
   const managedGroups = account.managedGroups()
 
   return {
@@ -26,7 +34,6 @@ export const load = (async ({ locals: { account } }) => {
         },
       })
       .then(unwrapOr500),
-    isAllowed: account.permissions().has("create:assignment").then(unwrapOr500),
   }
 }) satisfies PageServerLoad
 

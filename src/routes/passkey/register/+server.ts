@@ -57,7 +57,7 @@ export const GET = (async ({ locals: { account } }) => {
 
 export const POST = (async ({ locals: { account }, request }) => {
   // 1. Get information about the current user.
-  const { currentChallenge, email, id, name, passkeys } = unwrapOr500(
+  const { currentChallenge } = unwrapOr500(
     await account.select({
       currentChallenge: true,
       email: true,

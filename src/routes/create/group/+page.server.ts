@@ -5,8 +5,10 @@ import { error, redirect } from "@sveltejs/kit"
 import type { Actions, PageServerLoad } from "./$types"
 
 export const load = (async ({ locals: { account } }) => {
-  return {
-    isAllowed: account.permissions().has("create:group").then(unwrapOr500),
+  const isAllowed = unwrapOr500(await account.permissions().has("create:group"))
+
+  if (!isAllowed) {
+    throw error(503, "You don't have permission to create groups.")
   }
 }) satisfies PageServerLoad
 

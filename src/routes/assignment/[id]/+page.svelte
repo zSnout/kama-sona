@@ -39,7 +39,7 @@
       <IconLabels class="mb-4">
         <IconLabel
           class={!status.submitted && new Date() > status.due
-            ? "red text-red-700 dark:text-red-500"
+            ? "red text-red-700 dark:text-red-400"
             : ""}
           content={toDateString(new Date(status.due))}
           icon={faCalendarCheck}
@@ -65,7 +65,7 @@
 
         {#if status.missing}
           <IconLabel
-            class="red text-red-700 dark:text-red-500"
+            class="red text-red-700 dark:text-red-400"
             content="Missing"
             icon={faFileCircleExclamation}
           />

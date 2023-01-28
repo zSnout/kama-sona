@@ -50,9 +50,7 @@
 <Title mode="head-only" title="Create a Resource" />
 
 <CenterOnPage>
-  {#if !data.isAllowed}
-    <p class="prefer-w-96">You don't have permission to create resources.</p>
-  {:else if data.groups.length == 0}
+  {#if data.groups.length == 0}
     <p class="prefer-w-96">
       You must be the manager of a group in order to create resources.
     </p>

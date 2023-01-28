@@ -2,7 +2,6 @@
   import { browser } from "$app/environment"
   import { goto } from "$app/navigation"
   import Icon from "$lib/Icon.svelte"
-  import type { Result } from "$lib/result"
   import Subheading from "$lib/Subheading.svelte"
   import Title from "$lib/Title.svelte"
   import { faTrash } from "@fortawesome/free-solid-svg-icons"

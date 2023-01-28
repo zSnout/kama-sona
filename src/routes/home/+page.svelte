@@ -6,12 +6,15 @@
   import { pages, type CreateInfo } from "$lib/pages"
   import Title from "$lib/Title.svelte"
   import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
+  import type { PageData } from "./$types"
   import Clock from "./features/Clock.svelte"
   import News from "./features/News.svelte"
   import Note from "./features/Note.svelte"
   import Todo from "./features/Todo.svelte"
   import { layout } from "./layout"
   import Spinner from "./Spinner.svelte"
+
+  export let data: PageData
 
   const creatable = pages
     .filter(
@@ -22,6 +25,7 @@
       href: "/create/" + page.create.type,
       title: page.create.singular,
       icon: page.icon,
+      disabled: !data.permissions.includes(`create:${page.create.type}`),
     }))
 </script>
 

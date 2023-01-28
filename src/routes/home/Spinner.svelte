@@ -11,10 +11,11 @@
   export let translate = "0,0"
 
   export let items: readonly {
-    title: string
+    color: "red" | "orange" | "yellow" | "green" | "blue" | "purple"
+    disabled?: boolean
     href: string
     icon: IconDefinition
-    color: "red" | "orange" | "yellow" | "green" | "blue" | "purple"
+    title: string
   }[]
 </script>
 
@@ -90,6 +91,7 @@
       href={item.href}
       icon={item.icon}
       label={item.title}
+      disabled={isShown && item.disabled}
     />
   {/each}
 </div>

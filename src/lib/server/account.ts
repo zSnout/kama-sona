@@ -1,3 +1,4 @@
+import type { Creatable } from "$lib/pages"
 import { error, ok, type Result } from "$lib/result"
 import type { Prisma } from "@prisma/client"
 import { query, transaction } from "./database"
@@ -13,7 +14,7 @@ export const errorNoAccountExists = error(
   "No account exists that matches the given information."
 )
 
-export const permissions = Object.freeze([
+export const permissions = [
   "admin",
   "create:account",
   "create:assignment",
@@ -21,9 +22,13 @@ export const permissions = Object.freeze([
   "create:discussion",
   "create:group",
   "create:resource",
-] as const)
+] as const
 
 export type PermissionName = (typeof permissions)[number]
+
+function assert<_ extends true>() {}
+
+assert<`create:${Creatable}` extends PermissionName ? true : false>()
 
 export class Account {
   static async create(
@@ -186,15 +191,17 @@ export class Account {
 class Permission {
   constructor(readonly account: Account) {}
 
-  grant(
-    value:
-      | "create:account"
-      | "create:assignment"
-      | "create:card-deck"
-      | "create:discussion"
-      | "create:group"
-      | "create:resource"
-  ) {
+  async all() {
+    const result = await this.account.select({ permissions: true })
+
+    if (!result.ok) {
+      return result
+    }
+
+    return ok(result.value.permissions)
+  }
+
+  grant(value: PermissionName) {
     return transaction(async (tx) => {
       const { permissions } = await tx.account.findUniqueOrThrow({
         where: this.account.filter,
@@ -216,15 +223,7 @@ class Permission {
     return this.account.update({ permissions: [] })
   }
 
-  revoke(
-    value:
-      | "create:account"
-      | "create:assignment"
-      | "create:card-deck"
-      | "create:discussion"
-      | "create:group"
-      | "create:resource"
-  ) {
+  revoke(value: PermissionName) {
     return transaction(async (tx) => {
       const { permissions } = await tx.account.findUniqueOrThrow({
         where: this.account.filter,
@@ -242,15 +241,7 @@ class Permission {
     })
   }
 
-  async has(
-    value:
-      | "create:account"
-      | "create:assignment"
-      | "create:card-deck"
-      | "create:discussion"
-      | "create:group"
-      | "create:resource"
-  ): Promise<Result<boolean>> {
+  async has(value: PermissionName): Promise<Result<boolean>> {
     const result = await this.account.select({ permissions: true })
 
     if (!result.ok) {
