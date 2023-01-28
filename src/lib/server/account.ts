@@ -15,7 +15,6 @@ export const errorNoAccountExists = error(
 )
 
 export const permissions = [
-  "admin",
   "create:account",
   "create:assignment",
   "create:card-deck",
