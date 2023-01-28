@@ -1,11 +1,21 @@
 import { unwrapOr500 } from "$lib/result"
 import { extractData } from "$lib/server/extract"
 import { Group } from "$lib/server/group"
-import { redirect } from "@sveltejs/kit"
-import type { Actions } from "./$types"
+import { error, redirect } from "@sveltejs/kit"
+import type { Actions, PageServerLoad } from "./$types"
+
+export const load = (async ({ locals: { account } }) => {
+  return {
+    isAllowed: account.permissions().has("create:group").then(unwrapOr500),
+  }
+}) satisfies PageServerLoad
 
 export const actions = {
   async default({ locals: { account }, request }) {
+    if (!unwrapOr500(await account.permissions().has("create:group"))) {
+      throw error(503, "You don't have permission to create groups.")
+    }
+
     const { title } = await extractData(request, ["title"] as const)
 
     const group = unwrapOr500(

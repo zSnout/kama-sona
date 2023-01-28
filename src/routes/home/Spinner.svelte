@@ -20,7 +20,13 @@
 
 <svelte:window
   on:keydown={(event) => {
-    if (isShown) {
+    if (
+      isShown &&
+      event.key == "Escape" &&
+      !event.altKey &&
+      !event.metaKey &&
+      !event.ctrlKey
+    ) {
       isShown = false
       event.preventDefault()
     }

@@ -11,8 +11,8 @@ export const load = (async ({ locals: { account } }) => {
   const managedGroups = account.managedGroups()
 
   return {
-    groups: unwrapOr500(
-      await managedGroups.select({
+    groups: managedGroups
+      .select({
         id: true,
         title: true,
         categories: {
@@ -25,7 +25,8 @@ export const load = (async ({ locals: { account } }) => {
           },
         },
       })
-    ),
+      .then(unwrapOr500),
+    isAllowed: account.permissions().has("create:assignment").then(unwrapOr500),
   }
 }) satisfies PageServerLoad
 
@@ -48,6 +49,10 @@ const extractor = Extract.fromRequest(
 
 export const actions = {
   async default({ locals: { account }, request }) {
+    if (!unwrapOr500(await account.permissions().has("create:assignment"))) {
+      throw error(503, "You don't have permission to create assignments.")
+    }
+
     const data = await extractor(request)
 
     const maxSize = Number.isSafeInteger(+PUBLIC_KS_MAX_UPLOAD_SIZE)
