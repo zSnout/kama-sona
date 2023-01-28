@@ -1,3 +1,12 @@
+<script lang="ts" context="module">
+  export const isSidebarOpen = writable("sidebar:open", true)
+  export const isHelpOpen = writable("sidebar:open:help", false)
+  export const isNotesOpen = writable("sidebar:open:notes", false)
+  export const isTodosOpen = writable("sidebar:open:todos", false)
+  export const isThemeOpen = writable("sidebar:open:theme", false)
+  export const isActivityOpen = writable("sidebar:open:activity", false)
+</script>
+
 <script lang="ts">
   import Activity from "$lib/activity/Activity.svelte"
   import Icon from "$lib/Icon.svelte"
@@ -15,13 +24,6 @@
     faTasks,
   } from "@fortawesome/free-solid-svg-icons"
   import { writable } from "svelte-local-storage-store"
-
-  const isSidebarOpen = writable("sidebar:open", true)
-  const isHelpOpen = writable("sidebar:open:help", false)
-  const isNotesOpen = writable("sidebar:open:notes", false)
-  const isTodosOpen = writable("sidebar:open:todos", false)
-  const isThemeOpen = writable("sidebar:open:theme", false)
-  const isActivityOpen = writable("sidebar:open:activity", false)
 
   $: isFullyOpen =
     $isSidebarOpen &&

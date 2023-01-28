@@ -30,6 +30,7 @@ export const load = (async ({ locals: { account }, params }) => {
       body: true,
       due: true,
       exempt: true,
+      missing: true,
       score: true,
       submitted: true,
       teacherComment: true,

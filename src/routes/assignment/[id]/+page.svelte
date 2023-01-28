@@ -12,6 +12,7 @@
   import { toDateString } from "$lib/toDateString"
   import {
     faCalendarCheck,
+    faFileCircleExclamation,
     faPercent,
     faUserGroup,
   } from "@fortawesome/free-solid-svg-icons"
@@ -61,6 +62,14 @@
             title="Number of points:"
           />
         {/if}
+
+        {#if status.missing}
+          <IconLabel
+            class="red text-red-700 dark:text-red-500"
+            content="Missing"
+            icon={faFileCircleExclamation}
+          />
+        {/if}
       </IconLabels>
 
       {@html assignment.description}
@@ -99,8 +108,6 @@
     <div class="field-group mb-12">
       <div class="field flex items-center">
         <p class="text-label">Assignment status:</p>
-
-        <!-- TODO: Add missing indicator. -->
 
         <div
           class="relative -my-2 mr-[calc(0.75rem_-_1px)] ml-auto h-10 w-6 bg-gradient-to-r from-bg-field before:-top-px bafter:absolute bafter:-bottom-px bafter:left-0 bafter:h-px bafter:w-full bafter:bg-gradient-to-r bafter:from-border-standard bafter:content-['_'] {color ==

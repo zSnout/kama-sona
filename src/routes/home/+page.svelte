@@ -3,31 +3,41 @@
   import BigButtonColored from "$lib/BigButtonColored.svelte"
   import { help } from "$lib/help"
   import Icon from "$lib/Icon.svelte"
-  import { pages } from "$lib/pages"
+  import { pages, type CreateInfo } from "$lib/pages"
   import Title from "$lib/Title.svelte"
   import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
   import Clock from "./features/Clock.svelte"
+  import News from "./features/News.svelte"
   import Note from "./features/Note.svelte"
-  import QuickActions from "./features/QuickActions.svelte"
   import Todo from "./features/Todo.svelte"
   import { layout } from "./layout"
+  import Spinner from "./Spinner.svelte"
 
-  let showApps = false
+  const creatable = pages
+    .filter(
+      (page): page is typeof page & { create: CreateInfo } => !!page.create
+    )
+    .map((page) => ({
+      color: page.color,
+      href: "/create/" + page.create.type,
+      title: page.create.singular,
+      icon: page.icon,
+    }))
 </script>
 
 <Title title={PUBLIC_KS_APP_NAME} mode="head-only" />
 
 <div
-  class="relative flex min-h-[max(100vh_-_7rem)] grid-cols-3 grid-rows-[repeat(4,_minmax(100px,_1fr))] flex-col gap-4 md:grid md:max-h-[max(100vh_-_7rem)] md:flex-1"
+  class="relative flex min-h-[max(100vh_-_7rem)] grid-cols-3 grid-rows-[repeat(4,minmax(100px,_1fr))] flex-col gap-4 md:grid md:max-h-[max(100vh_-_7rem)] md:flex-1 lg:grid-rows-[minmax(100px,1fr),minmax(100px,_1fr),3rem,minmax(100px,_1fr),minmax(100px,_1fr)]"
 >
   {#each $layout as feature}
     <svelte:component
       this={feature.name == "Clock"
         ? Clock
+        : feature.name == "News"
+        ? News
         : feature.name == "Note"
         ? Note
-        : feature.name == "QuickActions"
-        ? QuickActions
         : feature.name == "Todo"
         ? Todo
         : undefined}
@@ -35,65 +45,32 @@
     />
   {/each}
 
-  <div
-    class="absolute inset-y-0 -inset-x-8 z-40 hidden backdrop-blur-lg transition duration-500 lg:block"
-    class:pointer-events-none={!showApps}
-    class:opacity-0={!showApps}
-  />
-
-  <!-- svelte-ignore a11y-mouse-events-have-key-events -->
-  <div
-    class="absolute top-1/2 left-1/2 z-40 hidden h-[34rem] w-[34rem] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full lg:flex"
-    class:pointer-events-none={!showApps}
-    on:mouseleave={() => (showApps = false)}
+  <Spinner
+    items={pages}
+    tooltip="All Apps"
+    translate="-50px,0"
+    class="grid grid-cols-3 grid-rows-3 items-center justify-items-center"
   >
-    <button
-      class="group pointer-events-auto grid h-12 w-12 cursor-pointer grid-cols-3 grid-rows-3 items-center justify-items-center rounded-lg border p-1 outline-none transition"
-      class:big-button-bg={!showApps}
-      class:big-button-border={!showApps}
-      class:big-button-hover-bg={showApps}
-      class:big-button-hover-border={showApps}
-      on:click={() => (showApps = !showApps)}
-      on:mouseover={() => (showApps = true)}
-    >
+    <svelte:fragment slot="icon">
       {#each Array(9) as _}
         <div
           class="pointer-events-none h-1.5 w-1.5 rounded-full bg-current big-button-icon group-hover:big-button-hover-icon"
         />
       {/each}
-    </button>
+    </svelte:fragment>
+  </Spinner>
 
-    {#each pages as page, index}
-      {@const angle = index * (360 / pages.length)}
-
-      {@const reverseAngle =
-        angle < 45
-          ? 0
-          : angle < 135
-          ? 270
-          : angle < 225
-          ? 180
-          : angle < 315
-          ? 90
-          : 0}
-
-      {@const delay = index * 50}
-
-      <BigButtonColored
-        class="home-big-button absolute top-1/2 left-1/2 z-40 flex w-32 {showApps
-          ? 'active'
-          : 'pointer-events-none opacity-0'}"
-        style="--angle: {angle}deg; --reverse-angle: {reverseAngle}deg; --delay: {delay}ms"
-        color={page.color}
-        href={page.href}
-        icon={page.icon}
-        label={page.title}
+  <Spinner items={creatable} tooltip="Create an Item" translate="50px,0">
+    <svelte:fragment slot="icon">
+      <Icon
+        class="pointer-events-none h-8 w-8 transition big-button-icon group-hover:big-button-hover-icon"
+        icon={faPlus}
       />
-    {/each}
-  </div>
+    </svelte:fragment>
+  </Spinner>
 </div>
 
-<div class="flex flex-wrap justify-center gap-4 sm:mt-8 lg:hidden">
+<div class="mt-8 flex flex-wrap justify-center gap-4 lg:hidden">
   {#each pages as page}
     <BigButtonColored
       color={page.color}

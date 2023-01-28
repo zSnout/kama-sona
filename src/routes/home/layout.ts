@@ -1,6 +1,6 @@
 import { writable } from "svelte-local-storage-store"
 
-export const featureNames = ["Clock", "Note", "QuickActions", "Todo"] as const
+export const featureNames = ["Clock", "News", "Note", "Todo"] as const
 
 export type FeatureName = (typeof featureNames)[number]
 
@@ -19,15 +19,15 @@ const defaultLayout: Layout = [
     name: "Clock",
     startX: 2,
     endX: 2,
-    startY: 1,
+    startY: 2,
     endY: 2,
   },
   {
-    name: "QuickActions",
+    name: "News",
     startX: 2,
     endX: 2,
     startY: 3,
-    endY: 4,
+    endY: 3,
   },
   {
     name: "Note",
@@ -90,3 +90,13 @@ export const layout = writable<Layout>("layout", defaultLayout, {
     stringify: JSON.stringify,
   },
 })
+
+export function makeGridArea(feature: Feature) {
+  return `${feature.startY > 2 ? feature.startY + 1 : feature.startY} / ${
+    feature.startX
+  } / ${
+    feature.endY == feature.startY || feature.endY <= 2
+      ? feature.endY + 1
+      : feature.endY + 2
+  } / ${feature.endX + 1}`
+}

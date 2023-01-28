@@ -42,7 +42,7 @@ export class Activity {
     middle.setHours(12, 0, 0, 0)
 
     const nextMidnight = new Date(lastMidnight)
-    nextMidnight.setHours(24)
+    nextMidnight.setHours(24, 0, 0, 0)
 
     const activity = await query(async (database) => {
       const existing = await database.activity.findFirst({

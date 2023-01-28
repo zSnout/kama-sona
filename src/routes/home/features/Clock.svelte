@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte"
-  import type { Feature } from "../layout"
+  import { makeGridArea, type Feature } from "../layout"
 
   export let feature: Feature
 
@@ -22,11 +22,7 @@
   onDestroy(() => (destroyed = true))
 </script>
 
-<div
-  class="m-auto flex flex-col"
-  style:grid-area="{feature.startY} / {feature.startX} / {feature.endY + 1} / {feature.endX +
-    1}"
->
+<div class="m-auto flex flex-col" style:grid-area={makeGridArea(feature)}>
   <p class="m-auto whitespace-nowrap text-[3rem] font-extralight">
     {date.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}
   </p>
