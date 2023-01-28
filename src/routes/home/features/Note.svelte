@@ -12,7 +12,7 @@
     1}"
 >
   <RichTextArea
-    class="resize-none"
+    class="min-h-0 resize-none"
     fieldClass="flex-1"
     placeholder="Type a note to yourself..."
     bind:value={$note}

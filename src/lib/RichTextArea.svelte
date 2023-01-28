@@ -171,7 +171,8 @@
   </div>
 {:else}
   <textarea
-    class="{className} field min-h-[16rem]"
+    class="{className} field"
+    class:min-h-[16rem]={!className.includes("min-h-")}
     class:degroup={browser}
     class:sr-only={browser}
     class:w-full={!browser}
@@ -182,7 +183,8 @@
 
   {#if browser}
     <div
-      class="{fieldClass} field min-h-[16rem] overflow-auto md:flex-1"
+      class="{fieldClass} field overflow-auto md:flex-1"
+      class:min-h-[16rem]={!className.includes("min-h-")}
       aria-hidden="true"
     >
       <!-- #region buttons -->
@@ -305,12 +307,11 @@ line 2 of my program
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <div
         bind:this={element}
-        class="rta prose flex flex-1 cursor-text select-text flex-col pt-3"
+        class="rta prose flex min-h-[calc(100%_-_2rem)] flex-1 cursor-text select-text flex-col pt-3"
         style:--placeholder={(editor?.getText().trim() == "" &&
           value.startsWith("<p>") &&
           `"${placeholder}"`) ||
           null}
-        style:min-height="calc(100% - 2rem)"
         on:click={(event) => {
           const path = event.composedPath()
 

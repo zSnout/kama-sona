@@ -3,7 +3,7 @@
   import BigButtonColored from "$lib/BigButtonColored.svelte"
   import { help } from "$lib/help"
   import Icon from "$lib/Icon.svelte"
-  import { pages, type PageType } from "$lib/pages"
+  import { pages } from "$lib/pages"
   import Title from "$lib/Title.svelte"
   import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
   import Clock from "./features/Clock.svelte"
@@ -12,18 +12,13 @@
   import Todo from "./features/Todo.svelte"
   import { layout } from "./layout"
 
-  let active = new Set<
-    `${PageType}-click` | `${PageType}-hover` | "opener" | "opener"
-  >()
-
-  $: showApps = active.size > 0
+  let showApps = false
 </script>
 
 <Title title={PUBLIC_KS_APP_NAME} mode="head-only" />
 
 <div
-  class="relative flex min-h-[max(100vh_-_7rem,544px_+_4rem)] grid-cols-3 flex-col gap-4 md:grid md:max-h-[max(100vh_-_7rem,544px_+_4rem)] md:flex-1"
-  style:grid-template-rows="repeat(4, minmax(136px, 1fr))"
+  class="relative flex min-h-[max(100vh_-_7rem)] grid-cols-3 grid-rows-[repeat(4,_minmax(100px,_1fr))] flex-col gap-4 md:grid md:max-h-[max(100vh_-_7rem)] md:flex-1"
 >
   {#each $layout as feature}
     <svelte:component
@@ -48,26 +43,18 @@
 
   <!-- svelte-ignore a11y-mouse-events-have-key-events -->
   <div
-    class="absolute top-1/2 left-1/2 z-40 flex h-[34rem] w-[34rem] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full"
+    class="absolute top-1/2 left-1/2 z-40 hidden h-[34rem] w-[34rem] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full lg:flex"
     class:pointer-events-none={!showApps}
     on:mouseleave={() => (active.delete("opener"), (active = active))}
   >
     <button
-      class="group pointer-events-auto hidden h-12 w-12 cursor-pointer grid-cols-3 grid-rows-3 items-center justify-items-center rounded-lg border p-1 outline-none transition max-lg:hidden lg:grid"
+      class="group pointer-events-auto grid h-12 w-12 cursor-pointer grid-cols-3 grid-rows-3 items-center justify-items-center rounded-lg border p-1 outline-none transition"
       class:big-button-bg={!showApps}
       class:big-button-border={!showApps}
       class:big-button-hover-bg={showApps}
       class:big-button-hover-border={showApps}
-      on:click={() => {
-        if (active.has("opener")) {
-          active.delete("opener")
-        } else {
-          active.add("opener")
-        }
-
-        active = active
-      }}
-      on:mouseover={() => (active.add("opener"), (active = active))}
+      on:click={() => (showApps = !showApps)}
+      on:mouseover={() => (showApps = true)}
     >
       {#each Array(9) as _}
         <div
@@ -93,9 +80,9 @@
       {@const delay = index * 50}
 
       <BigButtonColored
-        class="app-button-no-transform-small-screen absolute top-1/2 left-1/2 w-32 max-w-[8rem] {angle} z-40 hidden lg:flex {showApps
+        class="home-big-button absolute top-1/2 left-1/2 z-40 flex w-32 {showApps
           ? 'active'
-          : 'pointer-events-none opacity-0'} home-big-button"
+          : 'pointer-events-none opacity-0'}"
         style="--angle: {angle}deg; --reverse-angle: {reverseAngle}deg; --delay: {delay}ms"
         color={page.color}
         href={page.href}
@@ -104,6 +91,17 @@
       />
     {/each}
   </div>
+</div>
+
+<div class="flex flex-wrap justify-center gap-4 sm:mt-8 lg:hidden">
+  {#each pages as page}
+    <BigButtonColored
+      color={page.color}
+      href={page.href}
+      icon={page.icon}
+      label={page.title}
+    />
+  {/each}
 </div>
 
 <div hidden use:help>
