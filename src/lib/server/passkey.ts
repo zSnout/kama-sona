@@ -24,6 +24,7 @@ export class Passkey {
       | "credentialDeviceType"
       | "credentialId"
       | "credentialPublicKey"
+      | "label"
       | "transports"
     >
   ) {

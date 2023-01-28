@@ -1,6 +1,7 @@
 import {
   faBarsProgress,
   faBookOpen,
+  faGear,
   faTasks,
   faUserGroup,
   type IconDefinition,
@@ -36,6 +37,8 @@ export type PageType =
   | "group"
   | "progress"
   | "resource"
+  | "search"
+  | "setting"
 
 export interface Page {
   readonly create?: CreateInfo
@@ -102,7 +105,13 @@ export const pages: readonly Page[] = [
   // },
   // Schedule
   // Export
-  // Settings
+  {
+    color: "purple",
+    href: "/settings",
+    icon: faGear,
+    title: "Settings",
+    type: "setting",
+  },
   // News
 ]
 

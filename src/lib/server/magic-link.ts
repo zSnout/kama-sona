@@ -61,7 +61,11 @@ export class MagicLink {
       }
     }
 
-    return ok(new Account({ id: account.value.for.id }))
+    if (account.value.for) {
+      return ok(new Account({ id: account.value.for.id }))
+    }
+
+    return error("This magic link isn't connected to an account anymore.")
   }
 
   constructor(readonly filter: Prisma.MagicLinkWhereUniqueInput) {}
@@ -115,6 +119,10 @@ export class MagicLink {
 
     if (!result.ok) {
       return result
+    }
+
+    if (!result.value.for) {
+      return error("This magic link isn't connected to an account anymore.")
     }
 
     const {

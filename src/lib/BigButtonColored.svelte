@@ -9,11 +9,14 @@
 
   let className = ""
   export { className as class }
+
+  export let style = ""
 </script>
 
 <a
-  class="{className} prefer-w-32 flex h-32 flex-col items-center justify-center gap-4 rounded-lg border border-transparent outline-none transition-all focus:ring bg-{color}-200 dark:bg-{color}-900 shadow-{color}-100 shadow-lg dark:shadow-black/10 ring-{color}-500 hover:border-{color}-500"
+  class="{className} prefer-w-32 flex h-32 flex-col items-center justify-center gap-4 rounded-lg border border-transparent outline-none transition focus:ring bg-{color}-200 dark:bg-{color}-900 shadow-{color}-100 shadow-lg dark:shadow-black/10 ring-{color}-500 hover:border-{color}-500"
   {href}
+  {style}
 >
   <Icon
     class="h-8 w-8 transition text-{color}-500 dark:text-{color}-400"

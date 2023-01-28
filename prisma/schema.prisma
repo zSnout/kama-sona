@@ -54,7 +54,7 @@ model Session {
   updated  DateTime @default(now()) @updatedAt
   // Relations:
   for      Account? @relation("AccountSession", fields: [forId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  forId    String   @unique @db.ObjectId
+  forId    String?  @unique @db.ObjectId
 }
 
 model MagicLink {
@@ -62,8 +62,8 @@ model MagicLink {
   expiration DateTime
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   // Relations:
-  for        Account  @relation("MagicLink", fields: [forId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  forId      String   @unique @db.ObjectId
+  for        Account? @relation("MagicLink", fields: [forId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  forId      String?  @unique @db.ObjectId
 }
 
 type Attachment {
@@ -311,8 +311,9 @@ model Passkey {
   credentialId         String      @unique
   credentialPublicKey  Bytes
   id                   String      @id @default(auto()) @map("_id") @db.ObjectId
-  updated              DateTime    @default(now()) @updatedAt
+  label                String
   transports           Transport[]
+  updated              DateTime    @default(now()) @updatedAt
   // Relations:
   account              Account     @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   accountId            String      @db.ObjectId

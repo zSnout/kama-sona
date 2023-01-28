@@ -1,6 +1,8 @@
 <script lang="ts">
   import { browser } from "$app/environment"
   import { afterNavigate, beforeNavigate } from "$app/navigation"
+  import { page } from "$app/stores"
+  import { PUBLIC_KS_APP_NAME } from "$env/static/public"
   import { pages } from "$lib/pages"
   import * as Theme from "$lib/theme"
   import { isDark } from "$lib/theme"
@@ -115,18 +117,22 @@
   {/if}
 
   <div class="mx-auto flex w-full max-w-7xl items-center px-4 sm:px-6 md:px-8">
-    <NavLink href="/home" class="nav-icon-bg" title="Home" tooltip="Home">
-      <NavIcon icon={faHome} class="nav-icon-fill nav-icon-stroke" />
-    </NavLink>
+    {#if $page.url.pathname.startsWith("/log-in") || $page.url.pathname.startsWith("/sign-up")}
+      <p class='text-'>{PUBLIC_KS_APP_NAME}</p>
+    {:else}
+      <NavLink href="/home" class="nav-icon-bg" title="Home" tooltip="Home">
+        <NavIcon icon={faHome} class="nav-icon-fill nav-icon-stroke" />
+      </NavLink>
 
-    <NavLink
-      href="/search?range=week"
-      class="ml-0 mr-auto nav-icon-bg"
-      title="Search"
-      tooltip="Search"
-    >
-      <NavIcon icon={faSearch} class="nav-icon-fill nav-icon-stroke" />
-    </NavLink>
+      <NavLink
+        href="/search?range=week"
+        class="ml-0 mr-auto nav-icon-bg"
+        title="Search"
+        tooltip="Search"
+      >
+        <NavIcon icon={faSearch} class="nav-icon-fill nav-icon-stroke" />
+      </NavLink>
+    {/if}
 
     <button
       on:contextmenu|preventDefault

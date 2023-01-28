@@ -1,34 +1,36 @@
 <script lang="ts">
   import { PUBLIC_KS_APP_NAME } from "$env/static/public"
+  import BigButtonColored from "$lib/BigButtonColored.svelte"
   import { help } from "$lib/help"
   import Icon from "$lib/Icon.svelte"
+  import { pages, type PageType } from "$lib/pages"
   import Title from "$lib/Title.svelte"
   import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
   import Clock from "./features/Clock.svelte"
   import Note from "./features/Note.svelte"
-  import OtherApps from "./features/Apps.svelte"
   import QuickActions from "./features/QuickActions.svelte"
   import Todo from "./features/Todo.svelte"
   import { layout } from "./layout"
-  import PasskeyManager from "./features/PasskeyManager.svelte"
+
+  let active = new Set<
+    `${PageType}-click` | `${PageType}-hover` | "opener" | "opener"
+  >()
+
+  $: showApps = active.size > 0
 </script>
 
 <Title title={PUBLIC_KS_APP_NAME} mode="head-only" />
 
 <div
-  class="flex min-h-[max(100vh_-_7rem,544px_+_4rem)] grid-cols-3 flex-col gap-4 md:grid md:max-h-[max(100vh_-_7rem,544px_+_4rem)] md:flex-1"
+  class="relative flex min-h-[max(100vh_-_7rem,544px_+_4rem)] grid-cols-3 flex-col gap-4 md:grid md:max-h-[max(100vh_-_7rem,544px_+_4rem)] md:flex-1"
   style:grid-template-rows="repeat(4, minmax(136px, 1fr))"
 >
   {#each $layout as feature}
     <svelte:component
-      this={feature.name == "Apps"
-        ? OtherApps
-        : feature.name == "Clock"
+      this={feature.name == "Clock"
         ? Clock
         : feature.name == "Note"
         ? Note
-        : feature.name == "PasskeyManager"
-        ? PasskeyManager
         : feature.name == "QuickActions"
         ? QuickActions
         : feature.name == "Todo"
@@ -37,6 +39,69 @@
       {feature}
     />
   {/each}
+
+  <div
+    class="absolute inset-y-0 -inset-x-8 z-40 hidden backdrop-blur-lg transition lg:block"
+    class:pointer-events-none={!showApps}
+    class:opacity-0={!showApps}
+    class:opacity-100={showApps}
+  />
+
+  <!-- svelte-ignore a11y-mouse-events-have-key-events -->
+  <div
+    class="absolute top-1/2 left-1/2 z-40 flex h-[34rem] w-[34rem] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full"
+    class:pointer-events-none={!showApps}
+    on:mouseleave={() => (active.delete("opener"), (active = active))}
+  >
+    <button
+      class="group pointer-events-auto hidden h-12 w-12 cursor-pointer grid-cols-3 grid-rows-3 items-center justify-items-center rounded-lg border p-1 outline-none transition max-lg:hidden lg:grid"
+      class:big-button-bg={!showApps}
+      class:big-button-border={!showApps}
+      class:big-button-hover-bg={showApps}
+      class:big-button-hover-border={showApps}
+      on:click={() => {
+        if (active.has("opener")) {
+          active.delete("opener")
+        } else {
+          active.add("opener")
+        }
+
+        active = active
+      }}
+      on:mouseover={() => (active.add("opener"), (active = active))}
+    >
+      {#each Array(9) as _}
+        <div
+          class="h-1.5 w-1.5 rounded-full bg-current big-button-icon group-hover:big-button-hover-icon"
+        />
+      {/each}
+    </button>
+
+    {#each pages as page, index}
+      {@const angle = index * (360 / pages.length)}
+      {@const rangle =
+        angle < 45
+          ? 0
+          : angle < 135
+          ? 90
+          : angle < 225
+          ? 180
+          : angle < 315
+          ? 270
+          : 0}
+
+      <BigButtonColored
+        class="app-button-no-transform-small-screen absolute top-1/2 left-1/2 w-32 max-w-[8rem] {angle} z-40 hidden lg:flex {showApps
+          ? ''
+          : 'pointer-events-none opacity-0'}"
+        style="transform: translate(-50%, -50%) rotate({angle}deg) translate(0, -12rem) rotate(-{rangle}deg)"
+        color={page.color}
+        href={page.href}
+        icon={page.icon}
+        label={page.title}
+      />
+    {/each}
+  </div>
 </div>
 
 <div hidden use:help>

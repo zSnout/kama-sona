@@ -83,7 +83,13 @@ export const POST = (async ({ locals: { account }, request }) => {
   }
 
   // 3. Extract the request data.
-  const data: RegistrationResponseJSON = await request.json()
+  const data: RegistrationResponseJSON & { label?: unknown } =
+    await request.json()
+
+  // 4. Make sure we have a valid label.
+  if (typeof data.label != "string" || !data.label) {
+    return json(error("No label was passed for the passkey."), { status: 400 })
+  }
 
   try {
     // 4. Verify the registration response.
@@ -126,6 +132,7 @@ export const POST = (async ({ locals: { account }, request }) => {
       credentialDeviceType: info.credentialDeviceType,
       credentialId: bufferToString(info.credentialID),
       credentialPublicKey: Buffer.from(info.credentialPublicKey),
+      label: data.label,
     })
   )
 

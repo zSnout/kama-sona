@@ -311,14 +311,24 @@ line 2 of my program
           `"${placeholder}"`) ||
           null}
         style:min-height="calc(100% - 2rem)"
-        on:mousedown={() =>
-          requestAnimationFrame(() => editor?.commands.focus())}
-        on:click={() => requestAnimationFrame(() => editor?.commands.focus())}
         on:click={(event) => {
-          if (event.target instanceof HTMLAnchorElement) {
-            event.stopPropagation()
+          const path = event.composedPath()
+
+          if (
+            path.some(
+              (element) =>
+                element instanceof HTMLAnchorElement ||
+                (element instanceof HTMLElement &&
+                  element.hasAttribute("data-no-rta-focus"))
+            )
+          ) {
+            event.stopImmediatePropagation()
           }
         }}
+        on:mousedown={() => {
+          requestAnimationFrame(() => editor?.commands.focus())
+        }}
+        on:click={() => requestAnimationFrame(() => editor?.commands.focus())}
       >
         <div class="cursor-default">
           <slot name="prelude" />

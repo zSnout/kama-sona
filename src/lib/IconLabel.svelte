@@ -7,11 +7,19 @@
   export let title = ""
   export let content: string | number | boolean = ""
 
+  let htmlFor: string | undefined = undefined
+  export { htmlFor as for }
+
   let className = ""
   export { className as class }
 </script>
 
-<p class="{className} mb-0 whitespace-nowrap">
+<svelte:element
+  this={htmlFor ? "label" : "p"}
+  for={htmlFor}
+  class="{className} mb-0 whitespace-nowrap"
+  data-no-rta-focus={htmlFor ? "" : undefined}
+>
   <Icon isLabel {icon} {title} />
 
   {#if href}
@@ -19,4 +27,4 @@
   {:else}
     {content}
   {/if}
-</p>
+</svelte:element>

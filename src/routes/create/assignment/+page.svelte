@@ -87,6 +87,7 @@
               <input
                 type="text"
                 name="title"
+                id="title"
                 class="field w-full"
                 maxlength="100"
                 required
@@ -120,6 +121,7 @@
               <input
                 type="date"
                 name="viewableAfter"
+                id="viewableAfter"
                 class="field w-full"
                 required
                 min={todayAsString}
@@ -138,6 +140,7 @@
               <input
                 type="date"
                 name="due"
+                id="due"
                 class="field w-full"
                 required
                 min={isNaN(Date.parse(viewableAfter))
@@ -165,6 +168,7 @@
               <input
                 type="number"
                 name="points"
+                id="points"
                 class="field w-full"
                 required
                 bind:value={points}
@@ -188,12 +192,19 @@
               name="description"
             >
               <svelte:fragment slot="prelude">
-                <h1 class="mt-0 mb-2 border-0 pb-0">
-                  {title || "Assignment title"}
-                </h1>
+                <label
+                  class="mt-0 mb-2 border-0 pb-0"
+                  for="title"
+                  data-no-rta-focus
+                >
+                  <h1 class="mt-0 border-0 pb-0">
+                    {title || "Assignment title"}
+                  </h1>
+                </label>
 
                 <IconLabels class="mb-4">
                   <IconLabel
+                    for="due"
                     content={isNaN(Date.parse(due))
                       ? "Unknown due date"
                       : toDateString(new Date(due), { local: true })}
@@ -209,6 +220,7 @@
 
                   {#if points != 0}
                     <IconLabel
+                      for="points"
                       content="{points} point{points == 1 ? '' : 's'}"
                       icon={faPercent}
                       title="Number of points:"
