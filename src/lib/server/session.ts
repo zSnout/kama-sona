@@ -13,6 +13,20 @@ export class Session {
   static async create(data: Pick<Prisma.SessionCreateInput, "for">) {
     const code = crypto.randomUUID()
 
+    if (data.for?.connect) {
+      const oldDeleted = await query((database) =>
+        database.session.deleteMany({
+          where: {
+            for: data.for!.connect,
+          },
+        })
+      )
+
+      if (!oldDeleted.ok) {
+        return oldDeleted
+      }
+    }
+
     const session = await query((database) =>
       database.session.create({
         data: {
