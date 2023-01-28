@@ -737,3 +737,19 @@ body {
   content: var(--placeholder);
   @apply relative -top-6 text-placeholder;
 }
+
+.home-big-button {
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter;
+
+  transition-duration: 150ms, 150ms, 150ms, 150ms, 150ms, 150ms, 500ms, 150ms,
+    500ms, 150ms, 150ms;
+
+  transform: translate(-50%, -50%) rotate(0deg) translate(0, 0) rotate(0deg);
+}
+
+.home-big-button.active {
+  transform: translate(-50%, -50%) rotate(var(--angle)) translate(0, -12rem)
+    rotate(var(--reverse-angle));
+}

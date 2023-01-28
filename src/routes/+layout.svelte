@@ -118,7 +118,9 @@
 
   <div class="mx-auto flex w-full max-w-7xl items-center px-4 sm:px-6 md:px-8">
     {#if $page.url.pathname.startsWith("/log-in") || $page.url.pathname.startsWith("/sign-up")}
-      <p class='text-'>{PUBLIC_KS_APP_NAME}</p>
+      <p class="text-2xl font-light">
+        {PUBLIC_KS_APP_NAME}
+      </p>
     {:else}
       <NavLink href="/home" class="nav-icon-bg" title="Home" tooltip="Home">
         <NavIcon icon={faHome} class="nav-icon-fill nav-icon-stroke" />

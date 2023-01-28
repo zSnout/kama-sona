@@ -41,10 +41,9 @@
   {/each}
 
   <div
-    class="absolute inset-y-0 -inset-x-8 z-40 hidden backdrop-blur-lg transition lg:block"
+    class="absolute inset-y-0 -inset-x-8 z-40 hidden backdrop-blur-lg transition duration-500 lg:block"
     class:pointer-events-none={!showApps}
     class:opacity-0={!showApps}
-    class:opacity-100={showApps}
   />
 
   <!-- svelte-ignore a11y-mouse-events-have-key-events -->
@@ -72,29 +71,32 @@
     >
       {#each Array(9) as _}
         <div
-          class="h-1.5 w-1.5 rounded-full bg-current big-button-icon group-hover:big-button-hover-icon"
+          class="pointer-events-none h-1.5 w-1.5 rounded-full bg-current big-button-icon group-hover:big-button-hover-icon"
         />
       {/each}
     </button>
 
     {#each pages as page, index}
       {@const angle = index * (360 / pages.length)}
-      {@const rangle =
+
+      {@const reverseAngle =
         angle < 45
           ? 0
           : angle < 135
-          ? 90
+          ? 270
           : angle < 225
           ? 180
           : angle < 315
-          ? 270
+          ? 90
           : 0}
+
+      {@const delay = index * 50}
 
       <BigButtonColored
         class="app-button-no-transform-small-screen absolute top-1/2 left-1/2 w-32 max-w-[8rem] {angle} z-40 hidden lg:flex {showApps
-          ? ''
-          : 'pointer-events-none opacity-0'}"
-        style="transform: translate(-50%, -50%) rotate({angle}deg) translate(0, -12rem) rotate(-{rangle}deg)"
+          ? 'active'
+          : 'pointer-events-none opacity-0'} home-big-button"
+        style="--angle: {angle}deg; --reverse-angle: {reverseAngle}deg; --delay: {delay}ms"
         color={page.color}
         href={page.href}
         icon={page.icon}
