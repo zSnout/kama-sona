@@ -9,14 +9,14 @@
 
 <script lang="ts">
   import { browser } from "$app/environment"
-  import Checkbox from "./Checkbox.svelte"
   import { search } from "fast-fuzzy"
+  import Checkbox from "./Checkbox.svelte"
   import type { ClassNameWith } from "./types"
 
   /** The number of options that must exist before a search bar is shown. */
   export let minSearchableItems = 8
 
-  let className: ClassNameWith<`h-${number}`> = "h-48"
+  let className: ClassNameWith<`h-${number}` | `flex-${number}`> = "h-48"
   export { className as class }
 
   $: heightClass = className
@@ -29,6 +29,7 @@
     .filter((name) => !name.startsWith("h-"))
     .join(" ")
 
+  /** This should be used with bind:items. Pass items using `options`. */
   export let items: SelectItem[] = []
   export let name: string | undefined = undefined
   export let noWrap = false

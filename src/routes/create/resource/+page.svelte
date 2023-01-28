@@ -55,7 +55,7 @@
       You must be the manager of a group in order to create resources.
     </p>
   {:else}
-    <div class="prefer-w-96 lg:prefer-w-[1280px]">
+    <div class="prefer-w-96 lg:prefer-w-7xl">
       <form
         class="flex w-full flex-col"
         method="post"

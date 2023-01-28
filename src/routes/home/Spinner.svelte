@@ -16,6 +16,8 @@
     icon: IconDefinition
     title: string
   }[]
+
+  $: size = items.length == 4 ? 9 : 12
 </script>
 
 <svelte:window
@@ -85,7 +87,7 @@
       class="home-big-button absolute top-1/2 left-1/2 flex w-32 {isShown
         ? 'active'
         : 'pointer-events-none opacity-0'}"
-      style="--angle: {angle}deg; --reverse-angle: {reverseAngle}deg; --delay: {delay}ms"
+      style="--angle: {angle}deg; --reverse-angle: {reverseAngle}deg; --delay: {delay}ms; --size: -{size}rem"
       color={item.color}
       href={item.href}
       icon={item.icon}
