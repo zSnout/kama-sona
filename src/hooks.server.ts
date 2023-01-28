@@ -1,5 +1,4 @@
 import { PUBLIC_KS_ADMIN_MODE } from "$env/static/public"
-import { unwrapOr500 } from "$lib/result"
 import { Session } from "$lib/server/session"
 import { error, json, redirect, type Handle } from "@sveltejs/kit"
 
@@ -40,9 +39,20 @@ export const handle: Handle = async ({ event, resolve }) => {
     throw redirect(303, "/log-in")
   }
 
+  try {
+    var account = await session.value.account()
+  } catch {
+    if (event.url.pathname == "/activity") {
+      return json({ type: "NotSignedIn" })
+    }
+
+    event.cookies.delete("session", { path: "/" })
+    throw redirect(303, "/log-in")
+  }
+
   Object.defineProperty(event.locals, "account", {
     configurable: true,
-    value: unwrapOr500(await session.value.account()),
+    value: account.value,
   })
 
   return await resolve(event)
