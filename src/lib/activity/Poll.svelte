@@ -172,9 +172,3 @@
 {/each}
 
 <div class="h-4 w-full" />
-
-{#if data.options.length}
-  <div class="mt-auto mb-4 flex flex-col text-center text-sm italic text-label">
-    <p>Your vote will be shown in your comment.</p>
-  </div>
-{/if}

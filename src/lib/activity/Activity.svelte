@@ -124,7 +124,7 @@
       {:else if awaitedData.type == "Archive"}
         <Archive data={awaitedData} on:post={handlePost} />
       {:else if awaitedData.type == "NotSignedIn"}
-        <p class="text-center m-auto">
+        <p class="text-center m-auto px-3">
           You must be signed in to view today's activity.
         </p>
       {:else if awaitedData.type == "NoActivity"}
@@ -137,9 +137,11 @@
           >.
         </p>
       {:else}
-        <p>An issue occurred while fetching today's activity.</p>
-
-        <p>{JSON.stringify(awaitedData)}</p>
+        <p class="px-3 py-4">
+          Today's activity is of a new type: {"" +
+            // @ts-ignore
+            awaitedData.type}. Refresh the page to view it.
+        </p>
       {/if}
     </div>
 
@@ -151,8 +153,15 @@
       </div>
     {/if}
   {:catch reason}
-    <p>An issue occurred while fetching today's activity.</p>
+    <div class="px-3 py-4">
+      <p>
+        An issue occurred while fetching today's activity. Try <button
+          class="link"
+          on:click={() => location.reload()}>reloading this page</button
+        >.
+      </p>
 
-    <p>{reason}</p>
+      <p>{reason}</p>
+    </div>
   {/await}
 </div>
