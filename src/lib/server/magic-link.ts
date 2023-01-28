@@ -12,8 +12,24 @@ export const errorNoMagicLinkExists = error(
 
 export class MagicLink {
   static async create(data: Pick<Prisma.MagicLinkCreateInput, "for">) {
+    if (data.for?.connect) {
+      const didDeleteOldLinks = await query((database) =>
+        database.magicLink.deleteMany({
+          where: {
+            for: data.for!.connect,
+          },
+        })
+      )
+
+      if (!didDeleteOldLinks.ok) {
+        return didDeleteOldLinks
+      }
+    }
+
     const code = crypto.randomUUID()
     const expiration = new Date(Date.now() + 1000 * 60 * 15)
+
+    console.log(expiration)
 
     const magicLink = await query((database) =>
       database.magicLink.create({
@@ -42,7 +58,7 @@ export class MagicLink {
         return result
       }
 
-      if (!result.value) {
+      if (result.value) {
         return error("Your magic link expired. You can always request another.")
       }
     }
