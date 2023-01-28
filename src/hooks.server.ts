@@ -1,5 +1,6 @@
 import { PUBLIC_KS_ADMIN_MODE } from "$env/static/public"
 import { unwrapOr500 } from "$lib/result"
+import type { Account } from "$lib/server/account"
 import { Session } from "$lib/server/session"
 import { error, json, redirect, type Handle } from "@sveltejs/kit"
 
@@ -53,7 +54,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
   Object.defineProperty(event.locals, "account", {
     configurable: true,
-    value: account,
+    value: account satisfies Account,
   })
 
   return await resolve(event)
