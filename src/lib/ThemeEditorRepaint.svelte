@@ -63,8 +63,6 @@
               ? colors[originalPalette.indexOf(color as `#${string}`)]
               : undefined
 
-            console.log({ newColorFromPalette, css: item.css })
-
             if (newColorFromPalette) {
               $customTheme[getCssName(item.css)] = newColorFromPalette
             } else {

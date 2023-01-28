@@ -29,8 +29,6 @@ export class MagicLink {
     const code = crypto.randomUUID()
     const expiration = new Date(Date.now() + 1000 * 60 * 15)
 
-    console.log(expiration)
-
     const magicLink = await query((database) =>
       database.magicLink.create({
         data: {

@@ -55,7 +55,6 @@
       const response = await fetch("/activity", { method: "get" })
       return await response.json()
     } catch (error) {
-      console.log("caught", error)
       return Promise.reject(error)
     }
   }
