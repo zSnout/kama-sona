@@ -1,4 +1,5 @@
 import { PUBLIC_KS_ADMIN_MODE } from "$env/static/public"
+import { unwrapOr500 } from "$lib/result"
 import { Session } from "$lib/server/session"
 import { error, json, redirect, type Handle } from "@sveltejs/kit"
 
@@ -40,7 +41,7 @@ export const handle: Handle = async ({ event, resolve }) => {
   }
 
   try {
-    var account = await session.value.account()
+    var account = unwrapOr500(await session.value.account())
   } catch {
     if (event.url.pathname == "/activity") {
       return json({ type: "NotSignedIn" })
@@ -52,7 +53,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
   Object.defineProperty(event.locals, "account", {
     configurable: true,
-    value: account.value,
+    value: account,
   })
 
   return await resolve(event)
