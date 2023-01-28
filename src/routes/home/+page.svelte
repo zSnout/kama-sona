@@ -45,7 +45,7 @@
   <div
     class="absolute top-1/2 left-1/2 z-40 hidden h-[34rem] w-[34rem] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full lg:flex"
     class:pointer-events-none={!showApps}
-    on:mouseleave={() => (active.delete("opener"), (active = active))}
+    on:mouseleave={() => (showApps = false)}
   >
     <button
       class="group pointer-events-auto grid h-12 w-12 cursor-pointer grid-cols-3 grid-rows-3 items-center justify-items-center rounded-lg border p-1 outline-none transition"
