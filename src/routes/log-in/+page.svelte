@@ -29,30 +29,47 @@
   let passkeyError = ""
 
   async function showPasskey(conditionalUI: boolean) {
-    const data: PublicKeyCredentialCreationOptionsJSON = await fetch(
-      "/log-in/passkey",
-      { method: "GET" }
-    ).then((response) => response.json())
+    try {
+      const data: PublicKeyCredentialCreationOptionsJSON = await fetch(
+        "/log-in/passkey",
+        { method: "GET" }
+      ).then((response) => response.json())
 
-    const response = await startAuthentication(data, conditionalUI)
+      const response = await startAuthentication(data, conditionalUI)
 
-    const didVerify: Result<void> | { message: string; result?: Result<void> } =
-      await fetch("/log-in/passkey", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(response),
-      }).then((response) => response.json())
+      const didVerify:
+        | Result<void>
+        | { message: string; result?: Result<void> } = await fetch(
+        "/log-in/passkey",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(response),
+        }
+      ).then((response) => response.json())
 
-    if ("message" in didVerify) {
-      if (didVerify.result?.ok) {
+      if ("message" in didVerify) {
+        if (didVerify.result?.ok) {
+          goto("/")
+        } else {
+          passkeyError = didVerify.message
+        }
+      } else if (didVerify.ok) {
         goto("/")
       } else {
-        passkeyError = didVerify.message
+        passkeyError = didVerify.error
       }
-    } else if (didVerify.ok) {
-      goto("/")
-    } else {
-      passkeyError = didVerify.error
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+
+      if (
+        message.includes("User clicked cancel") ||
+        message.includes("Cancelling existing WebAuthn API call")
+      ) {
+        return
+      }
+
+      passkeyError = message
     }
   }
 </script>
