@@ -13,6 +13,7 @@ export type Creatable =
   | "discussion"
   | "group"
   | "resource"
+  | "account"
 
 export interface CreateInfo {
   readonly type: Creatable
@@ -31,6 +32,7 @@ export interface SearchInfo {
 }
 
 export type PageType =
+  | "directory"
   | "assignment"
   | "card-deck"
   | "discussion"
@@ -105,6 +107,14 @@ export const pages: readonly Page[] = [
   // },
   // Schedule
   // Export
+  {
+    create: { singular: "Account", type: "account" },
+    color: "orange",
+    href: "/directory",
+    icon: faUserGroup,
+    title: "Directory",
+    type: "directory",
+  },
   {
     color: "purple",
     href: "/settings",

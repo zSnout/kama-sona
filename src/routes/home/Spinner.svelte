@@ -12,7 +12,6 @@
 
   export let items: readonly {
     color: "red" | "orange" | "yellow" | "green" | "blue" | "purple"
-    disabled?: boolean
     href: string
     icon: IconDefinition
     title: string
@@ -91,7 +90,6 @@
       href={item.href}
       icon={item.icon}
       label={item.title}
-      disabled={isShown && item.disabled}
     />
   {/each}
 </div>

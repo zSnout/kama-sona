@@ -18,14 +18,14 @@
 
   const creatable = pages
     .filter(
-      (page): page is typeof page & { create: CreateInfo } => !!page.create
+      (page): page is typeof page & { create: CreateInfo } =>
+        !!page.create && data.permissions.includes(`create:${page.create.type}`)
     )
     .map((page) => ({
       color: page.color,
       href: "/create/" + page.create.type,
       title: page.create.singular,
       icon: page.icon,
-      disabled: !data.permissions.includes(`create:${page.create.type}`),
     }))
 </script>
 

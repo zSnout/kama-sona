@@ -19,6 +19,10 @@
   let added: Record<string, boolean> = {}
 </script>
 
+<svelte:head>
+  <title>Add members to {data.group.title}</title>
+</svelte:head>
+
 {#if data.accounts.length != 0}
   <p class="flex items-center">
     <span class="mr-4">Click a user's account to add them to your group.</span>
