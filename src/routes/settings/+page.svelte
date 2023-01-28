@@ -1,9 +1,11 @@
 <script lang="ts">
+  import { browser } from "$app/environment"
+  import { goto } from "$app/navigation"
   import Icon from "$lib/Icon.svelte"
   import type { Result } from "$lib/result"
   import Subheading from "$lib/Subheading.svelte"
   import Title from "$lib/Title.svelte"
-  import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
+  import { faTrash } from "@fortawesome/free-solid-svg-icons"
   import { startRegistration } from "@simplewebauthn/browser"
   import type { PublicKeyCredentialCreationOptionsJSON } from "@simplewebauthn/typescript-types"
   import type { PageData } from "./$types"
@@ -13,46 +15,26 @@
   let label = ""
 
   async function registerPasskey() {
-    try {
-      const realLabel = label
+    const realLabel = label
 
-      if (!realLabel) {
-        throw new Error("A passkey label is required.")
-      }
-
-      const data: PublicKeyCredentialCreationOptionsJSON = await fetch(
-        "/passkey/register",
-        { method: "GET" }
-      ).then((response) => response.json())
-
-      const response = await startRegistration(data)
-
-      const didVerify: Result<void> = await fetch("/passkey/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...response, label: realLabel }),
-      }).then((response) => response.json())
-
-      if (didVerify.ok) {
-        alert("Passkey created successfully!")
-      } else {
-        alert("An error occurred: " + didVerify.error)
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        if (error.name == "InvalidStateError") {
-          // The user is already registered
-        }
-
-        if (error.name == "NotAllowedError") {
-          // The user has cancelled the operation
-        }
-
-        alert("An error occurred: " + (error.message || "Unknown error"))
-      } else {
-        alert("An error occurred: " + (String(error) || "Unknown error"))
-      }
+    if (!realLabel) {
+      throw new Error("A passkey label is required.")
     }
+
+    const data: PublicKeyCredentialCreationOptionsJSON = await fetch(
+      "/passkey/register",
+      { method: "GET" }
+    ).then((response) => response.json())
+
+    const response = await startRegistration(data)
+
+    await fetch("/passkey/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...response, label: realLabel }),
+    }).then((response) => response.json())
+
+    location.reload()
   }
 </script>
 
@@ -65,27 +47,47 @@
     <div class="group mx-4 flex">
       <p>{passkey.label}</p>
 
-      <button
-        on:click={() => {
-          fetch("/passkey/delete", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: passkey.id }),
-          }).then((response) => response.json())
+      <a
+        on:click={(event) => {
+          if (
+            !confirm(
+              "Are you sure you want to delete the " +
+                passkey.label +
+                " passkey?"
+            )
+          ) {
+            event.preventDefault()
+            event.stopImmediatePropagation()
+            return
+          }
+
+          goto("/passkey/delete/" + passkey.id, { replaceState: true })
         }}
         class="ml-auto scale-75 text-transparent transition duration-300 group-hover:scale-100 group-hover:text-current group-hover:duration-[0s]"
+        href="/passkey/delete/{passkey.id}"
       >
         <Icon class="h-4 w-4" icon={faTrash} />
-      </button>
+      </a>
     </div>
   {:else}
     <p class="mx-4">You don't have any passkeys.</p>
   {/each}
 
   {#if typeof PublicKeyCredential == "undefined"}
-    <p>Your device doesn't support passkeys.</p>
+    {#if browser}
+      <p class="mt-2 px-3 py-2">Your device doesn't support passkeys.</p>
+    {:else}
+      <noscript>
+        <p class="mt-2 px-3 py-2">
+          JavaScript must be enabled in order to register new passkeys.
+        </p>
+      </noscript>
+    {/if}
   {:else}
-    <form class="mt-4 flex flex-row" on:submit|preventDefault={registerPasskey}>
+    <form
+      class="-mx-px mt-4 -mb-px flex flex-row"
+      on:submit|preventDefault={registerPasskey}
+    >
       <input
         bind:value={label}
         class="field relative h-9 flex-1 rounded-t-none rounded-br-none focus:z-10"
