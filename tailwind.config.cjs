@@ -210,6 +210,7 @@ const config = {
           "-10px 0 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
       },
       spacing: {
+        10.5: "2.625rem",
         22: "5.5rem",
         82: "20.5rem",
         84: "21rem",

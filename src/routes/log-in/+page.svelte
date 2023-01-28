@@ -8,8 +8,13 @@
     PUBLIC_KS_ENABLE_SIGN_UP,
   } from "$env/static/public"
   import CenterOnPage from "$lib/CenterOnPage.svelte"
+  import Icon from "$lib/Icon.svelte"
   import type { Result } from "$lib/result"
-  import { startAuthentication } from "@simplewebauthn/browser"
+  import { faFingerprint } from "@fortawesome/free-solid-svg-icons"
+  import {
+    browserSupportsWebAuthn,
+    startAuthentication,
+  } from "@simplewebauthn/browser"
   import type { PublicKeyCredentialCreationOptionsJSON } from "@simplewebauthn/typescript-types"
   import type { ActionData } from "./$types"
 
@@ -18,18 +23,18 @@
   let disabled = false
 
   if (browser) {
-    setTimeout(showPasskeyConditionalUI)
+    setTimeout(() => showPasskey(true))
   }
 
   let passkeyError = ""
 
-  async function showPasskeyConditionalUI() {
+  async function showPasskey(conditionalUI: boolean) {
     const data: PublicKeyCredentialCreationOptionsJSON = await fetch(
       "/log-in/passkey",
       { method: "GET" }
     ).then((response) => response.json())
 
-    const response = await startAuthentication(data, true)
+    const response = await startAuthentication(data, conditionalUI)
 
     const didVerify: Result<void> | { message: string; result?: Result<void> } =
       await fetch("/log-in/passkey", {
@@ -88,15 +93,35 @@
           />
         </label>
 
-        <label class="label w-full">
-          <p>
-            Click to {PUBLIC_KS_BYPASS_LOGIN == "true"
-              ? "log in:"
-              : "send a magic link to your email:"}
-          </p>
+        <div class="mt-6 flex items-end gap-4">
+          <label class="label w-full" for="log-in">
+            <p>
+              Click to {PUBLIC_KS_BYPASS_LOGIN == "true"
+                ? "log in:"
+                : "send a magic link to your email:"}
+            </p>
 
-          <button class="field w-full" type="submit" {disabled}>Log In</button>
-        </label>
+            <button
+              class="field h-10.5 w-full"
+              id="log-in"
+              type="submit"
+              {disabled}
+            >
+              Log In
+            </button>
+          </label>
+
+          {#if browser && browserSupportsWebAuthn()}
+            <button
+              class="field h-10.5 w-10.5 before:whitespace-nowrap"
+              type="button"
+              data-tooltip="Use a Passkey"
+              on:click|preventDefault={() => showPasskey(false)}
+            >
+              <Icon class="h-4 w-4" icon={faFingerprint} />
+            </button>
+          {/if}
+        </div>
 
         {#if PUBLIC_KS_ENABLE_SIGN_UP == "true"}
           <p class="mt-4 text-center">
