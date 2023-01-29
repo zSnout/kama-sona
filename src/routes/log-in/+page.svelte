@@ -13,6 +13,7 @@
   import { faFingerprint } from "@fortawesome/free-solid-svg-icons"
   import {
     browserSupportsWebAuthn,
+    browserSupportsWebAuthnAutofill,
     startAuthentication,
   } from "@simplewebauthn/browser"
   import type { PublicKeyCredentialCreationOptionsJSON } from "@simplewebauthn/typescript-types"
@@ -128,7 +129,7 @@
             </button>
           </label>
 
-          {#if browser && browserSupportsWebAuthn()}
+          {#if browser && browserSupportsWebAuthn() && !browserSupportsWebAuthnAutofill()}
             <button
               class="field h-10.5 w-10.5 before:whitespace-nowrap"
               type="button"
