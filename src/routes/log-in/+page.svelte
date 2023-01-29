@@ -76,7 +76,7 @@
 </script>
 
 <svelte:head>
-  <title>Log In</title>
+  <title>{PUBLIC_KS_APP_NAME}</title>
 </svelte:head>
 
 <CenterOnPage>
