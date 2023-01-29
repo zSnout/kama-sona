@@ -30,7 +30,7 @@
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <svelte:element
         this={item.href == "activity" ? "button" : "a"}
-        class="flex gap-x-3 gap-y-1 underline underline-offset-2 decoration-transparent hover:decoration-current transition py-1 first:pt-0 last:pb-0"
+        class="flex gap-x-3 gap-y-1 underline underline-offset-2 decoration-transparent hover:decoration-current transition py-1 first:pt-0 last:pb-0 text-left"
         href={item.href}
         on:click={() => {
           if (item.href == "activity") {
@@ -56,7 +56,7 @@
             ? 'bg-blue-500'
             : item.color == 'purple'
             ? 'bg-purple-500'
-            : ''} group-tooltip relative top-1.5 h-3 w-3 rounded-full before:whitespace-nowrap"
+            : ''} group-tooltip relative top-1.5 min-h-[0.75rem] min-w-[0.75rem] h-3 w-3 rounded-full before:whitespace-nowrap"
         />
 
         <p>{item.title}</p>

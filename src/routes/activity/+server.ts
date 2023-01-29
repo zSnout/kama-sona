@@ -20,6 +20,12 @@ export const GET = (async ({
 
   const activity = _activity || unwrapOr500(await Activity.today())
 
+  if (!activity) {
+    return json({
+      type: "NoActivity",
+    } satisfies ActivityData)
+  }
+
   const data = unwrapOr500(
     await activity.select({
       creation: true,
@@ -57,7 +63,7 @@ export const GET = (async ({
         votes: votes.length,
       })),
       myVote: data.options.find((option) => option.votes.includes(myId))?.title,
-    })
+    } satisfies ActivityData)
   }
 
   throw new Error("Unknown activity type.")

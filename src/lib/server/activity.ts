@@ -10,19 +10,24 @@ export const errorNoActivityExists = error(
 
 export type ActivityCreateInput = Pick<
   Prisma.ActivityCreateInput,
-  "creation" | "title" | "type"
-> & { options?: readonly string[] }
+  "title" | "type"
+> & {
+  creation: string | Date
+  options?: readonly string[]
+}
 
 export class Activity {
   static async create(data: ActivityCreateInput) {
     const activity = await query((database) =>
       database.activity.create({
         data: {
-          ...data,
-          creation: data.creation
-            ? new Date(data.creation + "T12:00:00")
-            : undefined,
-          options: data.options?.map((title) => ({ title, votes: [] })),
+          title: data.title,
+          type: data.type,
+          creation:
+            data.creation instanceof Date
+              ? data.creation
+              : new Date(data.creation + "T12:00:00"),
+          options: data.options?.map((title) => ({ title, votes: [] })) || [],
         },
       })
     )
@@ -61,12 +66,22 @@ export class Activity {
         return existing
       }
 
-      const created = await Activity.create(getActivityInput(middle))
+      const input = getActivityInput(middle)
+
+      if (!input) {
+        return { noActivity: true as const }
+      }
+
+      const created = await Activity.create(input)
       return created.value
     })
 
     if (!activity.ok) {
       return activity
+    }
+
+    if ("noActivity" in activity.value) {
+      return ok(undefined)
     }
 
     if (activity.value instanceof Activity) {
@@ -143,7 +158,7 @@ export class ActivityList {
   }
 }
 
-export function getActivityInput(date: Date): ActivityCreateInput {
+export function getActivityInput(date: Date): ActivityCreateInput | undefined {
   const dateString =
     date.getFullYear() +
     "-" +
@@ -157,6 +172,10 @@ export function getActivityInput(date: Date): ActivityCreateInput {
 
   if (activity) {
     return activity
+  }
+
+  if (date.getDay() == 0 || date.getDay() == 6) {
+    return undefined
   }
 
   return {

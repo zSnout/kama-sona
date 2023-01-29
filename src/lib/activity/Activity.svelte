@@ -128,7 +128,7 @@
         </p>
       {:else if awaitedData.type == "NoActivity"}
         <p class="text-center m-auto prefer-w-60">
-          Today doesn't have an activity yet, but you can <button
+          Weekends don't have activities, but you can <button
             class="underline underline-offset-2"
             on:click={() =>
               handlePost({ detail: { type: "Archive:retrieve" } })}
@@ -137,9 +137,10 @@
         </p>
       {:else}
         <p class="px-3 py-4">
-          Today's activity is of a new type: {"" +
+          Today's activity is of a new type: {String(
             // @ts-ignore
-            awaitedData.type}. Refresh the page to view it.
+            awaitedData?.type
+          )}. Refresh the page to view it.
         </p>
       {/if}
     </div>
