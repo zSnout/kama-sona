@@ -1,7 +1,7 @@
 import { PUBLIC_KS_APP_BASE, PUBLIC_KS_APP_NAME } from "$env/static/public"
 import { error, ok } from "$lib/result"
 import type { Prisma } from "@prisma/client"
-import { Account, AccountList } from "./account"
+import { Account, AccountList, defaultPermissions } from "./account"
 import { query } from "./database"
 import { send } from "./email"
 
@@ -69,7 +69,10 @@ export class UnverifiedAccount {
       return data
     }
 
-    return await Account.create(data.value)
+    return await Account.create({
+      ...data.value,
+      permissions: defaultPermissions.slice(),
+    })
   }
 
   constructor(readonly filter: Prisma.UnverifiedAccountWhereUniqueInput) {}

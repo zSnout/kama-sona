@@ -23,6 +23,14 @@ export const permissions = [
   "create:resource",
 ] as const
 
+export const defaultPermissions = [
+  "create:assignment",
+  "create:card-deck",
+  "create:discussion",
+  "create:group",
+  "create:resource",
+] as const satisfies readonly PermissionName[]
+
 export type PermissionName = (typeof permissions)[number]
 
 function assert<_ extends true>() {}
