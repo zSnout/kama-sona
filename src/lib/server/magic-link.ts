@@ -152,7 +152,7 @@ export class MagicLink {
     }
 
     return await send({
-      subject: `Log In to ${PUBLIC_KS_APP_NAME}`,
+      subject: `Log in to ${PUBLIC_KS_APP_NAME}`,
       text: `Hey ${name},
 
   It looks like you're trying to log in to your account. You can do this by going
