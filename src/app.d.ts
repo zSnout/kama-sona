@@ -17,6 +17,7 @@ declare namespace App {
 declare namespace svelte.JSX {
   interface HTMLProps<T> {
     "onfilter-disable"?: (event: Event) => void
+    "onbulletin-hide"?: (event: CustomEvent<HTMLButtonElement>) => void
   }
 }
 

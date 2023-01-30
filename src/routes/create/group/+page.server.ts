@@ -31,7 +31,7 @@ export const actions = {
       })
     )
 
-    const { id } = unwrapOr500(await group.select({ id: true }))
+    const id = unwrapOr500(await group.id())
 
     throw redirect(302, `/group/${id}`)
   },

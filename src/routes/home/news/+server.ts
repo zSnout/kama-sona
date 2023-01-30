@@ -68,6 +68,10 @@ export const GET = (async ({ locals: { account } }) => {
 
       const activity = unwrapOr500(await Activity.today())
 
+      if (!activity) {
+        return []
+      }
+
       const contributions = unwrapOr500(
         await activity.select({
           title: true,

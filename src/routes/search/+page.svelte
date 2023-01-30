@@ -9,7 +9,7 @@
   import IconLabels from "$lib/IconLabels.svelte"
   import { mergeQueryParam } from "$lib/mergeQueryParam"
   import MultiSelect from "$lib/MultiSelect.svelte"
-  import { getPage, pages, type Searchable } from "$lib/pages"
+  import { getPage, searchable, type Searchable } from "$lib/pages"
   import Table from "$lib/Table.svelte"
   import Title from "$lib/Title.svelte"
   import { toDateString, toMonthString } from "$lib/toDateString"
@@ -29,7 +29,7 @@
     faPeopleGroup,
     faPercent,
     faTasks,
-    faUserGroup,
+    faUserGroup
   } from "@fortawesome/free-solid-svg-icons"
   import { search } from "fast-fuzzy"
   import { writable } from "svelte-local-storage-store"
@@ -490,20 +490,18 @@
 <div class="z-30 flex flex-wrap gap-4">
   <div class="mr-auto md:flex-1">
     <FilterList>
-      {#each pages as page}
-        {#if page.search}
-          <Filter
-            disabled={!itemsFilteredByDate.some(
-              (item) => item.type == page.search?.type
-            )}
-            param={["type", page.search.type]}
-            tooltip={page.title}
-            class="text-{page.color}-500 before:mt-1 before:font-semibold"
-            bind:active={itemTypeFilter[page.search.type]}
-          >
-            <Icon class="icon-fill-{page.color} h-5 w-5" icon={page.icon} />
-          </Filter>
-        {/if}
+      {#each searchable as page}
+        <Filter
+          disabled={!itemsFilteredByDate.some(
+            (item) => item.type == page.search?.type
+          )}
+          param={["type", page.search.type]}
+          tooltip={page.search.title}
+          class="text-{page.color}-500 before:mt-1 before:font-semibold"
+          bind:active={itemTypeFilter[page.search.type]}
+        >
+          <Icon class="icon-fill-{page.color} h-5 w-5" icon={page.icon} />
+        </Filter>
       {/each}
     </FilterList>
   </div>

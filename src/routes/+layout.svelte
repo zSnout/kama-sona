@@ -3,7 +3,7 @@
   import { afterNavigate, beforeNavigate } from "$app/navigation"
   import { page } from "$app/stores"
   import { PUBLIC_KS_APP_NAME } from "$env/static/public"
-  import { pages } from "$lib/pages"
+  import { overviewable } from "$lib/pages"
   import * as Theme from "$lib/theme"
   import { isDark } from "$lib/theme"
   import { customTheme, themeable } from "$lib/themeable"
@@ -165,11 +165,11 @@
       ? 'visible scale-100 opacity-100'
       : 'invisible'} mobile-nav fixed top-14 w-screen px-4 pt-2 pb-4 shadow-md transition-all nav-bg hover:opacity-100 sm:hidden"
   >
-    {#each pages as page}
+    {#each overviewable as page}
       <NavLinkWide
-        href={page.href}
+        href={page.overview.href}
         class="icon-bg-{page.color}"
-        title={page.title}
+        title={page.overview.title}
         on:click={closeNav}
       >
         <NavIcon icon={page.icon} class="icon-{page.color}" />

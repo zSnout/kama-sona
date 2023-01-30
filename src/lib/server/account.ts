@@ -1,6 +1,7 @@
 import type { Creatable } from "$lib/pages"
 import { error, ok, type Result } from "$lib/result"
 import type { Prisma } from "@prisma/client"
+import { BulletinList } from "./bulletin"
 import { query, transaction } from "./database"
 import { GroupList } from "./group"
 import { MagicLink } from "./magic-link"
@@ -17,6 +18,7 @@ export const errorNoAccountExists = error(
 export const permissions = [
   "create:account",
   "create:assignment",
+  "create:bulletin",
   "create:card-deck",
   "create:discussion",
   "create:group",
@@ -25,6 +27,7 @@ export const permissions = [
 
 export const defaultPermissions = [
   "create:assignment",
+  "create:bulletin",
   "create:card-deck",
   "create:discussion",
   "create:group",
@@ -178,6 +181,10 @@ export class Account {
 
   passkeys() {
     return new PasskeyList({ account: this.filter })
+  }
+
+  bulletins() {
+    return new BulletinList({ author: this.filter })
   }
 
   async id() {

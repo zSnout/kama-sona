@@ -17,7 +17,7 @@
     title: string
   }[]
 
-  $: size = items.length == 4 ? 9 : 12
+  $: size = items.length == 5 ? 10 : 12
 </script>
 
 <svelte:window
@@ -36,7 +36,7 @@
 />
 
 <div
-  class="absolute inset-y-0 -inset-x-8 hidden backdrop-blur-lg transition duration-500 lg:block"
+  class="absolute -inset-y-6 -inset-x-8 hidden backdrop-blur-lg transition duration-500 lg:block"
   class:pointer-events-none={!isShown}
   class:opacity-0={!isShown}
   class:z-30={!isShown}
@@ -45,11 +45,15 @@
 
 <!-- svelte-ignore a11y-mouse-events-have-key-events -->
 <div
-  class="absolute top-1/2 left-1/2 hidden h-[34rem] w-[34rem] items-center justify-center rounded-full lg:flex"
+  class="hidden h-[34rem] w-[34rem] items-center justify-center self-center justify-self-center rounded-full lg:flex"
+  style:grid-column-start="2"
+  style:grid-column-end="3"
+  style:grid-row-start="3"
+  style:grid-row-end="4"
   class:pointer-events-none={!isShown}
   class:z-30={!isShown}
   class:z-40={isShown}
-  style="transform:translate(-50%,-50%) translate({translate})"
+  style="transform:translate({translate})"
   on:mouseleave={() => (isShown = false)}
 >
   <button

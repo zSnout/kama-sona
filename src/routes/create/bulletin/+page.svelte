@@ -1,0 +1,77 @@
+<script lang="ts">
+  import { enhance } from "$app/forms"
+  import CenterOnPage from "$lib/CenterOnPage.svelte"
+
+  let title = ""
+  let body = ""
+  let disabled = false
+</script>
+
+<svelte:head>
+  <title>Create a Bulletin</title>
+</svelte:head>
+
+<CenterOnPage>
+  <form
+    class="flex flex-col"
+    method="post"
+    use:enhance
+    on:submit={() => (disabled = true)}
+  >
+    <div class="flex flex-1 items-center gap-12">
+      <div class="prefer-w-96 flex flex-1 flex-col">
+        <label class="label mb-auto block w-full">
+          <p>Bulletin title:</p>
+
+          <input
+            class="field w-full"
+            maxlength="32"
+            name="title"
+            required
+            type="text"
+            bind:value={title}
+          />
+        </label>
+
+        <label class="label prefer-w-96 flex flex-col">
+          <p>Bulletin description:</p>
+
+          <textarea
+            class="field min-h-[10.5rem] w-full"
+            maxlength="10000"
+            name="body"
+            required
+            bind:value={body}
+          />
+        </label>
+      </div>
+
+      <div class="hidden md:block">
+        <div class="label flex flex-col">
+          <p>Preview:</p>
+
+          <div
+            class="flex h-[10.5rem] w-[12rem] min-w-[12rem] flex-col rounded-lg px-3 py-2 text-left shadow-md bg-field"
+          >
+            <p class="mb-1 line-clamp-1">{title || "Untitled"}</p>
+
+            <p class="text-sm line-clamp-6">{body || "No description"}</p>
+          </div>
+
+          <p
+            class="mt-6 w-[12rem] min-w-[12rem] self-center text-sm italic text-label"
+          >
+            People can expand your bulletin to see the full title and
+            description.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <label class="label prefer-w-96 mt-6 flex flex-col self-center">
+      <p>Click to create your bulletin:</p>
+
+      <button class="field" type="submit">Create Bulletin</button>
+    </label>
+  </form>
+</CenterOnPage>

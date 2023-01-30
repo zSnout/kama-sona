@@ -1,6 +1,7 @@
 // @ts-check
 
 const forms = require("@tailwindcss/forms")
+const lineClamp = require("@tailwindcss/line-clamp")
 const plugin = require("tailwindcss/plugin")
 
 /** @type {import("tailwindcss").Config} */
@@ -37,6 +38,7 @@ const config = {
   ],
   plugins: [
     forms,
+    lineClamp,
     plugin(({ addUtilities }) => {
       addUtilities({
         ".bg-active": { "background-color": "var(--bg-active)" },

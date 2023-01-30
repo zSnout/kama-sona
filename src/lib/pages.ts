@@ -2,6 +2,7 @@ import {
   faBarsProgress,
   faBookOpen,
   faGear,
+  faNoteSticky,
   faTasks,
   faUserGroup,
   type IconDefinition,
@@ -9,6 +10,7 @@ import {
 
 export type Creatable =
   | "assignment"
+  | "bulletin"
   | "card-deck"
   | "discussion"
   | "group"
@@ -16,8 +18,8 @@ export type Creatable =
   | "account"
 
 export interface CreateInfo {
+  readonly title: string
   readonly type: Creatable
-  readonly singular: string
 }
 
 export type Searchable =
@@ -28,13 +30,14 @@ export type Searchable =
   | "resource"
 
 export interface SearchInfo {
+  readonly title: string
   readonly type: Searchable
 }
 
-export type PageType =
-  | "directory"
+export type Overviewable =
   | "assignment"
   | "card-deck"
+  | "directory"
   | "discussion"
   | "group"
   | "progress"
@@ -42,89 +45,94 @@ export type PageType =
   | "search"
   | "setting"
 
-export interface Page {
-  readonly create?: CreateInfo
-  readonly color: "red" | "orange" | "yellow" | "green" | "blue" | "purple"
+export interface OverviewInfo {
   readonly href: `/${string}`
-  readonly icon: IconDefinition
-  readonly search?: SearchInfo
   readonly title: string
-  readonly type: PageType
+  readonly type: Overviewable
+}
+
+export interface Page {
+  readonly color: "red" | "orange" | "yellow" | "green" | "blue" | "purple"
+  readonly icon: IconDefinition
+  readonly create?: CreateInfo
+  readonly overview?: OverviewInfo
+  readonly search?: SearchInfo
 }
 
 export const pages: readonly Page[] = [
   {
     color: "yellow",
-    href: "/progress",
     icon: faBarsProgress,
-    title: "Progress",
-    type: "progress",
+    overview: {
+      href: "/progress",
+      title: "Progress",
+      type: "progress",
+    },
   },
   {
-    create: { singular: "Assignment", type: "assignment" },
     color: "red",
-    href: "/search?range=week&type=assignment",
     icon: faTasks,
-    title: "Assignments",
-    type: "assignment",
-    search: { type: "assignment" },
+    create: { title: "Assignment", type: "assignment" },
+    overview: {
+      href: "/search?range=week&type=assignment",
+      title: "Assignments",
+      type: "assignment",
+    },
+    search: { title: "Assignment", type: "assignment" },
   },
   {
-    create: { singular: "Group", type: "group" },
     color: "blue",
-    href: "/search?range=week&type=group",
     icon: faUserGroup,
-    title: "Groups",
-    type: "group",
-    search: { type: "group" },
+    create: { title: "Group", type: "group" },
+    overview: {
+      href: "/search?range=week&type=group",
+      title: "Groups",
+      type: "group",
+    },
+    search: { title: "Group", type: "group" },
   },
   {
-    create: { singular: "Resource", type: "resource" },
     color: "green",
-    href: "/search?range=week&type=resource",
     icon: faBookOpen,
-    title: "Resources",
-    type: "resource",
-    search: { type: "resource" },
+    create: { title: "Resource", type: "resource" },
+    overview: {
+      href: "/search?range=week&type=resource",
+      title: "Resources",
+      type: "resource",
+    },
+    search: { title: "Resource", type: "resource" },
   },
-  // {
-  //   create: { singular: "Card Deck", type: "card-deck" },
-  //   color: "orange",
-  //   href: "/search?range=week&type=card-deck",
-  //   icon: faLayerGroup,
-  //   title: "Card Decks",
-  //   type: "card-deck",
-  //   search: { type: "card-deck" },
-  // },
-  // {
-  //   create: { singular: "Discussion", type: "discussion" },
-  //   color: "purple",
-  //   href: "/search?range=week&type=discussion",
-  //   icon: faComments,
-  //   title: "Discussions",
-  //   search: { type: "discussion" },
-  //   type: "discussion",
-  // },
-  // Schedule
-  // Export
   {
-    create: { singular: "Account", type: "account" },
     color: "orange",
-    href: "/directory",
     icon: faUserGroup,
-    title: "Directory",
-    type: "directory",
+    create: { title: "Account", type: "account" },
+    overview: { href: "/directory", title: "Directory", type: "directory" },
   },
   {
     color: "purple",
-    href: "/settings",
     icon: faGear,
-    title: "Settings",
-    type: "setting",
+    overview: { href: "/settings", title: "Settings", type: "setting" },
   },
-  // News
+  {
+    color: "yellow",
+    icon: faNoteSticky,
+    create: { title: "Bulletin", type: "bulletin" },
+  },
+  // News, Schedule, Export
 ]
 
-export function getPage(type: PageType): Page | undefined {
-  return pages.find((page) => page.type == type)
+export const creatable = pages.filter(
+  (page): page is typeof page & { create: {} } => !!page.create
+)
+
+export const searchable = pages.filter(
+  (page): page is typeof page & { search: {} } => !!page.search
+)
+
+export const overviewable = pages.filter(
+  (page): page is typeof page & { overview: {} } => !!page.overview
+)
+
+export function getPage(type: Overviewable): Page | undefined {
+  return pages.find((page) => page.overview?.type == type)
 }

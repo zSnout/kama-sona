@@ -3,10 +3,11 @@
   import BigButtonColored from "$lib/BigButtonColored.svelte"
   import { help } from "$lib/help"
   import Icon from "$lib/Icon.svelte"
-  import { pages, type CreateInfo } from "$lib/pages"
+  import { overviewable, pages, type CreateInfo } from "$lib/pages"
   import Title from "$lib/Title.svelte"
   import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
   import type { PageData } from "./$types"
+  import Bulletin from "./features/Bulletin.svelte"
   import Clock from "./features/Clock.svelte"
   import News from "./features/News.svelte"
   import Note from "./features/Note.svelte"
@@ -24,7 +25,7 @@
     .map((page) => ({
       color: page.color,
       href: "/create/" + page.create.type,
-      title: page.create.singular,
+      title: page.create.title,
       icon: page.icon,
     }))
 </script>
@@ -32,11 +33,13 @@
 <Title title={PUBLIC_KS_APP_NAME} mode="head-only" />
 
 <div
-  class="relative flex min-h-[max(100vh_-_7rem)] grid-cols-3 grid-rows-[repeat(4,minmax(100px,_1fr))] flex-col gap-4 md:grid md:max-h-[max(100vh_-_7rem)] md:flex-1 lg:grid-rows-[minmax(100px,1fr),minmax(100px,_1fr),3rem,minmax(100px,_1fr),minmax(100px,_1fr)]"
+  class="relative flex min-h-[max(100vh_-_7rem)] grid-cols-3 grid-rows-[repeat(4,minmax(100px,_1fr))] flex-col gap-4 md:grid md:max-h-[max(100vh_-_7rem)] md:flex-1 lg:grid-rows-[5rem,minmax(100px,_1fr),3rem,minmax(100px,_1fr),11.5rem]"
 >
   {#each $layout as feature}
     <svelte:component
-      this={feature.name == "Clock"
+      this={feature.name == "Bulletin"
+        ? Bulletin
+        : feature.name == "Clock"
         ? Clock
         : feature.name == "News"
         ? News
@@ -46,11 +49,17 @@
         ? Todo
         : undefined}
       {feature}
+      {data}
     />
   {/each}
 
   <Spinner
-    items={pages}
+    items={overviewable.map((page) => ({
+      color: page.color,
+      href: page.overview.href,
+      title: page.overview.title,
+      icon: page.icon,
+    }))}
     tooltip="All Apps"
     translate="-50px,0"
     class="grid grid-cols-3 grid-rows-3 items-center justify-items-center"
@@ -75,7 +84,7 @@
 </div>
 
 <div class="mt-8 flex flex-wrap justify-center gap-4 lg:hidden">
-  {#each pages as page}
+  {#each creatable as page}
     <BigButtonColored
       color={page.color}
       href={page.href}

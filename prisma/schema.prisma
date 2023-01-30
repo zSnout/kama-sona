@@ -45,6 +45,7 @@ model Account {
   viewedResources          Resource[]         @relation("ResourceViewer", fields: [viewedResourceIds], references: [id])
   viewedResourceIds        String[]           @db.ObjectId
   passkeys                 Passkey[]
+  bulletins                Bulletin[]
 }
 
 model Session {
@@ -333,4 +334,15 @@ model PasskeyChallenge {
   creation  DateTime @default(now())
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   updated   DateTime @default(now()) @updatedAt
+}
+
+model Bulletin {
+  body     String
+  creation DateTime @default(now())
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  title    String
+  updated  DateTime @default(now()) @updatedAt
+  // Relations:
+  author   Account  @relation(fields: [authorId], references: [id])
+  authorId String   @db.ObjectId
 }

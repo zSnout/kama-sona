@@ -6,6 +6,6 @@
 </script>
 
 <Todo
-  class="rounded-lg border border-standard"
+  class="rounded-lg border shadow-sm border-standard"
   style="grid-area:{makeGridArea(feature)}"
 />
