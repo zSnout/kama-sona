@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from "$app/forms"
+  import BulletinButton from "$lib/BulletinButton.svelte"
   import CenterOnPage from "$lib/CenterOnPage.svelte"
 
   let title = ""
@@ -50,13 +51,10 @@
         <div class="label flex flex-col">
           <p>Preview:</p>
 
-          <div
-            class="flex h-[10.5rem] w-[12rem] min-w-[12rem] flex-col rounded-lg px-3 py-2 text-left shadow-md bg-field"
-          >
-            <p class="mb-1 line-clamp-1">{title || "Untitled"}</p>
-
-            <p class="text-sm line-clamp-6">{body || "No description"}</p>
-          </div>
+          <BulletinButton
+            body={body || "No description"}
+            title={title || "Untitled"}
+          />
 
           <p
             class="mt-6 w-[12rem] min-w-[12rem] self-center text-sm italic text-label"

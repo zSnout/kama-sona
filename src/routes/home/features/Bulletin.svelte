@@ -6,13 +6,14 @@
     }
     body: string
     creation: string | Date
+    id: string
     title: string
   }
 </script>
 
 <script lang="ts">
   import { browser } from "$app/environment"
-
+  import BulletinButton from "$lib/BulletinButton.svelte"
   import LoadingSpinner from "$lib/LoadingSpinner.svelte"
   import { toDateString } from "$lib/toDateString"
   import type { PageData } from "../$types"
@@ -52,14 +53,11 @@
     <LoadingSpinner class="m-auto" />
   {:then items}
     {#each items as item}
-      <button
-        on:click={() => (lastActiveItem = activeItem = item)}
-        class="flex h-[10.5rem] w-[12rem] min-w-[12rem] cursor-zoom-in flex-col rounded-lg px-3 py-2 text-left shadow-md bg-field ring-color border border-transparent focus:ring focus:outline-none transition"
-      >
-        <p class="mb-1 line-clamp-1">{item.title}</p>
-
-        <p class="text-sm line-clamp-6">{item.body}</p>
-      </button>
+      <BulletinButton
+        action={() => (lastActiveItem = activeItem = item)}
+        body={item.body}
+        title={item.title}
+      />
     {:else}
       <p class="m-auto">
         There's nothing on the bulletin board yet. {#if data.permissions.includes("create:bulletin")}
@@ -92,6 +90,25 @@
       </p>
 
       <p>{lastActiveItem.body}</p>
+
+      {#if lastActiveItem.author.id == data.id}
+        <a
+          on:click={(event) => {
+            if (
+              !confirm(
+                "Are you sure you want to delete '" +
+                  lastActiveItem?.title +
+                  "'?"
+              )
+            ) {
+              event.stopImmediatePropagation()
+              event.preventDefault()
+            }
+          }}
+          href="/bulletin/delete/{lastActiveItem.id}"
+          class="link ml-auto mt-auto">Delete</a
+        >
+      {/if}
     </div>
   {/if}
 </div>

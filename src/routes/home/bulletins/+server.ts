@@ -15,6 +15,7 @@ export const GET = (async () => {
       },
       body: true,
       creation: true,
+      id: true,
       title: true,
     })
   )
