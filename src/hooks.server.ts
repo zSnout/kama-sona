@@ -1,3 +1,4 @@
+import { KS_TIME_ZONE } from "$env/static/private"
 import { PUBLIC_KS_ADMIN_MODE } from "$env/static/public"
 import { unwrapOr500 } from "$lib/result"
 import type { Account } from "$lib/server/account"
@@ -9,6 +10,10 @@ function throwOnAccess(): never {
     500,
     `A log in or sign up page tried to access 'locals.account'. Report this as a bug IMMEDIATELY.`
   )
+}
+
+if (typeof process != "undefined") {
+  process.env.TZ = KS_TIME_ZONE
 }
 
 export const handle: Handle = async ({ event, resolve }) => {
