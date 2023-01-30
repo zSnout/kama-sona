@@ -1,33 +1,35 @@
 import type { ActivityCreateInput } from "./activity"
 
-export const activityList: readonly Readonly<ActivityCreateInput>[] = [
+export const activityList: readonly Readonly<
+  ActivityCreateInput & { creation: `${number}-${number}-${number}` }
+>[] = [
   {
-    creation: "2023-01-25",
-    title: "Do you like chocolate or vanilla ice cream more?",
-    options: ["Chocolate", "Vanilla"],
+    creation: "2021-01-30",
+    title: "Are you a dog person or a cat person?",
+    type: "Poll",
+    options: ["Dog", "Cat"],
+  },
+  {
+    creation: "2021-01-31",
+    title: "What is the best book you have ever read, and why?",
     type: "Poll",
   },
   {
-    creation: "2023-01-26",
-    title: "What is your favorite breakfast food, and why?",
+    creation: "2021-02-01",
+    title: "How many pets do you have?",
     type: "Poll",
+    options: ["None", "1", "2", "3", "4+"],
   },
   {
-    creation: "2023-01-27",
-    title: "Which school management system is the best?",
+    creation: "2021-02-02",
+    title: "Do you prefer American units or metric ones?",
     type: "Poll",
-    options: ["Blackbaud", "Google Classroom", "Schoology"],
+    options: ["American", "Metric"],
   },
   {
-    creation: "2023-01-28",
-    title: "What is your opinion on activities?",
+    creation: "2021-02-03",
+    title:
+      "What is the most beautiful website you've ever seen? Why do you like it?",
     type: "Poll",
-    options: [
-      "Very positive",
-      "Positive",
-      "Neutral",
-      "Dislike",
-      "Intense hatred",
-    ],
   },
 ]
