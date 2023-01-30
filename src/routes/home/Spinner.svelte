@@ -17,7 +17,7 @@
     title: string
   }[]
 
-  $: size = items.length == 5 ? 10 : 12
+  $: size = items.length == 4 ? 9 : items.length == 5 ? 10 : 12
 </script>
 
 <svelte:window

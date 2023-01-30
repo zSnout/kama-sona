@@ -103,6 +103,21 @@
       $customTheme.sharp == "true"
     )
   }
+
+  const warn = console.warn.bind(console)
+
+  console.warn = (...args: any[]) => {
+    if (
+      typeof args[0] == "string" &&
+      args[0].match(
+        /<(Clock|News|Note|Todo)> was created with unknown prop 'data'/
+      )
+    ) {
+      return
+    }
+
+    warn(...args)
+  }
 </script>
 
 <nav

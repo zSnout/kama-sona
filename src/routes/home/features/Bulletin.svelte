@@ -53,10 +53,8 @@
   {:then items}
     {#each items as item}
       <button
-        on:click={() => {
-          lastActiveItem = activeItem = item
-        }}
-        class="flex h-[10.5rem] w-[12rem] min-w-[12rem] cursor-zoom-in flex-col rounded-lg px-3 py-2 text-left shadow-md bg-field ring-color border border-transparent focus:ring focus:outline-none"
+        on:click={() => (lastActiveItem = activeItem = item)}
+        class="flex h-[10.5rem] w-[12rem] min-w-[12rem] cursor-zoom-in flex-col rounded-lg px-3 py-2 text-left shadow-md bg-field ring-color border border-transparent focus:ring focus:outline-none transition"
       >
         <p class="mb-1 line-clamp-1">{item.title}</p>
 

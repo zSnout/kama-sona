@@ -62,6 +62,11 @@ export interface Page {
 export const pages: readonly Page[] = [
   {
     color: "yellow",
+    icon: faNoteSticky,
+    create: { title: "Bulletin", type: "bulletin" },
+  },
+  {
+    color: "yellow",
     icon: faBarsProgress,
     overview: {
       href: "/progress",
@@ -112,11 +117,6 @@ export const pages: readonly Page[] = [
     color: "purple",
     icon: faGear,
     overview: { href: "/settings", title: "Settings", type: "setting" },
-  },
-  {
-    color: "yellow",
-    icon: faNoteSticky,
-    create: { title: "Bulletin", type: "bulletin" },
   },
   // News, Schedule, Export
 ]

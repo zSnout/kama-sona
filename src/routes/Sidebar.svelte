@@ -115,6 +115,7 @@
         class:sidebar-button-hover-color={open}
         aria-label="Toggle {name}"
         data-tooltip={name}
+        tabindex={$isSidebarOpen ? 0 : -1}
         on:click={onClick}
       >
         <Icon class="h-5 w-5" {icon} />
@@ -124,23 +125,25 @@
 
   <!-- Useful classes for a generic container: h-full flex-1 border-l border-standard -->
 
-  {#if $isNotesOpen}
-    <RichTextArea
-      class="resize-none"
-      fieldClass="sidebar-bg rounded-none border-0 border-l focus-within:border-0 focus-within:border-l focus-within:sidebar-inner-border sidebar-inner-border focus-within:ring-0"
-      buttonsClass="sidebar-bg sidebar-inner-border"
-      placeholder="Type a note to yourself..."
-      bind:value={$note}
-      on:input={(event) => notifyOtherSetters(event.detail[0])}
-      on:value-setter={(event) => setters.add(event.detail)}
-      on:remove-value-setter={(event) => setters.delete(event.detail)}
-    />
-  {:else if $isTodosOpen}
-    <Todo borderless sidebarBg class="flex-1 border-l sidebar-inner-border" />
-  {:else if $isThemeOpen}
-    <ThemeEditor class="flex-1 border-l sidebar-inner-border" />
-  {:else if $isActivityOpen}
-    <Activity class="flex-1 border-l sidebar-inner-border" />
+  {#if $isSidebarOpen}
+    {#if $isNotesOpen}
+      <RichTextArea
+        class="resize-none"
+        fieldClass="sidebar-bg rounded-none border-0 border-l focus-within:border-0 focus-within:border-l focus-within:sidebar-inner-border sidebar-inner-border focus-within:ring-0"
+        buttonsClass="sidebar-bg sidebar-inner-border"
+        placeholder="Type a note to yourself..."
+        bind:value={$note}
+        on:input={(event) => notifyOtherSetters(event.detail[0])}
+        on:value-setter={(event) => setters.add(event.detail)}
+        on:remove-value-setter={(event) => setters.delete(event.detail)}
+      />
+    {:else if $isTodosOpen}
+      <Todo borderless sidebarBg class="flex-1 border-l sidebar-inner-border" />
+    {:else if $isThemeOpen}
+      <ThemeEditor class="flex-1 border-l sidebar-inner-border" />
+    {:else if $isActivityOpen}
+      <Activity class="flex-1 border-l sidebar-inner-border" />
+    {/if}
   {/if}
 
   <div
