@@ -23,11 +23,8 @@ export const actions = {
     const group = unwrapOr500(
       await Group.create({
         title: title.trim().slice(0, 32),
-        managers: {
-          connect: {
-            id: unwrapOr500(await account.id()),
-          },
-        },
+        managers: { connect: account.filter },
+        members: { connect: account.filter },
       })
     )
 

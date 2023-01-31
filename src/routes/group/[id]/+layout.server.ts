@@ -40,5 +40,5 @@ export const load = (async ({ locals: { account }, params: { id } }) => {
     throw error(503, "You don't have access to this group.")
   }
 
-  return { account, group: data, isManager }
+  return { group: data, isManager }
 }) satisfies LayoutServerLoad

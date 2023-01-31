@@ -22,13 +22,7 @@
           <label class="label w-full">
             <p>Full name:</p>
 
-            <input
-              class="field w-full"
-              name="name"
-              type="text"
-              required
-              {disabled}
-            />
+            <input class="field w-full" name="name" type="text" required />
           </label>
 
           <label class="label w-full">
@@ -40,7 +34,6 @@
               type="email"
               autocomplete="off"
               required
-              {disabled}
             />
           </label>
 

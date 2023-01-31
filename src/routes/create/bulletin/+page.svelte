@@ -5,7 +5,6 @@
 
   let title = ""
   let body = ""
-  let disabled = false
 </script>
 
 <svelte:head>
@@ -13,12 +12,7 @@
 </svelte:head>
 
 <CenterOnPage>
-  <form
-    class="flex flex-col"
-    method="post"
-    use:enhance
-    on:submit={() => (disabled = true)}
-  >
+  <form class="flex flex-col" method="post" use:enhance>
     <div class="flex flex-1 items-center gap-12">
       <div class="prefer-w-96 flex flex-1 flex-col">
         <label class="label mb-auto block w-full">
