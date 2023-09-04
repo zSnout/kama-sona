@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@prisma/client"
+import { PrismaClient, type Prisma } from "@prisma/client"
 import { error, ok, type Result } from "../result"
 
 const prisma = new PrismaClient()
